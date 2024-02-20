@@ -1,0 +1,267 @@
+.background{
+    position: absolute;
+    background-image: url(../image/background3.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    filter: blur(50px);
+    z-index: -1;
+}
+
+.loginContainer{
+    width: 55%;
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    background-color: var(--clearblack);
+    box-shadow: 0px 0px 10px var(--darkSlateGray);
+    z-index: 1;
+}
+
+.bannerContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+.bannerContent h3{
+    margin-bottom: 10px;
+}
+
+.img{
+    background-image: url(../image/gamer.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 250px;
+    height: 250px;
+}
+
+.loginContent{
+    border: 2px solid var(--darkcyan);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px 1rem;
+    width: 100%;
+}
+
+.loginContainer h2{
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: var(--turquoise);
+}
+
+.loginContainer form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.formControl{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.formControl label{
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    margin-left: 3px;
+}
+
+.formInput{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-left: 4px;
+}
+
+.formControl input{
+    padding: 10px 5px 5px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--whitesmoke);
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.formControl input:focus{
+    border-bottom-color: var(--turquoise);
+    color: var(--turquoise);
+}
+
+/*.formControl:focus-within label {
+    color: var(--turquoise);
+}*/
+
+.icons{
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.formControl:focus-within .icons{
+    fill: var(--turquoise);
+}
+
+.bottomDiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.formRemember{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.formRemember label{
+    transition: all 0.3s ease;
+}
+
+.formRemember input{
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: var(--mediumgrey);
+    border-radius: 4px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.formRemember input:checked + label{
+    color: var(--turquoise);
+}
+
+.formRemember input:checked{
+    border-color: var(--turquoise);
+    background-color: transparent;
+}
+
+.formRemember input:checked::after{
+    content: "";
+    display: block;
+    width: 5px;
+    height: 10px;
+    border: 3px solid var(--turquoise);
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    margin: 1px 5px;
+}
+
+.btn{
+    padding: 5px 1rem;
+    border-radius: 10rem;
+    color: var(--black);
+    width: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.btn:hover{
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.register{
+    margin-top: -10px;
+    padding: 5px 1rem;
+    border-radius: 10rem;
+    color: var(--black);
+    width: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center; 
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.register:hover{
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* resposividade */
+/* telas menores */
+@media (max-width: 1200px) {
+    .loginContainer{
+        width: 80%;
+    }
+    
+    .bannerContent{
+        width: 70%;
+        padding: 10px 10px;
+    }
+}
+
+/* tablets */
+@media (max-width: 780px) {
+    .loginContainer{
+        width: 70%;
+    }
+    .bannerContent{
+        display: none;
+    }
+    .loginContent{
+        border-radius: 10px;
+        padding: 20px 2rem;
+    }
+    .loginContainer h2{
+        font-size: 2.5rem;
+    }
+    .btn{
+        width: 60%;
+        font-size: 1.3rem;
+    }
+    .register{
+        width: 60%;
+        font-size: 1.3rem;
+    }
+}
+
+/* celulares */
+@media (max-width: 520px) {
+    .formControl:nth-child(1){
+        margin-bottom: -1.2rem;
+    }
+    .bottomDiv{
+        display: block;
+    }
+    .formRemember{
+        margin: -1rem 5px 2.5rem; 
+    }
+    .formRemember input{
+        width: 15px;
+        height: 15px;
+    }
+    .formRemember input:checked::after{
+        width: 3px;
+        height: 7px;
+        margin: 0px 3px;
+    }
+    .bottomDiv{
+        text-align: center; 
+        margin-bottom: -10px;
+    }
+    .bottomDiv a{
+    }
+    .btn{
+        width: 100%;
+        font-size: 1.1rem;
+    }
+    .register{
+        width: 100%;
+        font-size: 1.1rem;
+    }
+}
