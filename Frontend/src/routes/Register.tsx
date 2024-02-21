@@ -6,18 +6,11 @@ import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 import classes from "./Register.module.css";
 import { cleanPhoneNumber } from '../utils/clearPhoneNumber';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
 const Cadastro = () => {
 
-  /*const[formInput, setFormInput] = useState({
-    cpf: '',
-    phone: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
-    lastName: ''
-  });*/
+  const [formTouched, setFormTouched] = useState(false);
 
   const [cpf, setCpf] = useState('');
   const [phone, setPhone] = useState('');
@@ -40,23 +33,39 @@ const Cadastro = () => {
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const navigate = useNavigate();
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-    validateForm();
-    console.log(name);
-    console.log(lastName);
-    console.log(cpf);
-    const isValidCpf = validateCpf(cpf);
-    console.log(isValidCpf);
-    const clearPhone = cleanPhoneNumber(phone);
-    console.log(clearPhone);
-    console.log(email);
-    console.log(password);
-    console.log(confirmPassword);
-    console.log(termsOfCondition);
+  const onSubmit = (e: FormEvent) => {
     
+    e.preventDefault();
+    validateForm();
+    setFormTouched(true);
+
+    const hasChanged = [name, lastName, cpf, phone, email, password, confirmPassword, termsOfCondition].some(value => value !== '');
+    if (formTouched && hasChanged) {
+      setFormSubmitted(true);
+
+      const hasErrors = Object.values(formError).some(error => error !== '');
+      if (!hasErrors) {
+        console.log("Formulário submetido!.");
+        console.log(name);
+        console.log(lastName);
+        console.log(cpf);
+        const isValidCpf = validateCpf(cpf);
+        console.log(isValidCpf);
+        const clearPhone = cleanPhoneNumber(phone);
+        console.log(clearPhone);
+        console.log(email);
+        console.log(password);
+        console.log(confirmPassword);
+        console.log(termsOfCondition);
+        navigate("/");
+      } else {
+        console.log('Há erros no formulário. Por favor, corrija-os antes de enviar.');
+      }
+    } else {
+      console.log('Por favor, preencha os campos antes de enviar o formulário.');
+    }
   } 
 
   const validateForm = () => {
@@ -158,7 +167,7 @@ const Cadastro = () => {
       <div className={classes.background}></div>
       <div className={classes.registerContainer}>
         <h2>Crie uma conta</h2>
-        <form className={classes.formControl} onSubmit={submit}>
+        <form className={classes.formControl} onSubmit={onSubmit}>
           <div className={classes.fieldsSideBySide}>
             <div>
               <label htmlFor="name">Nome <span className={classes.required}>*</span></label>
