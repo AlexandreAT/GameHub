@@ -12,8 +12,8 @@ const Login = () => {
         <div className={classes.background}></div>
         <div className={classes.loginContainer}>
             <div className={classes.bannerContent}>
-                <h2>Login</h2>
-                <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi numquam voluptatibus temporibus.</h3>
+                <h2>GameHub</h2>
+                <h3>A GameHub permite criar e organizar sua coleção de jogos de forma personalizada. Adicione, categorize e faça anotações sobre seus títulos favoritos com facilidade.</h3>
                 <div className={classes.img}>
                     <img src="../image/background.jpg" alt="" />
                 </div>
