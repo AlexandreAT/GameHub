@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "9y9HuoJ0vlErwFPOapyOaUqTNKOi9e5Pfp1Vxu1onnE=",
+  "Source": "Gamehub.Server",
+  "BasePath": "_content/Gamehub.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Users\\alexa\\Desktop\\Cursos e derivados\\Projetos próprios\\GameHub\\gamehub.client\\gamehub.client.esproj",
+      "Version": 2,
+      "Source": "gamehub.client",
+      "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

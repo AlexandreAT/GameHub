@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:5173",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\alexa\\Desktop\\Cursos e derivados\\Projetos próprios\\GameHub\\Gamehub.Server\\..\\gamehub.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

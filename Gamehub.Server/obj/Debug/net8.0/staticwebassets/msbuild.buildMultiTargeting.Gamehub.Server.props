@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Gamehub.Server.props" />
+</Project>
