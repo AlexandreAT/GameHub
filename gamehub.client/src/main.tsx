@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 
 // Importações
-import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 // Componentes
 import Login from './routes/Login.tsx'

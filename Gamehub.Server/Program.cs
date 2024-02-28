@@ -1,6 +1,13 @@
+using Gamehub.Server.Models;
+using Gamehub.Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<UserDatabaseSetting>
+    (builder.Configuration.GetSection("DevNetStoreDatabase"));
+
+builder.Services.AddSingleton<UserServices>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
