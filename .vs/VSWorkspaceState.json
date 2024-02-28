@@ -1,11 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\gamehub.client",
-    "\\gamehub.client\\src",
     "\\Gamehub.Server",
     "\\Gamehub.Server\\Controllers"
   ],
-  "SelectedNode": "\\Gamehub.Server",
+  "SelectedNode": "\\Gamehub.Server\\Controllers\\UsersController.cs",
   "PreviewInSolutionExplorer": false
 }
