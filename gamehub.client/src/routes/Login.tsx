@@ -1,12 +1,22 @@
 import { Link } from 'react-router-dom'
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { useNavigate } from 'react-router-dom'
 
-import React from 'react'
+import React, { FormEvent } from 'react'
 
 import classes from "./Login.module.css";
 
 const Login = () => {
+
+    const navigate = useNavigate();
+
+    const submitLogin = (e: FormEvent) => {
+        e.preventDefault();
+
+        navigate("/Logado");
+    }
+
   return (
     <div className="form">
         <div className={classes.background}></div>
@@ -20,7 +30,7 @@ const Login = () => {
             </div>
             <div className={classes.loginContent}>
                 <h2>Login</h2>
-                <form>
+                <form onSubmit={submitLogin}>
                     <div className={classes.formControl}>
                         <label htmlFor="email">Email</label>
                         <div className={classes.formInput}>
@@ -44,7 +54,7 @@ const Login = () => {
                             <Link to="/forgotPassword" className='link'>Esqueceu a senha?</Link>
                         </div>
                     </div>
-                    <button className={classes.btn}>Entrar</button>
+                    <button type='submit' className={classes.btn}>Entrar</button>
                     <Link to="/register" className={classes.register}>Registrar-se</Link>
                 </form>
             </div>
