@@ -18,7 +18,10 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<List<User>> GetUsers() => await _userServices.GetAsync();
+        public async Task<ActionResult<List<User>>> GetUsers()
+        {
+            return await _userServices.GetAsync();
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)

@@ -11,6 +11,7 @@ import Login from './routes/Login.tsx'
 import Register from './routes/Register.tsx'
 import ForgotPassword from './routes/ForgotPassword.tsx'
 import TermsOfCondition from './routes/TermsOfCondition.tsx'
+import Logado from './routes/Logado.tsx'
 
 
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/termsOfCondition",
         element: <TermsOfCondition/>,
+      },
+      {
+        path: "/logado",
+        element: <Logado/>,
       }
     ]
   }
