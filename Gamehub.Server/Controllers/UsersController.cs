@@ -2,6 +2,7 @@
 using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Gamehub.Server.Controllers
 {
@@ -36,11 +37,10 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<User> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            await _userServices.CreateAsync(user);
-
-            return user;
+            User createdUser = await _userServices.CreateAsync(user);
+            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
         }
 
         [HttpPut("{id}")]

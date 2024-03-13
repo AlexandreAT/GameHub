@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gamehub.Server.Models
 {
@@ -7,25 +8,34 @@ namespace Gamehub.Server.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
+        [Required(ErrorMessage = "O nome deve ter entre 2 e 100 caracteres.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "O nome deve ter entre 2 e 100 caracteres.")]
         [BsonElement("Nome")]
         public string Name { get; set; } = null;
 
+        [Required(ErrorMessage = "O sobrenome deve ter entre 2 e 100 caracteres.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "O sobrenome deve ter entre 2 e 100 caracteres.")]
         [BsonElement("Sobrenome")]
         public string Surname { get; set; } = null;
 
+        [Required(ErrorMessage = "O CPF deve ser preenchido.")]
         [BsonElement("CPF")]
-        public int Cpf { get; set; }
+        public string Cpf { get; set; }
 
         [BsonElement("Número de telefone")]
-        public int? phone { get; set; }
+        public string? Phone { get; set; } = null;
 
+        [Required(ErrorMessage = "O email deve ser preenchido.")]
+        [EmailAddress(ErrorMessage = "O email deve estar no formato válido.")]
         [BsonElement("Email")]
-        public string email { get; set; } = null;
+        public string Email { get; set; } = null;
 
+        [Required(ErrorMessage = "A senha deve ser preenchida e ter entre 6 e 20 caracteres.")]
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 20 caracteres.")]
         [BsonElement("Senha")]
-        public string password { get; set; } = null;
+        public string Password { get; set; } = null;
 
 
 

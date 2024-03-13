@@ -9,6 +9,8 @@ const Logado = () => {
       try {
         const response = await axios.get('/Users');
         setUsers(response.data);
+        console.log(response.data);
+        
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -20,11 +22,12 @@ const Logado = () => {
   return (
     <div>
       <h1>Usuários Logados</h1>
-      <ul>
+      {users.length === 0 ? <p>Carregando...</p>
+      : <ul>
         {users.map((user: any) => (
           <li key={user.Id}>teste: {user.name}, {user.surname} ({user.email})</li>
         ))}
-      </ul>
+      </ul>}
     </div>
   );
 };

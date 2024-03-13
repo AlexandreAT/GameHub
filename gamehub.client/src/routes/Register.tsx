@@ -1,4 +1,5 @@
 import React, { useState, FormEvent } from 'react';
+import axios from 'axios';
 import MaskInput from '../components/MaskInput';
 import { validateCpf } from '../utils/validateCpf';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
@@ -35,7 +36,32 @@ const Cadastro = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  const onSubmit = (e: FormEvent) => {
+
+  const postData = async (url: string, data: any) => {
+    try {
+        // Converte as propriedades do objeto User para PascalCase
+        const userPascalCase = {
+            Name: data.name,
+            Surname: data.lastName,
+            Cpf: data.cpf,
+            Phone: data.clearPhone,
+            Email: data.email,
+            Password: data.password
+        };
+
+        const response = await axios.post(url, userPascalCase, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting data:', error);
+        throw error;
+    }
+  };
+
+  const onSubmit = async (e: FormEvent) => {
     
     e.preventDefault();
     validateForm();
@@ -47,8 +73,32 @@ const Cadastro = () => {
 
       const hasErrors = Object.values(formError).some(error => error !== '');
       if (!hasErrors) {
-        console.log("Formulário submetido!.");
+        const clearPhone = cleanPhoneNumber(phone);
+        console.log("Formulário submetido!");
         console.log(name);
+        console.log(lastName);
+        console.log(cpf);
+        console.log(clearPhone);
+        console.log(email);
+        console.log(password);
+
+        try {
+          const response = await postData('https://localhost:7045/api/Users/', {
+            name,
+            lastName,
+            cpf,
+            clearPhone,
+            email,
+            password,
+          });
+          
+          console.log('Usuário cadastrado com sucesso!', response);
+          navigate("/");
+        } catch (error) {
+          console.error('Erro ao cadastrar usuário:', error);
+        }
+
+        /*console.log(name);
         console.log(lastName);
         console.log(cpf);
         const isValidCpf = validateCpf(cpf);
@@ -59,7 +109,7 @@ const Cadastro = () => {
         console.log(password);
         console.log(confirmPassword);
         console.log(termsOfCondition);
-        navigate("/");
+        navigate("/");*/
       } else {
         console.log('Há erros no formulário. Por favor, corrija-os antes de enviar.');
       }
@@ -137,12 +187,12 @@ const Cadastro = () => {
     validateForm();
   }
   const handleCPFChange = (e: any) => {
-    setCpf(e.target.value);
+    setCpf(e.target.value.toString());
     validateForm();
     // (e: any) => setCpf(e.target.value)
   }
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value);
+    setPhone(e.target.value.toString());
     validateForm();
   }
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
