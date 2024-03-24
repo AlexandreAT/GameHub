@@ -2,19 +2,37 @@ import { Link } from 'react-router-dom'
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'
+import axios from '../axios-config';
 
-import React, { FormEvent } from 'react'
+import React, { FormEvent, useState } from 'react'
 
 import classes from "./Login.module.css";
 
 const Login = () => {
 
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const submitLogin = (e: FormEvent) => {
         e.preventDefault();
 
-        navigate("/Logado");
+        // Faça a chamada para a API com os valores do formulário
+        axios.post('/Users/login', { email, password })
+        .then((response) => {
+            // Verifique se o usuário foi encontrado
+            if (response.data) {
+                // Redirecione o usuário para a página depois do login
+                navigate("/Logado");
+            }
+        })
+        .catch((error) => {
+            // Exiba uma mensagem de erro no front-end
+            console.log("teste");
+            
+            console.error(error);
+            alert("Email ou senha incorretos.");
+        });
     }
 
   return (
@@ -35,14 +53,14 @@ const Login = () => {
                         <label htmlFor="email">Email</label>
                         <div className={classes.formInput}>
                             <MdEmail className={classes.icons}/>
-                            <input type="text" name='email' placeholder='Digite o seu email...' required/>
+                            <input type="text" name='email' placeholder='Digite o seu email...' onChange={(e) => setEmail(e.target.value)} value={email} required/>
                         </div>
                     </div>
                     <div className={classes.formControl}>
                         <label htmlFor="password">Senha</label>
                         <div className={classes.formInput}>
                             <RiLockPasswordFill className={classes.icons}/>
-                            <input type="password" name='password' placeholder='Digite a sua senha...' required/>
+                            <input type="password" name='password' placeholder='Digite a sua senha...' onChange={(e) => setPassword(e.target.value)} value={password} required/>
                         </div>
                     </div>
                     <div className={classes.bottomDiv}>

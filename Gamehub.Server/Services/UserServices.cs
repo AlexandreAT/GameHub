@@ -21,6 +21,7 @@ namespace Gamehub.Server.Services
 
         public async Task<List<User>> GetAsync() => await _userCollection.Find(x => true).ToListAsync();
         public async Task<User> GetAsync(string id) => await _userCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<User> GetUserByEmailAndPassword(string email, string password) => await _userCollection.Find(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
         public async Task<User> CreateAsync(User user)
         {
             if (user.Cpf.ToString().Length != 11)

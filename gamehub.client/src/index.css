@@ -80,3 +80,8 @@ a{
   color: crimson;
   font-weight: bold;
 }
+
+.submitting {
+  pointer-events: none;
+  opacity: 0.5;
+}

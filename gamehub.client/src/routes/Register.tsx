@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 const Cadastro = () => {
 
   const [formTouched, setFormTouched] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [cpf, setCpf] = useState('');
   const [phone, setPhone] = useState('');
@@ -36,7 +37,6 @@ const Cadastro = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const navigate = useNavigate();
 
-
   const postData = async (url: string, data: any) => {
     try {
         // Converte as propriedades do objeto User para PascalCase
@@ -54,69 +54,18 @@ const Cadastro = () => {
             'Content-Type': 'application/json'
           }
         });
-        return response.data;
-    } catch (error) {
+        return { data: response.data, error: null };
+    } catch (error: any) {
         console.error('Error posting data:', error);
-        throw error;
+        if (error.response) {
+          return { data: null, error: error.response.data };
+        } else if (error.request) {
+          return { data: null, error: { message: 'No response received from the server.' } };
+        } else {
+          return { data: null, error: { message: 'Error making the request.' } };
+        }
     }
   };
-
-  const onSubmit = async (e: FormEvent) => {
-    
-    e.preventDefault();
-    validateForm();
-    setFormTouched(true);
-
-    const hasChanged = [name, lastName, cpf, phone, email, password, confirmPassword, termsOfCondition].some(value => value !== '');
-    if (formTouched && hasChanged) {
-      setFormSubmitted(true);
-
-      const hasErrors = Object.values(formError).some(error => error !== '');
-      if (!hasErrors) {
-        const clearPhone = cleanPhoneNumber(phone);
-        console.log("Formulário submetido!");
-        console.log(name);
-        console.log(lastName);
-        console.log(cpf);
-        console.log(clearPhone);
-        console.log(email);
-        console.log(password);
-
-        try {
-          const response = await postData('https://localhost:7045/api/Users/', {
-            name,
-            lastName,
-            cpf,
-            clearPhone,
-            email,
-            password,
-          });
-          
-          console.log('Usuário cadastrado com sucesso!', response);
-          navigate("/");
-        } catch (error) {
-          console.error('Erro ao cadastrar usuário:', error);
-        }
-
-        /*console.log(name);
-        console.log(lastName);
-        console.log(cpf);
-        const isValidCpf = validateCpf(cpf);
-        console.log(isValidCpf);
-        const clearPhone = cleanPhoneNumber(phone);
-        console.log(clearPhone);
-        console.log(email);
-        console.log(password);
-        console.log(confirmPassword);
-        console.log(termsOfCondition);
-        navigate("/");*/
-      } else {
-        console.log('Há erros no formulário. Por favor, corrija-os antes de enviar.');
-      }
-    } else {
-      console.log('Por favor, preencha os campos antes de enviar o formulário.');
-    }
-  } 
 
   const validateForm = () => {
     let inputError = {
@@ -129,6 +78,35 @@ const Cadastro = () => {
       lastName: "",
       termsOfCondition: ""
     };
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      inputError = {
+        ...inputError,
+        email: "Email inválido!"
+      };
+    }
+
+    if (name.length < 2){
+      inputError = {
+        ...inputError,
+        name: "O nome deve ter pelo menos 2 caracteres"
+      };
+    }
+
+    if (lastName.length < 2){
+      inputError = {
+        ...inputError,
+        lastName: "O sobrenome deve ter pelo menos 2 caracteres"
+      };
+    }
+
+    if(password.length < 6 || password.length > 20){
+      inputError = {
+        ...inputError,
+        password: "A senha deve ter entre 6 e 20 caracteres"
+      }
+    }
 
     if (!cpf || !email || !password || !confirmPassword || !name || !lastName) {
       inputError = {
@@ -145,7 +123,7 @@ const Cadastro = () => {
     if(password !== "" && confirmPassword !== "" && password !== confirmPassword){
       inputError = {
         ...inputError,
-           confirmPassword:confirmPassword !== password ? "As senhas não conferem!" : ""
+          confirmPassword:confirmPassword !== password ? "As senhas não conferem!" : ""
         }
     }
 
@@ -165,6 +143,59 @@ const Cadastro = () => {
     }
 
     setFormError(inputError);
+    setFormTouched(true);
+  }
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+  
+    if (formSubmitted && Object.values(formError).some(error => error !== '')) {
+      setFormSubmitted(false);
+    }
+  
+    validateForm();
+  
+    if (formTouched) {
+      setFormSubmitted(true);
+  
+      const hasErrors = Object.values(formError).some(error => error !== '');
+      if (!hasErrors) {
+        const clearPhone = cleanPhoneNumber(phone);
+        console.log("Formulário submetido!");
+        console.log(name);
+        console.log(lastName);
+        console.log(cpf);
+        console.log(clearPhone);
+        console.log(email);
+        console.log(password);
+  
+        try {
+          setIsSubmitting(true); 
+          const response = await postData('https://localhost:7045/api/Users/', {
+            name,
+            lastName,
+            cpf,
+            clearPhone,
+            email,
+            password,
+          });
+  
+          if (response.error) {
+            console.log('Error from the backend:', response.error);
+          } else {
+            setIsSubmitting(false);
+            console.log('Usuário cadastrado com sucesso!', response.data);
+            navigate("/");
+          }
+        } catch (error) {
+          console.error('Erro ao cadastrar usuário:', error);
+        }
+      } else {
+        console.log('Há erros no formulário. Por favor, corrija-os antes de enviar.');
+      }
+    } else {
+      console.log('Por favor, preencha os campos antes de enviar o formulário.');
+    }
   }
 
   const clearForm = (e: FormEvent) => {
@@ -267,7 +298,7 @@ const Cadastro = () => {
             </div>
           </div>
           <div className={classes.divButtons}>
-            <button type='submit'>Enviar</button>
+            <button type='submit' disabled={isSubmitting}>Enviar</button>
             <input type="button" value="Limpar" onClick={clearForm} className={classes.clearInput}/>
           </div>
           <div className={classes.link}>

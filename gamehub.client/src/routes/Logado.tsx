@@ -21,7 +21,7 @@ const Logado = () => {
 
   return (
     <div>
-      <h1>Usuários Logados</h1>
+      <h1>Usuários Registrados</h1>
       {users.length === 0 ? <p>Carregando...</p>
       : <ul>
         {users.map((user: any) => (
