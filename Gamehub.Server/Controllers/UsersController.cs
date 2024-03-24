@@ -43,6 +43,28 @@ namespace Gamehub.Server.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> Login(LoginRequest request)
+        {
+            // Verifica se o email e a senha estão presentes
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+            {
+                return BadRequest("Email e senha são obrigatórios.");
+            }
+
+            // Busca o usuário com base no email e senha
+            var userFound = await _userServices.GetUserByEmailAndPassword(request.Email, request.Password);
+
+            // Verifica se o usuário foi encontrado
+            if (userFound == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // Retorna o usuário encontrado
+            return Ok(userFound);
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<List<User>>> UpdateUser(string id, User user)
         {
