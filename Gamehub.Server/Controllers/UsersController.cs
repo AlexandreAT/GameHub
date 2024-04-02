@@ -3,15 +3,21 @@ using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Gamehub.Server.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
 
         private readonly UserServices _userServices;
+        private readonly IConfiguration _configuration;
 
         public UsersController(UserServices userServices)
         {
@@ -61,6 +67,13 @@ namespace Gamehub.Server.Controllers
                 return NotFound("Usuário não encontrado.");
             }
 
+            var token = GenerateJwtToken(userFound);
+
+            CookieOptions options = new CookieOptions();
+            options.Expires = DateTime.UtcNow.AddDays(7);
+            options.HttpOnly = true;
+            Response.Cookies.Append("jwt", token, options);
+
             // Retorna o usuário encontrado
             return Ok(userFound);
         }
@@ -83,6 +96,29 @@ namespace Gamehub.Server.Controllers
         {
             await _userServices.RemoveAsync(id);
             return await _userServices.GetAsync();
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim("Id", user.Id.ToString()),
+                new Claim("Email", user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+                    
+            var privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:secretKey"]));
+
+            var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);
+
+            var expiration = DateTime.UtcNow.AddMinutes(10);
+
+            JwtSecurityToken token = new JwtSecurityToken(
+                    claims: claims,
+                    expires: expiration,
+                    signingCredentials: credentials
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }

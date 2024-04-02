@@ -1,7 +1,11 @@
 using Gamehub.Server.Models;
 using Gamehub.Server.Services;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Cors;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +47,25 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+var configuration = builder.Configuration;
+
+//aqui é onde estou configurando o jwt
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        //erro ali no "jwt:secretKey"
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:secretKey"])),
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 app.MapControllers();
 
