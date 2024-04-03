@@ -1,15 +1,16 @@
 using Gamehub.Server.Models;
 using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Cors;
 using System.Text;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.CookiePolicy;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
-// Add services to the container.
+
 builder.Services.Configure<UserDatabaseSetting>
     (builder.Configuration.GetSection("DevNetStoreDatabase"));
 
@@ -19,36 +20,29 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("https://localhost:5173") // Adicione a URL do seu frontend aqui
+        builder.WithOrigins("https://localhost:5173")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
     });
 });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.IgnoreNullValues = true;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
-
-app.UseCors("CorsPolicy");
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configura a política de cookies
+builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-var configuration = builder.Configuration;
+    // Define as políticas de cookies
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.HttpOnly = HttpOnlyPolicy.None;
+    options.Secure = CookieSecurePolicy.Always;
+});
 
 //aqui é onde estou configurando o jwt
 builder.Services.AddAuthentication(options =>
@@ -61,11 +55,32 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        //erro ali no "jwt:secretKey"
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:secretKey"])),
         ClockSkew = TimeSpan.Zero
     };
-});
+}); 
+
+var app = builder.Build();
+
+// Aplica a política de cookies
+app.UseCookiePolicy();
+
+app.UseCors("CorsPolicy");
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
