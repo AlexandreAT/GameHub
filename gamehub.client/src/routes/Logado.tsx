@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../axios-config';
+import { axios } from '../axios-config';
 
 const Logado = () => {
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/Users');
-        setUsers(response.data);
+        const response = await axios.get('/Users/current');
+        setUser(response.data);
+        
         console.log(response.data);
         
       } catch (error) {
@@ -22,12 +23,7 @@ const Logado = () => {
   return (
     <div>
       <h1>Usuários Registrados</h1>
-      {users.length === 0 ? <p>Carregando...</p>
-      : <ul>
-        {users.map((user: any) => (
-          <li key={user.Id}>teste: {user.name}, {user.surname} ({user.email})</li>
-        ))}
-      </ul>}
+        <p>Nome: {user.name}</p>
     </div>
   );
 };

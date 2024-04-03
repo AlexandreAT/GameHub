@@ -47,3 +47,11 @@ C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Ser
 C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\runtimes\linux\native\libmongocrypt.so
 C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\runtimes\osx\native\libmongocrypt.dylib
 C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\runtimes\win\native\mongocrypt.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\alexa\Desktop\Cursos e derivados\Projetos próprios\GameHub\Gamehub.Server\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

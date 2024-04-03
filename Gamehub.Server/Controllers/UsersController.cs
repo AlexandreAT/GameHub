@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gamehub.Server.Controllers
 {
@@ -19,9 +20,16 @@ namespace Gamehub.Server.Controllers
         private readonly UserServices _userServices;
         private readonly IConfiguration _configuration;
 
-        public UsersController(UserServices userServices)
+        public class LoginResponse
+        {
+            public UserFound User { get; set; }
+            public string Token { get; set; }
+        }
+
+        public UsersController(UserServices userServices, IConfiguration configuration)
         {
             _userServices = userServices;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -33,6 +41,21 @@ namespace Gamehub.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)
         {
+
+            if (!Request.Headers.ContainsKey("Authorization"))
+                return BadRequest();
+
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest();
+
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var jwtToken = jwtHandler.ReadJwtToken(token);
+
+            if (jwtToken == null || jwtToken.Issuer != "your-issuer-url")
+                return BadRequest();
+
             var user = await _userServices.GetAsync(id);
             if (user == null)
             {
@@ -59,7 +82,7 @@ namespace Gamehub.Server.Controllers
             }
 
             // Busca o usuário com base no email e senha
-            var userFound = await _userServices.GetUserByEmailAndPassword(request.Email, request.Password);
+            var userFound = await _userServices.GetUserByEmailAndPassword(request.Email, request.Password).ConfigureAwait(false);
 
             // Verifica se o usuário foi encontrado
             if (userFound == null)
@@ -72,10 +95,21 @@ namespace Gamehub.Server.Controllers
             CookieOptions options = new CookieOptions();
             options.Expires = DateTime.UtcNow.AddDays(7);
             options.HttpOnly = true;
-            Response.Cookies.Append("jwt", token, options);
+            Response.Cookies.Append(".AspNetCore.Application.Authorization", token, options);
+
+            var newUserFound = new UserFound
+            {
+                Id = userFound.Id,
+                Name = userFound.Name,
+                Surname = userFound.Surname,
+                Cpf = userFound.Cpf,
+                Phone = userFound.Phone,
+                Email = userFound.Email,
+                Password = userFound.Password
+            };
 
             // Retorna o usuário encontrado
-            return Ok(userFound);
+            return Ok(new LoginResponse { User = newUserFound, Token = token });
         }
 
         [HttpPut("{id}")]
@@ -98,6 +132,52 @@ namespace Gamehub.Server.Controllers
             return await _userServices.GetAsync();
         }
 
+        [HttpGet("current")]
+        public ActionResult<User> GetCurrentUserData()
+        {
+
+            // Verifica se o cabeçalho Authorization está presente
+            if (!Request.Headers.ContainsKey("Authorization"))
+            {
+                return BadRequest();
+            }
+
+            // Obtém o token do cabeçalho Authorization
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            // Verifica se o token está presente
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest();
+            }
+
+            // Valida o token
+            var jwtHandler = new JwtSecurityTokenHandler();
+
+            if (!jwtHandler.CanReadToken(token))
+            {
+                return BadRequest();
+            }
+
+            var jwtToken = jwtHandler.ReadJwtToken(token);
+
+            // Obtém o email do usuário do claim
+            var userEmail = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            // Obtém o usuário com base no email
+            // ERRO AQUI------------------------------------------------------------------------------------------------------------------------------
+            var user = string.IsNullOrEmpty(userEmail) ? null : await _userServices.GetUserByEmailAndPassword(userEmail, null).ConfigureAwait(false);
+
+            // Verifica se o usuário foi encontrado
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Retorna o usuário encontrado
+            return Ok(user);
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
@@ -106,7 +186,7 @@ namespace Gamehub.Server.Controllers
                 new Claim("Email", user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-                    
+
             var privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:secretKey"]));
 
             var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);

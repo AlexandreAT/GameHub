@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'
-import axios from '../axios-config';
+import { axios, setAuthToken } from '../axios-config';
 
 import React, { FormEvent, useState } from 'react'
 
@@ -17,19 +17,24 @@ const Login = () => {
     const submitLogin = (e: FormEvent) => {
         e.preventDefault();
 
-        // Faça a chamada para a API com os valores do formulário
+        // Faz a chamada a API com os valores do formulário
         axios.post('/Users/login', { email, password })
         .then((response) => {
-            // Verifique se o usuário foi encontrado
+            
+            // Verifica se o usuário foi encontrado
             if (response.data) {
-                // Redirecione o usuário para a página depois do login
+                console.log("Token recebido:", response.data.token);
+
+                // Define o token no cabeçalho
+                setAuthToken(response.data.token);
+
+                // Redireciona o usuário para a página depois do login
                 navigate("/Logado");
             }
         })
         .catch((error) => {
-            // Exiba uma mensagem de erro no front-end
-            console.log("teste");
             
+            // Exibe uma mensagem de erro no front-end
             console.error(error);
             alert("Email ou senha incorretos.");
         });
