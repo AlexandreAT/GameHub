@@ -161,12 +161,11 @@ namespace Gamehub.Server.Controllers
 
             var jwtToken = jwtHandler.ReadJwtToken(token);
 
-            // Obtém o email do usuário do claim
-            var userEmail = User.FindFirst(ClaimTypes.Name)?.Value;
+            // Obtém o ID do usuário do token JWT
+            var userId = jwtToken.Claims.First(x => x.Type == "Id").Value;
 
-            // Obtém o usuário com base no email
-            // ERRO AQUI------------------------------------------------------------------------------------------------------------------------------
-            var user = string.IsNullOrEmpty(userEmail) ? null : await _userServices.GetUserByEmailAndPassword(userEmail, null).ConfigureAwait(false);
+            // Obtém o usuário com base no ID
+            var user = _userServices.GetAsync(userId).Result;
 
             // Verifica se o usuário foi encontrado
             if (user == null)
@@ -182,7 +181,7 @@ namespace Gamehub.Server.Controllers
         {
             var claims = new[]
             {
-                new Claim("Id", user.Id.ToString()),
+                new Claim("Id", user.Id),
                 new Claim("Email", user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
