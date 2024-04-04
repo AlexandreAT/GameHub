@@ -7,23 +7,20 @@ axios.defaults.headers.post['Content-Type'] = "application/json";
 
 axios.defaults.timeout = 10000;
 
-// Adiciona um interceptor de solicitação que verifica se um token JWT está presente nos cookies
+// Interceptor de solicitação que verifica se um token JWT está presente nos cookies
 // e o define no cabeçalho da autorização para cada solicitação HTTP
 axios.interceptors.request.use((config) => {
   const token = Cookies.get('.AspNetCore.Application.Authorization');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("Token definido no cabeçalho da autorização:", config.headers.Authorization);
   }
   return config;
 });
 
 const setAuthToken = (token: string) => {
-    console.log("token que chegou: "+ token);
     if (token) {
       // Define o token no cookie
       Cookies.set('.AspNetCore.Application.Authorization', token, { expires: 7 });
-      console.log("token criado: "+ token);
       
     } else {
       // Limpa o cookie

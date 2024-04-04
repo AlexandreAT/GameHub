@@ -23,7 +23,6 @@ const Login = () => {
             
             // Verifica se o usuário foi encontrado
             if (response.data) {
-                console.log("Token recebido:", response.data.token);
 
                 // Define o token no cabeçalho
                 setAuthToken(response.data.token);
