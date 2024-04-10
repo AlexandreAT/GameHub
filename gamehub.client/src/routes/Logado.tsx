@@ -24,15 +24,8 @@ const Logado = () => {
     fetchUsers();
   }, []);
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <h1>Usuário Logado</h1>
-        <p>Nome: {user.name}</p>
-        <p>Email: {user.email}</p>
     </div>
   );
 };
