@@ -18,7 +18,13 @@ namespace Gamehub.Server.Services
 
         public async Task<List<Post>> GetAsync() => await _postCollection.Find(x => true).ToListAsync();
 
-        public async Task CreateAsync(Post post) => await _postCollection.InsertOneAsync(post);
+        public async Task<Post> CreateAsync(Post post)
+        {
+            post.Id = null;
+            await _postCollection.InsertOneAsync(post);
+            post.Id = post.Id ?? _postCollection.Find(x => x.Id == post.Id).FirstOrDefault()?.Id;
+            return post;
+        }
 
         public async Task RemoveAsync(string id) => await _postCollection.DeleteOneAsync(x => x.Id == id);
     }

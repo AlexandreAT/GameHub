@@ -23,6 +23,17 @@ namespace Gamehub.Server.Controllers
         [HttpPost]
         public async Task<Post> PostPost(Post post)
         {
+
+            if (post.Title == null)
+            {
+                throw new Exception("O post deve conter um título!");
+            }
+
+            if (post.Content == null)
+            {
+                throw new Exception("O post deve conter um conteúdo!");
+            }
+
             await _postServices.CreateAsync(post);
 
             return post;

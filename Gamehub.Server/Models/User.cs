@@ -37,7 +37,8 @@ namespace Gamehub.Server.Models
         [BsonElement("Senha")]
         public string Password { get; set; } = null;
 
-
+        [BsonElement("Posts")]
+        public List<Post>? Posts { get; set; } = null;
 
     }
 }

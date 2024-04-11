@@ -4,6 +4,7 @@ import { axios } from '../axios-config';
 interface User {
   name: string;
   email: string;
+  password: string;
 }
 
 
@@ -24,8 +25,18 @@ const Logado = () => {
     fetchUsers();
   }, []);
 
+  if(!user){
+    return <h1>Loading...</h1>
+  }
+
   return (
     <div>
+      {user.name}
+      <br></br>
+      {user.email}
+      <br></br>
+      {user.password}
+      <br></br>
     </div>
   );
 };

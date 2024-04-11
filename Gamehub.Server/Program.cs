@@ -19,6 +19,8 @@ builder.Services.AddSingleton<UserServices>();
 builder.Services.Configure<PostDatabaseSettings>
     (builder.Configuration.GetSection("DevNetStoreDatabase"));
 
+builder.Services.AddSingleton<PostServices>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
