@@ -24,9 +24,9 @@ namespace Gamehub.Server.Models
         public string Content { get; set; } = null;
 
         [BsonElement("Comentário")]
-        public string Comments { get; set; } = null;
+        public string? Comments { get; set; } = null;
 
         [BsonElement("Data")]
-        public int Date { get; set; }
+        public int? Date { get; set; }
     }
 }
