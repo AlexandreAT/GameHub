@@ -1,0 +1,78 @@
+.containerPost{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 20px;
+}
+
+h2{
+    color: var(--turquoise);
+    margin-bottom: 15px;
+}
+
+.formPost{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid var(--turquoise);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: var(--clearblack);
+    gap: 1rem;
+}
+
+div label{
+    margin-right: 2px;
+    font-size: 18px;
+    color: var(--turquoise);
+}
+
+div input, textarea{
+    background-color: transparent;
+    border: none;
+    border-left: 2px solid var(--turquoise);
+    border-bottom: 2px solid var(--turquoise);
+    border-bottom-left-radius: 5px;
+    padding: 2px 2px 2px 6px;
+    color: var(--turquoise);
+    font-size: 15px;
+}
+
+div input::placeholder, textarea::placeholder{
+    font-size: 15px;
+    color: var(--mediumgrey);
+}
+
+textarea{
+    padding-top: 5px;
+    outline: none;
+}
+
+.divTextarea{
+    display: flex;
+    flex-direction: column;
+}
+
+.divButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button{
+    background-color: transparent;
+    padding: 10px;
+    border: 2px solid var(--turquoise);
+    border-radius: 5px;
+    color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+
+button:hover{
+    background-color: var(--turquoise);
+    color: var(--clearblack);
+    font-weight: bold;
+    transform: scale(1.1);
+}

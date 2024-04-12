@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace Gamehub.Server.Controllers
 {
@@ -176,6 +177,26 @@ namespace Gamehub.Server.Controllers
 
             // Retorna o usuário encontrado
             return Ok(user);
+        }
+
+        [HttpPost("posts/{id}")]
+        public async Task<ActionResult<Post>> AddPostToUser(string id, Post post)
+        {
+            var user = await _userServices.GetAsync(id);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            await _userServices.AddPostAsync(id, user, post);
+            return Ok(user.Posts);
+        }
+
+        [HttpGet("posts/{id}")]
+        public async Task<ActionResult<List<Post>>> GetUserPosts(string id)
+        {
+            return await _userServices.GetAsyncPosts(id);
         }
 
         private string GenerateJwtToken(User user)

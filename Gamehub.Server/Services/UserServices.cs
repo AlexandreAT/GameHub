@@ -37,5 +37,37 @@ namespace Gamehub.Server.Services
 
         public async Task UpdateAsync(string id, User user) => await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
         public async Task RemoveAsync(string id) => await _userCollection.DeleteOneAsync(x => x.Id == id);
+
+        public async Task AddPostAsync(string id, User user, Post post)
+        {
+            if(post != null)
+            {
+                if(user.Posts == null)
+                {
+                    user.Posts = new List<Post>();
+                }
+                user.Posts.Add(post);
+            }
+            else
+            {
+                throw new Exception("É necessário um objeto post correto para adiciona na lista!");
+            }
+
+            await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
+            
+        }
+
+        public async Task<List<Post>> GetAsyncPosts(string id)
+        {
+            var user = await GetAsync(id);
+            if (user.Posts != null)
+            {
+                return user.Posts;
+            }
+            else
+            {
+                throw new Exception("Usuário sem posts!");
+            }
+        }
     }
 }
