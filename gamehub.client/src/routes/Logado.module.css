@@ -61,7 +61,7 @@ textarea{
     justify-content: center;
 }
 
-button{
+.button{
     background-color: transparent;
     padding: 10px;
     border: 2px solid var(--turquoise);
@@ -70,7 +70,7 @@ button{
     transition: all 0.3s ease;
 }
 
-button:hover{
+.button:hover{
     background-color: var(--turquoise);
     color: var(--clearblack);
     font-weight: bold;

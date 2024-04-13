@@ -3,17 +3,23 @@ import axios from 'axios';
 import MaskInput from '../components/MaskInput';
 import { validateCpf } from '../utils/validateCpf';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
+import Cookies from 'js-cookie';
 
 import classes from "./Register.module.css";
 import { cleanPhoneNumber } from '../utils/clearPhoneNumber';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 
 const Cadastro = () => {
 
   const [formTouched, setFormTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const token = Cookies.get('.AspNetCore.Application.Authorization')
 
+  if (token) {
+    return <Navigate to="/logado" replace />
+  }
+  
   const [cpf, setCpf] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
