@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'
 import { axios, setAuthToken } from '../axios-config';
+import Cookies from 'js-cookie';
 
 import React, { FormEvent, useState } from 'react'
 
@@ -13,6 +14,12 @@ const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const token = Cookies.get('.AspNetCore.Application.Authorization')
+
+  if (token) {
+    return <Navigate to="/logado" replace />
+  }
 
     const submitLogin = (e: FormEvent) => {
         e.preventDefault();

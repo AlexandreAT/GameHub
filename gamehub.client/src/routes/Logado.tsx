@@ -1,3 +1,4 @@
+import Navbar from '../components/Navbar'
 import React, { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 
@@ -15,6 +16,7 @@ interface User {
 }
 
 interface Post{
+  id: string;
   author: string;
   title: string;
   content: string;
@@ -25,7 +27,7 @@ interface Post{
 const Logado = () => {
 
   const [user, setUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -42,6 +44,30 @@ const Logado = () => {
 
     fetchUsers();
   }, []);
+
+
+  const getPosts = async () => {
+    try{
+      if (!user) return;
+      const response = await axios.get('/Users/posts/'+user.id, {params: {
+        id: user.id
+      }})
+      setPosts(response.data);
+    }catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  }
+
+  useEffect(() => {
+    getPosts();
+    const interval = setInterval(() => {
+      getPosts();
+    }, 60000); // 60000 ms = 1 minuto
+  
+    return () => {
+      clearInterval(interval);
+    }
+  }, [user]);
 
   if(!user){
     return <h1>Loading...</h1>
@@ -93,6 +119,11 @@ const Logado = () => {
     }
   }
 
+  const clearPostForm = () => {
+    setTitle('');
+    setContent('');
+  }
+
   const submitPost = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -105,26 +136,36 @@ const Logado = () => {
       })
       if (response.error) {
         console.log('Error from the backend:', response.error);
-        alert('Error:'+ response.error);
+        if(response.error.errors.Title !== undefined){
+          if(response.error.errors.Title[0] !== undefined) {
+            alert('Erro: '+ response.error.errors.Title[0]);
+          }
+          else {
+            alert('Erro: '+ response.error.errors.Title[1]);
+          }
+        }
+        if(response.error.errors.Content !== undefined){
+          if(response.error.errors.Content[0] !== undefined) {
+            alert('Erro: '+ response.error.errors.Content[0]);
+          }
+          else {
+            alert('Erro: '+ response.error.errors.Content[1]);
+          }
+        }
       } else {
         console.log('Postado com sucesso!', response.data);
         await addPostUser('/Users/posts/'+user.id, response.data);
+        await getPosts();
+        clearPostForm();
       }
     }catch (error) {
       console.error('Erro ao cadastrar post:', error);
     }
   }
 
-  useEffect(() => {
-    const getPosts = async (url: string, id: string) => {
-      try{
-        const response = await axios.get('/Users/posts/'+user.id, user.id)
-      }
-    }
-  }, [postData]);
-
   return (
     <div>
+      <div className='navbar'>{<Navbar />}</div>
       <div className={classes.containerPost}>
         <h2>Fazer postagem</h2>
         <form className={classes.formPost} onSubmit={submitPost}>
@@ -137,7 +178,7 @@ const Logado = () => {
             <textarea name="content" placeholder='Digite o conteúdo do post...' onChange={(e) => setContent(e.target.value)} value={content}></textarea>
           </div>
           <div className={classes.divButton}>
-            <button type='submit'>Postar</button>
+            <button className={classes.button} type='submit'>Postar</button>
           </div>
         </form>
       </div>
@@ -151,7 +192,13 @@ const Logado = () => {
       <br></br>
       {user.surname}
       <br></br>
-      titulo post: {user.posts.title}
+      <br></br>
+      {posts && posts.map((post: Post) => (
+        <div key={post.id}>
+          <h3>{post.title}</h3>
+          <p>{post.content}</p>
+        </div>
+      ))}
     </div>
   );
 };
