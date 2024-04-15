@@ -304,7 +304,7 @@ const Cadastro = () => {
             </div>
           </div>
           <div className={classes.divButtons}>
-            <button type='submit' disabled={isSubmitting}>Enviar</button>
+            <button className='btn' type='submit' disabled={isSubmitting}>Enviar</button>
             <input type="button" value="Limpar" onClick={clearForm} className={classes.clearInput}/>
           </div>
           <div className={classes.link}>

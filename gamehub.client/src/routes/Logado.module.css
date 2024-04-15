@@ -1,3 +1,12 @@
+.divMain{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
 .containerPost{
     display: flex;
     flex-direction: column;

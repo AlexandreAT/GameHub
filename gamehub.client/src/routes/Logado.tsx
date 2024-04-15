@@ -1,6 +1,8 @@
 import Navbar from '../components/Navbar'
 import React, { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
+import Cookies from 'js-cookie';
+import { Navigate } from 'react-router-dom';
 
 import classes from "./Logado.module.css";
 
@@ -49,9 +51,7 @@ const Logado = () => {
   const getPosts = async () => {
     try{
       if (!user) return;
-      const response = await axios.get('/Users/posts/'+user.id, {params: {
-        id: user.id
-      }})
+      const response = await axios.get('/Posts');
       setPosts(response.data);
     }catch (error) {
       console.error('Error fetching posts:', error);
@@ -70,7 +70,7 @@ const Logado = () => {
   }, [user]);
 
   if(!user){
-    return <h1>Loading...</h1>
+    return <h1 className='loading'>Loading...</h1>
   }
 
   const postData = async (url: string, data: any) => {
@@ -163,9 +163,7 @@ const Logado = () => {
     }
   }
 
-  return (
-    <div>
-      <div className='navbar'>{<Navbar />}</div>
+      /*
       <div className={classes.containerPost}>
         <h2>Fazer postagem</h2>
         <form className={classes.formPost} onSubmit={submitPost}>
@@ -182,23 +180,12 @@ const Logado = () => {
           </div>
         </form>
       </div>
+      */
 
+  return (
+    <div className={classes.divMain}>
+      <div className='navbar'>{<Navbar />}</div>
 
-      {user.name}
-      <br></br>
-      {user.email}
-      <br></br>
-      {user.password}
-      <br></br>
-      {user.surname}
-      <br></br>
-      <br></br>
-      {posts && posts.map((post: Post) => (
-        <div key={post.id}>
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-        </div>
-      ))}
     </div>
   );
 };

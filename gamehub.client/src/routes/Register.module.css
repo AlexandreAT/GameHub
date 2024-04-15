@@ -143,19 +143,6 @@
 .divButtons button{
     height: 100%;
     width: 25%;
-    padding: 5px 1rem;
-    border-radius: 10rem;
-    color: var(--black);
-    font-size: 1.2rem;
-    font-weight: bold;
-    background-color: var(--turquoise);
-    transition: all 0.3s ease;
-    opacity: 0.8;
-}
-
-.divButtons button:hover{
-    opacity: 1;
-    transform: scale(1.05);
 }
 
 .divButtons input{

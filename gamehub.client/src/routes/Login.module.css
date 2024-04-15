@@ -156,23 +156,6 @@
     margin: 1px 5px;
 }
 
-.btn{
-    padding: 5px 1rem;
-    border-radius: 10rem;
-    color: var(--black);
-    width: 50%;
-    font-size: 1.2rem;
-    font-weight: bold;
-    background-color: var(--turquoise);
-    transition: all 0.3s ease;
-    opacity: 0.8;
-}
-
-.btn:hover{
-    opacity: 1;
-    transform: scale(1.05);
-}
-
 .register{
     margin-top: -10px;
     padding: 5px 1rem;

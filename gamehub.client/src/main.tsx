@@ -12,6 +12,7 @@ import Register from './routes/Register.tsx'
 import ForgotPassword from './routes/ForgotPassword.tsx'
 import TermsOfCondition from './routes/TermsOfCondition.tsx'
 import Logado from './routes/Logado.tsx'
+import Perfil from './routes/Perfil.tsx'
 
 
 const router = createBrowserRouter([
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/logado",
         element: <Logado/>,
+      },
+      {
+        path: "/perfil",
+        element: <Perfil/>,
       }
     ]
   }
