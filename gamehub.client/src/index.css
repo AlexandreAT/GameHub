@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/do-futuristic');
+
 :root{
   /*-----------------------------------*/
   --deepgray: #2C2C2C;
@@ -38,6 +40,35 @@ button{
 
 a{
   text-decoration: none;
+}
+
+h1, .logoDetail{ 
+  font-family: 'DO Futuristic', sans-serif;
+  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 5px var(--turquoise);
+}
+
+.logoDetail{
+  color: var(--turquoise);
+}
+
+.btn{
+  padding: 5px 1rem;
+  border-radius: 10rem;
+  color: var(--black);
+  width: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: var(--turquoise);
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.btn:hover{
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .link{
@@ -89,4 +120,8 @@ a{
 .navbar{
   margin: 0 0 1rem 0;
   width: 100%;
+}
+
+.loading{
+  margin: 2rem 2rem;
 }

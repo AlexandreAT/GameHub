@@ -15,10 +15,11 @@ function Navbar() {
 
   return (
     <div className={classes.divNavbar}>
-        <Link to={'/logado'}>GameHub</Link>
-        <ul>
-            <li><Link to={'/logado'}>Início</Link></li>
-            <li><button onClick={handleLogout}>Sair</button></li>
+        <Link to={'/logado'}><h1>Game<span className='logoDetail'>Hub</span></h1></Link>
+        <ul className={classes.ulNavbar}>
+            <li><Link to={'/logado'} className={classes.navbarLink}>Início</Link></li>
+            <li><Link to={'/perfil'} className={classes.navbarLink}>Perfil</Link></li>
+            <li><button className='btn' onClick={handleLogout}>Sair</button></li>
         </ul>
     </div>
   )

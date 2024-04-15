@@ -51,7 +51,7 @@ const Login = () => {
         <div className={classes.background}></div>
         <div className={classes.loginContainer}>
             <div className={classes.bannerContent}>
-                <h2>GameHub</h2>
+                <h1>Game<span className='logoDetail'>Hub</span></h1>
                 <h3>A GameHub permite criar e organizar sua coleção de jogos de forma personalizada. Adicione, categorize e faça anotações sobre seus títulos favoritos com facilidade.</h3>
                 <div className={classes.img}>
                     <img src="../image/background.jpg" alt="" />
@@ -83,7 +83,7 @@ const Login = () => {
                             <Link to="/forgotPassword" className='link'>Esqueceu a senha?</Link>
                         </div>
                     </div>
-                    <button type='submit' className={classes.btn}>Entrar</button>
+                    <button type='submit' className='btn' >Entrar</button>
                     <Link to="/register" className={classes.register}>Registrar-se</Link>
                 </form>
             </div>
