@@ -9,6 +9,7 @@
 
   /*-----------------------------------*/
   --whitesmoke: rgb(229, 229, 229);
+  --lightGrey: rgb(189, 189, 189);
   --grey: rgb(106, 106, 106);
   --mediumgrey: rgb(80, 80, 80);
   --clearblack: rgba(35, 35, 35, 0.8);
@@ -118,7 +119,7 @@ h1, .logoDetail{
 }
 
 .navbar{
-  margin: 0 0 1rem 0;
+  margin: 0 0 10px 0;
   width: 100%;
 }
 

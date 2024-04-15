@@ -3,6 +3,9 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 import Cookies from 'js-cookie';
 import { Navigate } from 'react-router-dom';
+import { FaRegComment } from "react-icons/fa";
+import { SlDislike } from "react-icons/sl";
+import { SlLike } from "react-icons/sl";
 
 import classes from "./Logado.module.css";
 
@@ -184,7 +187,29 @@ const Logado = () => {
 
   return (
     <div className={classes.divMain}>
+
       <div className='navbar'>{<Navbar />}</div>
+      
+      <div className={classes.containerPosts}>
+        {posts && posts.map((post: Post) => (
+          <div key={post.id} className={classes.divPost}>
+            <div className={classes.postHeader}>
+              <p className={classes.author}>{post.author}</p>
+              <p>-</p>
+              <p className={classes.date}>{post.date}</p>
+            </div>
+            <div className={classes.postContent}>
+              <h3 className={classes.title}>{post.title}</h3>
+              <p className={classes.content}>{post.content}</p>
+            </div>
+            <div className={classes.postFooter}>
+              <button>{<SlLike className={classes.postIcon}/>}</button>
+              <button>{<SlDislike className={classes.postIcon}/>}</button>
+              <button>{<FaRegComment className={classes.postIcon}/>}</button>
+            </div>
+          </div>
+        ))}
+      </div>
 
     </div>
   );
