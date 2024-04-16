@@ -2,6 +2,7 @@
 using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace Gamehub.Server.Controllers
 {
@@ -11,10 +12,12 @@ namespace Gamehub.Server.Controllers
     {
 
         private readonly PostServices _postServices;
+        private readonly UserServices _userServices;
 
-        public PostsController(PostServices postServices)
+        public PostsController(PostServices postServices, UserServices userServices)
         {
             _postServices = postServices;
+            _userServices = userServices;
         }
 
         [HttpGet]
@@ -37,6 +40,47 @@ namespace Gamehub.Server.Controllers
             await _postServices.CreateAsync(post);
 
             return post;
+        }
+
+        [HttpPost("comment")]
+        public async Task PostComment(string postId, string userId, string comment)
+        {
+            if (postId == null) 
+            {
+                throw new Exception("O ID do post não pode ser nulo");
+            }
+
+            if (userId == null)
+            {
+                throw new Exception("O ID do usuário não pode ser nulo");
+            }
+
+            var userFound = await _userServices.GetAsync(userId);
+            var postCommented = await _postServices.GetAsync(postId);
+            if(postCommented.IdAuthor != null)
+            {
+                var postUser = await _userServices.GetAsync(postCommented.IdAuthor);
+            }
+            else
+            {
+                throw new Exception("O post não tem o ID do Autor");
+            }
+
+            var userCommented = new UserComment
+            {
+                Id = userFound.Id,
+                Name = userFound.Name,
+                ImgSrc = userFound.ImageSrc
+            };
+
+
+            var commentary = new Comment
+            {
+                User = userCommented,
+                Content = comment,
+            };
+
+            var newComment = await _postServices.AddComment(commentary, postCommented);
         }
 
     }

@@ -18,6 +18,8 @@ namespace Gamehub.Server.Services
 
         public async Task<List<Post>> GetAsync() => await _postCollection.Find(x => true).SortByDescending(x => x.Date).ToListAsync();
 
+        public async Task<Post> GetAsync(string id) => await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
         public async Task<Post> CreateAsync(Post post)
         {
             post.Id = null;
@@ -28,5 +30,18 @@ namespace Gamehub.Server.Services
         }
 
         public async Task RemoveAsync(string id) => await _postCollection.DeleteOneAsync(x => x.Id == id);
+
+        public async Task<Post> AddComment(Comment comment, Post post)
+        {
+            if (post.Comments == null)
+            {
+                post.Comments = new List<Comment>();
+            }
+            post.Comments.Add(comment);
+
+            await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
+
+            return post;
+        }
     }
 }

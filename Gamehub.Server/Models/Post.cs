@@ -13,6 +13,9 @@ namespace Gamehub.Server.Models
         [BsonElement("Autor")]
         public string Author { get; set; } = null;
 
+        [BsonElement("ID do autor")]
+        public string? IdAuthor { get; set; } = null;
+
         [Required(ErrorMessage = "O post precisa de um título.")]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "O título do post deve ter no mínimo 2 caracteres.")]
         [BsonElement("Titulo")]
@@ -24,7 +27,7 @@ namespace Gamehub.Server.Models
         public string Content { get; set; } = null;
 
         [BsonElement("Comentário")]
-        public string? Comments { get; set; } = null;
+        public List<Comment>? Comments { get; set; } = null;
 
         [BsonElement("Data")]
         public DateTimeOffset? Date { get; set; }

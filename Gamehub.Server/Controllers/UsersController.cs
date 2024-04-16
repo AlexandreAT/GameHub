@@ -107,7 +107,8 @@ namespace Gamehub.Server.Controllers
                 Phone = userFound.Phone,
                 Email = userFound.Email,
                 Password = userFound.Password,
-                Posts = userFound.Posts
+                Posts = userFound.Posts,
+                ImageSrc = userFound.ImageSrc,
             };
 
             // Retorna o usuário encontrado
