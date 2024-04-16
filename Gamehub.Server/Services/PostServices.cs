@@ -16,11 +16,12 @@ namespace Gamehub.Server.Services
             _postCollection = mongoDatabase.GetCollection<Post>(postServices.Value.PostCollectionName);
         }
 
-        public async Task<List<Post>> GetAsync() => await _postCollection.Find(x => true).ToListAsync();
+        public async Task<List<Post>> GetAsync() => await _postCollection.Find(x => true).SortByDescending(x => x.Date).ToListAsync();
 
         public async Task<Post> CreateAsync(Post post)
         {
             post.Id = null;
+            post.Date = DateTimeOffset.UtcNow;
             await _postCollection.InsertOneAsync(post);
             post.Id = post.Id ?? _postCollection.Find(x => x.Id == post.Id).FirstOrDefault()?.Id;
             return post;
