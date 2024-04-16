@@ -57,6 +57,11 @@ namespace Gamehub.Server.Services
             
         }
 
+        public async Task UpdatePostAsync(User user, Post post)
+        {
+            //ah fazer
+        }
+
         public async Task<List<Post>> GetAsyncPosts(string id)
         {
             var user = await GetAsync(id);

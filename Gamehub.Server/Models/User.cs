@@ -40,5 +40,8 @@ namespace Gamehub.Server.Models
         [BsonElement("Posts")]
         public List<Post>? Posts { get; set; } = null;
 
+        [BsonElement("Imagem")]
+        public string? ImageSrc { get; set; } = null;
+
     }
 }

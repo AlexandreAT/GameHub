@@ -17,6 +17,7 @@ interface User {
   email: string;
   password: string;
   posts: Post;
+  imageSrc: string;
 }
 
 interface Post{
@@ -79,7 +80,7 @@ const Logado = () => {
   }, [user, showForm]);
 
   if(!user){
-    return <h1 className='loading'>Loading...</h1>
+    return <h1 className='loading'>Carregando...</h1>
   }
 
   const handleShowForm = (e: FormEvent) => {
@@ -87,6 +88,13 @@ const Logado = () => {
 
     setShowForm(!showForm);
 
+  }
+
+  const teste = (id: string) => {
+
+    console.log(id);
+    return null;
+    
   }
   
 
@@ -112,27 +120,32 @@ const Logado = () => {
       <div className={classes.formMakePost}>
         {showForm && <MakePostForm />}
       </div>
-
-      <div className={classes.containerPosts}>
-        {posts && posts.map((post: Post) => (
-          <div key={post.id} className={classes.divPost}>
-            <div className={classes.postHeader}>
-              <p className={classes.author}>{post.author}</p>
-              <p>-</p>
-              <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
-            </div>
-            <div className={classes.postContent}>
-              <h3 className={classes.title}>{post.title}</h3>
-              <p className={classes.content}>{post.content}</p>
-            </div>
-            <div className={classes.postFooter}>
-              <button>{<SlLike className={classes.postIcon}/>}</button>
-              <button>{<SlDislike className={classes.postIcon}/>}</button>
-              <button>{<FaRegComment className={classes.postIcon}/>}</button>
-            </div>
+        {!posts ? (
+          <div className={classes.containerPosts}>
+            <h1 className={classes.loading}>Carregando posts...</h1>
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className={classes.containerPosts}>
+            {posts && posts.map((post: Post) => (
+              <div key={post.id} className={classes.divPost}>
+                <div className={classes.postHeader}>
+                  <p className={classes.author}>{post.author}</p>
+                  <p>-</p>
+                  <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                </div>
+                <div className={classes.postContent}>
+                  <h3 className={classes.title}>{post.title}</h3>
+                  <p className={classes.content}>{post.content}</p>
+                </div>
+                <div className={classes.postFooter}>
+                  <button>{<SlLike className={classes.postIcon}/>}</button>
+                  <button>{<SlDislike className={classes.postIcon}/>}</button>
+                  <button  onClick={() => teste(post.id)}>{<FaRegComment className={classes.postIcon}/>}</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
     </div>
   );
 };

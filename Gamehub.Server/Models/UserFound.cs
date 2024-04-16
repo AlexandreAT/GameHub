@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Gamehub.Server.Models
 {
@@ -18,5 +19,8 @@ namespace Gamehub.Server.Models
 
         [JsonIgnore]
         public List<Post> Posts { get; set; }
+
+        [JsonIgnore]
+        public string? ImageSrc { get; set; }
     }
 }

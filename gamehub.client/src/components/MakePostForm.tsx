@@ -33,7 +33,7 @@ const MakePostForm = () => {
     }, []);
 
     if(!user){
-        return <h1 className='loading'>Loading...</h1>
+        return <h1 className='loading'>Carregando...</h1>
     }
 
     const postData = async (url: string, data: any) => {
@@ -41,6 +41,7 @@ const MakePostForm = () => {
       // Converte as propriedades do objeto Post para PascalCase
       const postPascalCase = {
         Author: data.author,
+        IdAuthor: data.idAuthor,
         Title: data.title,
         Content: data.content
       };
@@ -91,9 +92,11 @@ const MakePostForm = () => {
     e.preventDefault();
 
     const author = user.name;
+    const idAuthor = user.id;
     try{
       const response = await postData('/Posts', {
         author,
+        idAuthor,
         title,
         content
       })
