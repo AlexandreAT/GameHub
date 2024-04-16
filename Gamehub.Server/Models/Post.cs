@@ -27,6 +27,6 @@ namespace Gamehub.Server.Models
         public string? Comments { get; set; } = null;
 
         [BsonElement("Data")]
-        public int? Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     }
 }
