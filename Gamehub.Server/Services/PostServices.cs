@@ -46,5 +46,14 @@ namespace Gamehub.Server.Services
 
             return post;
         }
+
+        public async Task<List<Comment>> GetAsyncComment(Post post)
+        {
+            if(post.Comments == null)
+            {
+                throw new Exception("Post sem comentários");
+            }
+            return post.Comments;
+        }
     }
 }

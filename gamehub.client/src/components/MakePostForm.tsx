@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import classes from './MakePostForm.module.css'
 import { axios } from '../axios-config';
 
