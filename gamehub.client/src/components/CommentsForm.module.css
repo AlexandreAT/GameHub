@@ -1,0 +1,36 @@
+.divComments{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.formComment{
+    width: 100%;
+}
+
+.formComment textarea{
+    background-color: transparent;
+    border: 2px solid var(--mediumgrey);
+    color: var(--whitesmoke);
+    border-radius: 50px;
+    padding: 19px 15px 2px;
+    width: 100%;
+    min-height: 57px;
+    resize: vertical;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    transition-property: border, color, min-height;
+}
+
+.formComment textarea:hover{
+    transition: all 0.2s;
+    border-color: var(--grey);
+}
+
+.formComment textarea:focus{
+    border-color: var(--turquoise);
+    color: var(--turquoise);
+    min-height: 114px;
+}

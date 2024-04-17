@@ -7,6 +7,7 @@ import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 
 import classes from "./Logado.module.css";
 import MakePostForm from '../components/MakePostForm';
+import CommentsForm from '../components/CommentsForm';
 
 interface User {
   id: string;
@@ -35,6 +36,7 @@ const Logado = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const [showForm, setShowForm] = useState(false);
+  const [showFormComment, setShowFormComment] = useState<{ id: string; show: boolean }[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -85,18 +87,19 @@ const Logado = () => {
 
   const handleShowForm = (e: FormEvent) => {
     e.preventDefault();
-
     setShowForm(!showForm);
-
   }
 
-  const teste = (id: string) => {
-
-    console.log(id);
-    return null;
-    
+  const handleShowFormComment = (id: string) => {
+    const index = showFormComment.findIndex(item => item.id === id);
+    if (index >= 0) {
+      const newShowFormComment = [...showFormComment];
+      newShowFormComment[index] = { id, show:!newShowFormComment[index].show };
+      setShowFormComment(newShowFormComment);
+    } else {
+      setShowFormComment([...showFormComment, { id, show: true }]);
+    }
   }
-  
 
   return (
     <div className={classes.divMain}>
@@ -122,7 +125,7 @@ const Logado = () => {
       </div>
         {!posts ? (
           <div className={classes.containerPosts}>
-            <h1 className={classes.loading}>Carregando posts...</h1>
+            <h1 className="loading">Carregando posts...</h1>
           </div>
         ) : (
           <div className={classes.containerPosts}>
@@ -140,7 +143,10 @@ const Logado = () => {
                 <div className={classes.postFooter}>
                   <button>{<SlLike className={classes.postIcon}/>}</button>
                   <button>{<SlDislike className={classes.postIcon}/>}</button>
-                  <button  onClick={() => teste(post.id)}>{<FaRegComment className={classes.postIcon}/>}</button>
+                  <button onClick={() => handleShowFormComment(post.id)}>{<FaRegComment className={classes.postIcon}/>}</button>
+                </div>
+                <div>
+                { showFormComment.some(item => item.id === post.id) && showFormComment.find(item => item.id === post.id)!.show && <CommentsForm postId={post.id} userId={user.id}/>}
                 </div>
               </div>
             ))}
