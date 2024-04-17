@@ -46,7 +46,20 @@ namespace Gamehub.Server.Services
                 {
                     user.Posts = new List<Post>();
                 }
-                user.Posts.Add(post);
+
+                // Encontra o post original na lista de posts do usuário
+                var postIndex = user.Posts.FindIndex(p => p.Id == post.Id);
+
+                if (postIndex >= 0)
+                {
+                    // Atualiza o post original com o novo comentário
+                    user.Posts[postIndex] = post;
+                }
+                else
+                {
+                    // Se o post não foi encontrado na lista de posts do usuário, adiciona-o
+                    user.Posts.Add(post);
+                }
             }
             else
             {
@@ -55,11 +68,6 @@ namespace Gamehub.Server.Services
 
             await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
             
-        }
-
-        public async Task UpdatePostAsync(User user, Post post)
-        {
-            //ah fazer
         }
 
         public async Task<List<Post>> GetAsyncPosts(string id)

@@ -118,7 +118,7 @@ const Logado = () => {
       </button>
 
       <div className={classes.formMakePost}>
-        {showForm && <MakePostForm />}
+        {showForm && <MakePostForm user={user} />}
       </div>
         {!posts ? (
           <div className={classes.containerPosts}>

@@ -12,25 +12,10 @@ interface User {
     password: string;
   }
 
-const MakePostForm = () => {
+const MakePostForm = ({ user }: { user: User | null }) => {
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-
-    const [user, setUser] = useState<User | null>(null);
-
-    useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get<User>('/Users/current');
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-
-    fetchUsers();
-    }, []);
 
     if(!user){
         return <h1 className='loading'>Carregando...</h1>
