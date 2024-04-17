@@ -57,14 +57,6 @@ namespace Gamehub.Server.Controllers
 
             var userFound = await _userServices.GetAsync(userId);
             var postCommented = await _postServices.GetAsync(postId);
-            if(postCommented.IdAuthor != null)
-            {
-                var postUser = await _userServices.GetAsync(postCommented.IdAuthor);
-            }
-            else
-            {
-                throw new Exception("O post não tem o ID do Autor");
-            }
 
             var userCommented = new UserComment
             {
@@ -81,6 +73,17 @@ namespace Gamehub.Server.Controllers
             };
 
             var newComment = await _postServices.AddComment(commentary, postCommented);
+
+            if (postCommented.IdAuthor != null)
+            {
+                var postUser = await _userServices.GetAsync(postCommented.IdAuthor);
+                // Atualiza a propriedade "posts" do usuário que fez o post original
+                await _userServices.AddPostAsync(postUser.Id, postUser, newComment);
+            }
+            else
+            {
+                throw new Exception("O post não tem o ID do Autor");
+            }
         }
 
     }

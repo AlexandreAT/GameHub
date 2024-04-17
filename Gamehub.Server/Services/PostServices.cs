@@ -1,5 +1,6 @@
 ﻿using Gamehub.Server.Models;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Gamehub.Server.Services
@@ -37,6 +38,8 @@ namespace Gamehub.Server.Services
             {
                 post.Comments = new List<Comment>();
             }
+
+            comment.Id = ObjectId.GenerateNewId().ToString();
             post.Comments.Add(comment);
 
             await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
