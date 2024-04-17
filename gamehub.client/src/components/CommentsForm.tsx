@@ -1,6 +1,7 @@
 import { axios } from '../axios-config';
 import { FormEvent, useEffect, useState } from 'react';
 import classes from './CommentsForm.module.css';
+import { SlDislike, SlLike } from "react-icons/sl";
 
 interface CommentProps {
     postId: string;
@@ -58,7 +59,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                 <h1 className="loading">Carregando posts...</h1>
             </div>
         ) : (
-            <div>
+            <div className={classes.divCommentsList}>
                 {comments && comments.map((comment: Comments) => (
                     <div key={comment.id} className={classes.containerComments}>
                         <div className={classes.commentHeader}>
@@ -66,6 +67,10 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                         </div>
                         <div className={classes.commentContent}>
                             <p className={classes.content}>{comment.content}</p>
+                        </div>
+                        <div className={classes.commentFooter}>
+                            <button>{<SlLike className={classes.commentIcon}/>}</button>
+                        	<button>{<SlDislike className={classes.commentIcon}/>}</button>
                         </div>
                     </div>
                 ))}
