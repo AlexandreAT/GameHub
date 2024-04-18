@@ -126,3 +126,7 @@ h1, .logoDetail{
 .loading{
   margin: 2rem 2rem;
 }
+
+.iconOpinion{
+  fill: var(--grey);
+}

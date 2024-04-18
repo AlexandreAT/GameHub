@@ -42,8 +42,9 @@ namespace Gamehub.Server.Controllers
             return post;
         }
 
+        // Ele nem esta entrando nessa requisição abaixo
         [HttpPost("comment")]
-        public async Task PostComment(string postId, string userId, string comment)
+        public async Task PostComment([FromForm]string postId, [FromForm]string userId, [FromForm]string comment)
         {
             if (postId == null) 
             {

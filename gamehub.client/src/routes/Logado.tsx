@@ -4,6 +4,7 @@ import { axios } from '../axios-config';
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
+import { FaCommentSlash } from "react-icons/fa6";
 
 import classes from "./Logado.module.css";
 import MakePostForm from '../components/MakePostForm';
@@ -37,6 +38,8 @@ const Logado = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [showFormComment, setShowFormComment] = useState<{ id: string; show: boolean }[]>([]);
+  const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
+  const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -91,6 +94,11 @@ const Logado = () => {
   }
 
   const handleShowFormComment = (id: string) => {
+    setActiveCommentButtons(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+
     const index = showFormComment.findIndex(item => item.id === id);
     if (index >= 0) {
       const newShowFormComment = [...showFormComment];
@@ -100,6 +108,13 @@ const Logado = () => {
       setShowFormComment([...showFormComment, { id, show: true }]);
     }
   }
+
+  const handleOpinionButtonClick = (postId: string, opinion: 'like' | 'dislike') => {
+    setOpinionButtons(prevState => ({
+      ...prevState,
+      [postId]: opinion === prevState[postId] ? null : opinion
+    }));
+  };
 
   return (
     <div className={classes.divMain}>
@@ -141,9 +156,29 @@ const Logado = () => {
                   <p className={classes.content}>{post.content}</p>
                 </div>
                 <div className={classes.postFooter}>
-                  <button>{<SlLike className={classes.postIcon}/>}</button>
-                  <button>{<SlDislike className={classes.postIcon}/>}</button>
-                  <button onClick={() => handleShowFormComment(post.id)}>{<FaRegComment className={classes.postIcon}/>}</button>
+                <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>
+                  {opinionButtons[post.id] === 'like' ? (
+                    <SlLike className={`${classes.postIcon} ${classes.opinionActivatedLike} iconOpinion`} />
+                  ) : (
+                    <SlLike className={`${classes.postIcon} iconOpinion`} />
+                  )}
+                </button>
+                <button onClick={() => handleOpinionButtonClick(post.id, 'dislike')}>
+                  {opinionButtons[post.id] === 'dislike' ? (
+                    <SlDislike className={`${classes.postIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
+                  ) : (
+                    <SlDislike className={`${classes.postIconDislike} iconOpinion`} />
+                  )}
+                </button>
+
+                  <button onClick={() => handleShowFormComment(post.id)}>
+                    {activeCommentButtons[post.id] ? (
+                      <FaCommentSlash className={`${classes.postIcon} iconOpinion`} />
+                    ) : (
+                      <FaRegComment className={`${classes.postIcon} iconOpinion`} />
+                    )}
+                  </button>
+                    
                 </div>
                 <div>
                 { showFormComment.some(item => item.id === post.id) && showFormComment.find(item => item.id === post.id)!.show && <CommentsForm postId={post.id} userId={user.id}/>}
