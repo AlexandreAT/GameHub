@@ -109,7 +109,7 @@ const MakePostForm = ({ user }: { user: User | null }) => {
         clearPostForm();
       }
     }catch (error) {
-      console.error('Erro ao cadastrar post:', error);
+      console.error('Erro ao postar:', error);
     }
   }
 
