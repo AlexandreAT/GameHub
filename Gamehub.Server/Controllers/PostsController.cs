@@ -42,36 +42,6 @@ namespace Gamehub.Server.Controllers
             return post;
         }
 
-        [HttpPost("like")]
-        public async Task<Post> AddLike(string postId, User user)
-        {
-            var post = await _postServices.GetAsync(postId);
-
-            if (post == null)
-            {
-                throw new Exception("Post não encontrado");
-            }
-
-            await _postServices.AddLike(postId, user);
-
-            return post;
-        }
-
-        [HttpPost("dislike")]
-        public async Task<Post> AddDislike(string postId, User user)
-        {
-            var post = await _postServices.GetAsync(postId);
-
-            if (post == null)
-            {
-                throw new Exception("Post não encontrado");
-            }
-
-            await _postServices.AddDislike(postId, user);
-
-            return post;
-        }
-
         [HttpPost("comment")]
         public async Task PostComment([FromForm]string postId, [FromForm]string userId, [FromForm]string comment)
         {

@@ -32,7 +32,7 @@ namespace Gamehub.Server.Models
         [BsonElement("Data")]
         public DateTimeOffset? Date { get; set; }
 
-        public List<LikeDisLike> Likes { get; set; } = null;
-        public List<LikeDisLike> Dislikes { get; set; } = null;
+        public int? Like { get; set; } = 0;
+        public int? Dislike { get; set; } = 0;
     }
 }
