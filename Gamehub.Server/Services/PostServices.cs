@@ -1,4 +1,5 @@
 ﻿using Gamehub.Server.Models;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -55,5 +56,76 @@ namespace Gamehub.Server.Services
             }
             return post.Comments;
         }
+
+        public async Task AddLike(string postId, User user)
+        {
+            var post = await _postCollection.Find(x => x.Id == postId).FirstOrDefaultAsync();
+
+            if(post == null)
+            {
+                throw new Exception("Post não encontrado");
+            }
+
+            if(post.Likes == null)
+            {
+                post.Likes = new List<LikeDisLike>();
+            }
+
+            var like = post.Likes.FirstOrDefault(x => x.UserId == user.Id);
+
+            if (like == null)
+            {
+                post.Likes.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsLiked = true });
+            }
+            else
+            {
+                if (like.IsLiked)
+                {
+                    like.IsLiked = false;
+                    post.Likes.Remove(like);
+                }
+                else
+                {
+                    like.IsLiked = true;
+                }
+            }
+            await _postCollection.ReplaceOneAsync(x => x.Id == postId, post);
+        }
+
+        public async Task AddDislike(string postId, User user)
+        {
+            var post = await _postCollection.Find(x => x.Id == postId).FirstOrDefaultAsync();
+
+            if (post == null)
+            {
+                throw new Exception("Post não encontrado");
+            }
+
+            if (post.Dislikes == null)
+            {
+                post.Dislikes = new List<LikeDisLike>();
+            }
+
+            var dislikes = post.Dislikes.FirstOrDefault(x => x.UserId == user.Id);
+
+            if (dislikes == null)
+            {
+                post.Likes.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsLiked = true });
+            }
+            else
+            {
+                if (dislikes.IsLiked)
+                {
+                    dislikes.IsLiked = false;
+                    post.Likes.Remove(dislikes);
+                }
+                else
+                {
+                    dislikes.IsLiked = true;
+                }
+            }
+            await _postCollection.ReplaceOneAsync(x => x.Id == postId, post);
+        }
+
     }
 }
