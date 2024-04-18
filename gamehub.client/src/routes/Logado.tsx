@@ -29,6 +29,8 @@ interface Post{
   content: string;
   comments: string;
   date: Date;
+  like: string[];
+  dislike: string[];
 }
 
 const Logado = () => {
