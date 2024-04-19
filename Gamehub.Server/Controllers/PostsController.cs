@@ -58,11 +58,12 @@ namespace Gamehub.Server.Controllers
             var userFound = await _userServices.GetAsync(userId);
             var postCommented = await _postServices.GetAsync(postId);
 
-            var userCommented = new UserComment
+            var userCommented = new AnotherUser
             {
                 Id = userFound.Id,
                 Name = userFound.Name,
-                ImgSrc = userFound.ImageSrc
+                ImgSrc = userFound.ImageSrc,
+                Posts = userFound.Posts
             };
 
 

@@ -22,5 +22,14 @@ namespace Gamehub.Server.Models
 
         [JsonIgnore]
         public string? ImageSrc { get; set; }
+        
+        [JsonIgnore]
+        public List<AnotherUser>? Following { get; set; }
+
+        [JsonIgnore]
+        public List<AnotherUser>? Followers { get; set; } = null;
+
+        [JsonIgnore]
+        public List<Community>? UserCommunity { get; set; } = null;
     }
 }

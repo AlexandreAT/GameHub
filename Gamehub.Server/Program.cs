@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using System.Text;
 using Microsoft.AspNetCore.CookiePolicy;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -20,6 +21,11 @@ builder.Services.Configure<PostDatabaseSettings>
     (builder.Configuration.GetSection("DevNetStoreDatabase"));
 
 builder.Services.AddSingleton<PostServices>();
+
+builder.Services.Configure<CommunityDatabaseSettings>
+    (builder.Configuration.GetSection("DevNetStoreDatabase"));
+
+builder.Services.AddSingleton<CommunityServices>();
 
 builder.Services.AddCors(options =>
 {

@@ -109,6 +109,9 @@ namespace Gamehub.Server.Controllers
                 Password = userFound.Password,
                 Posts = userFound.Posts,
                 ImageSrc = userFound.ImageSrc,
+                Following = userFound.Following,
+                Followers = userFound.Followers,
+                UserCommunity = userFound.UserCommunity,
             };
 
             // Retorna o usuário encontrado
