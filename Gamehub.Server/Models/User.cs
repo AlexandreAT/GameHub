@@ -43,5 +43,13 @@ namespace Gamehub.Server.Models
         [BsonElement("Imagem")]
         public string? ImageSrc { get; set; } = null;
 
+        [BsonElement("Seguindo")]
+        public List<AnotherUser>? Following { get; set; } = null;
+        [BsonElement("Seguidores")]
+        public List<AnotherUser>? Followers { get; set; } = null;
+
+        [BsonElement("Comunidades")]
+        public List<Community>? UserCommunity { get; set; } = null;
+
     }
 }

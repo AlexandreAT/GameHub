@@ -140,6 +140,12 @@ const Cadastro = () => {
         cpf: !isValidCpf ? "CPF inválido!" : ""
       }
     }
+    else if(cpf.length < 11){
+      inputError = {
+        ...inputError,
+        cpf: !isValidCpf ? "Tamanho do CPF inválido!" : ""
+      }
+    }
 
     if(!termsOfCondition){
       inputError = {
@@ -165,7 +171,7 @@ const Cadastro = () => {
       setFormSubmitted(true);
   
       const hasErrors = Object.values(formError).some(error => error !== '');
-      if (!hasErrors) {
+      if (!hasErrors && cpf.length === 11) {
         const clearPhone = cleanPhoneNumber(phone);
         console.log("Formulário submetido!");
         console.log(name);
