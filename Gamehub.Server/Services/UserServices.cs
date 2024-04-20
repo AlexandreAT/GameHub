@@ -1,4 +1,5 @@
 ﻿using Gamehub.Server.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -63,7 +64,7 @@ namespace Gamehub.Server.Services
             }
             else
             {
-                throw new Exception("É necessário um objeto post correto para adiciona na lista!");
+                throw new Exception("É necessário um objeto Post correto para adiciona na lista!");
             }
 
             await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
@@ -81,6 +82,23 @@ namespace Gamehub.Server.Services
             {
                 throw new Exception("Usuário sem posts!");
             }
+        }
+
+        public async Task AddCreatedCommunities(Community community, User user)
+        {
+            if (community != null)
+            {
+                if(user.UserCreatedCommunities == null)
+                {
+                    user.UserCreatedCommunities = new List<Community>();
+                }
+                user.UserCreatedCommunities.Add(community);
+            }
+            else
+            {
+                throw new Exception("É necessário um objeto Community correto para adicionar na lista!");
+            }
+            await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
     }
 }
