@@ -30,6 +30,9 @@ namespace Gamehub.Server.Models
         public List<AnotherUser>? Followers { get; set; } = null;
 
         [JsonIgnore]
-        public List<Community>? UserCommunity { get; set; } = null;
+        public List<Community>? UserCommunities { get; set; } = null;
+
+        [JsonIgnore]
+        public List<Community>? UserCreatedCommunities { get; set; } = null;
     }
 }

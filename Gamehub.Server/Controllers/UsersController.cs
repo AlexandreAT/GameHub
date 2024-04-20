@@ -111,7 +111,8 @@ namespace Gamehub.Server.Controllers
                 ImageSrc = userFound.ImageSrc,
                 Following = userFound.Following,
                 Followers = userFound.Followers,
-                UserCommunity = userFound.UserCommunity,
+                UserCommunities = userFound.UserCommunities,
+                UserCreatedCommunities = userFound.UserCreatedCommunities,
             };
 
             // Retorna o usuário encontrado

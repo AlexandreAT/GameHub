@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
@@ -49,7 +50,10 @@ namespace Gamehub.Server.Models
         public List<AnotherUser>? Followers { get; set; } = null;
 
         [BsonElement("Comunidades")]
-        public List<Community>? UserCommunity { get; set; } = null;
+        public List<Community>? UserCommunities { get; set; } = null;
+
+        [BsonElement("Comunidades criadas")]
+        public List<Community>? UserCreatedCommunities { get; set; } = null;
 
     }
 }
