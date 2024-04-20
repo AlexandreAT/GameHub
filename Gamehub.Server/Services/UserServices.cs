@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Xml.Linq;
 
 namespace Gamehub.Server.Services
 {
@@ -99,6 +100,31 @@ namespace Gamehub.Server.Services
                 throw new Exception("É necessário um objeto Community correto para adicionar na lista!");
             }
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
+        }
+
+        public async Task RemovePostComment(Post post)
+        {
+            var user = await GetAsync(post.IdAuthor);
+            if (post.Comments != null)
+            {
+                var userPostIndex = user.Posts.FindIndex(p => p.Id == post.Id);
+                if (userPostIndex >= 0)
+                {
+                    // Atualiza o post sem o comentário
+                    user.Posts[userPostIndex] = post;
+
+                    // Atualiza o usuário no banco de dados
+                    await UpdateAsync(user.Id, user);
+                }
+                else
+                {
+                    throw new Exception("Comentário não encontrado");
+                }
+            }
+            else
+            {
+                throw new Exception("Post sem comentários");
+            }
         }
     }
 }
