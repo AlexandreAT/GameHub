@@ -2,6 +2,7 @@ import { axios } from '../axios-config';
 import { FormEvent, useEffect, useState } from 'react';
 import classes from './CommentsForm.module.css';
 import { SlDislike, SlLike } from "react-icons/sl";
+import { IoTrashBin } from "react-icons/io5";
 import * as qs from 'qs';
 
 interface CommentProps {
@@ -29,6 +30,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
     const [comments, setComments] = useState<Comments[]>([]);
 
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
+    const [updatedComments, setUpdatedComments] = useState(false);
 
     const getComments = async () => {
         try{
@@ -49,7 +51,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
         return () => {
             clearInterval(interval);
         }
-    }, [newComment]);
+    }, [newComment, updatedComments]);
 
     const postData = async (url: string, data: any) => {
         try {
@@ -102,6 +104,18 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
         }));
     };
 
+    const deleteComment = async (commentId: string) => {
+        try{
+            await axios.delete('/Posts/comment', {params: {
+                postId,
+                commentId
+            }});
+            setUpdatedComments(!updatedComments);
+        } catch(error){
+            console.error('Error delete comment:', error);
+        }
+    }
+
   return (
     <div className={classes.divComments}>
         <form className={classes.formComment} onSubmit={submitComment}>
@@ -120,6 +134,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                     <div key={comment.id} className={classes.containerComments}>
                         <div className={classes.commentHeader}>
                             <p className={classes.name}>{comment.user.name}</p>
+                            {comment.user.id === userId && (<button className={classes.trashButton} onClick={() => deleteComment(comment.id)}><IoTrashBin className={classes.trashIcon}/></button>)}
                         </div>
                         <div className={classes.commentContent}>
                             <p className={classes.content}>{comment.content}</p>

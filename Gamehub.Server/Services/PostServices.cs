@@ -57,5 +57,21 @@ namespace Gamehub.Server.Services
             return post.Comments;
         }
 
+        public async Task<Post> RemoveAsyncComment(Post post, string commentId)
+        {
+            var postIndex = post.Comments.FindIndex(p => p.Id == commentId);
+
+            if (postIndex >= 0)
+            {
+                post.Comments.RemoveAt(postIndex);
+                await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
+                return post;
+            }
+            else
+            {
+                throw new Exception("Comentário não encontrado");
+            }
+        }
+
     }
 }

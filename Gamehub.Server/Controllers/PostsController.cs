@@ -95,5 +95,22 @@ namespace Gamehub.Server.Controllers
             return await _postServices.GetAsyncComment(post);
         }
 
+        [HttpDelete("comment")]
+        public async Task<IActionResult> RemoveComment(string postId, string commentId)
+        {
+            var post = await _postServices.GetAsync(postId);
+            var comment = post.Comments.Find(c => c.Id == commentId);
+
+            if (comment != null)
+            {
+                Post newPost = await _postServices.RemoveAsyncComment(post, commentId);
+                await _userServices.RemovePostComment(newPost);
+                return Ok("Comentário removido com sucesso!");
+            }
+            else
+            {
+                return NotFound("Comentário não encontrado");
+            }
+        }
     }
 }

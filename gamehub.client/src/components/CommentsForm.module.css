@@ -91,12 +91,30 @@
 .commentHeader{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 }
 
 .commentHeader .name{
     font-size: 13px;
     color: var(--lightGrey);
     font-weight: bold;
+}
+
+.commentHeader .trashButton{
+    padding: 2px;
+    background-color: transparent;
+    font-size: 17px;
+    transition: all 0.3s ease;
+}
+
+.trashButton .trashIcon{
+    fill: var(--grey);
+    transition: all 0.3s ease;
+}
+
+.trashButton:hover .trashIcon{
+    fill: crimson;
+    transform: scale(1.3);
 }
 
 .commentContent .content{
