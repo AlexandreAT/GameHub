@@ -73,5 +73,189 @@ namespace Gamehub.Server.Services
             }
         }
 
+        public async Task<Post> AddLike(string postId, User user, string? commentId)
+        {
+            var post = await _postCollection.Find(x => x.Id == postId).FirstOrDefaultAsync();
+
+            if (post == null)
+            {
+                throw new Exception("Post não encontrado");
+            }
+
+            if(commentId == null || commentId == "")
+            {
+                if (post.Like == null)
+                {
+                    post.Like = new List<LikeDisLike>();
+                }
+
+                var like = post.Like.FirstOrDefault(x => x.UserId == user.Id);
+
+                if (like == null)
+                {
+                    post.Like.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+
+                    if (post.Dislike != null)
+                    {
+                        var disLikeIndex = post.Dislike.FindIndex(x => x.UserId == user.Id);
+                        if (disLikeIndex >= 0)
+                        {
+                            post.Dislike.RemoveAt(disLikeIndex);
+                        }
+                    }
+                }
+                else
+                {
+                    if (like.IsSelected)
+                    {
+                        like.IsSelected = false;
+                        post.Like.Remove(like);
+                    }
+                    else
+                    {
+                        like.IsSelected = true;
+                    }
+                }
+                await _postCollection.ReplaceOneAsync(x => x.Id == postId, post);
+            }
+
+            else
+            {
+                var commentIndex = post.Comments.FindIndex(x => x.Id == commentId);
+                var comment = post.Comments[commentIndex];
+
+                if (comment.Like == null)
+                {
+                    comment.Like = new List<LikeDisLike>();
+                }
+
+                var like = comment.Like.FirstOrDefault(x => x.UserId == user.Id);
+
+                if (like == null)
+                {
+                    comment.Like.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+
+                    if (comment.Dislike != null)
+                    {
+                        var disLikeIndex = comment.Dislike.FindIndex(x => x.UserId == user.Id);
+                        if (disLikeIndex >= 0)
+                        {
+                            comment.Dislike.RemoveAt(disLikeIndex);
+                        }
+                    }
+
+                    post.Comments[commentIndex] = comment;
+                }
+                else
+                {
+                    if (like.IsSelected)
+                    {
+                        like.IsSelected = false;
+                        comment.Like.Remove(like);
+                        post.Comments[commentIndex] = comment;
+                    }
+                    else
+                    {
+                        like.IsSelected = true;
+                    }
+                }
+                await _postCollection.ReplaceOneAsync(x => x.Id == postId, post);
+            }
+
+            return post;
+        }
+
+        public async Task<Post> AddDislike(string postId, User user, string? commentId)
+        {
+            var post = await _postCollection.Find(x => x.Id == postId).FirstOrDefaultAsync();
+
+            if (post == null)
+            {
+                throw new Exception("Post não encontrado");
+            }
+
+            if (commentId == null || commentId == "")
+            {
+                if (post.Dislike == null)
+                {
+                    post.Dislike = new List<LikeDisLike>();
+                }
+
+                var dislike = post.Dislike.FirstOrDefault(x => x.UserId == user.Id);
+
+                if (dislike == null)
+                {
+                    post.Dislike.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+
+                    if (post.Like != null)
+                    {
+                        var likeIndex = post.Like.FindIndex(x => x.UserId == user.Id);
+                        if (likeIndex >= 0)
+                        {
+                            post.Like.RemoveAt(likeIndex);
+                        }
+                    }
+                }
+                else
+                {
+                    if (dislike.IsSelected)
+                    {
+                        dislike.IsSelected = false;
+                        post.Dislike.Remove(dislike);
+                    }
+                    else
+                    {
+                        dislike.IsSelected = true;
+                    }
+                }
+                await _postCollection.ReplaceOneAsync(x => x.Id == postId, post);
+            }
+
+            else
+            {
+                var commentIndex = post.Comments.FindIndex(x => x.Id == commentId);
+                var comment = post.Comments[commentIndex];
+
+                if (comment.Dislike == null)
+                {
+                    comment.Dislike = new List<LikeDisLike>();
+                }
+
+                var dislike = comment.Dislike.FirstOrDefault(x => x.UserId == user.Id);
+
+                if (dislike == null)
+                {
+                    comment.Dislike.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+
+                    if (comment.Like != null)
+                    {
+                        var likeIndex = comment.Like.FindIndex(x => x.UserId == user.Id);
+                        if (likeIndex >= 0)
+                        {
+                            comment.Like.RemoveAt(likeIndex);
+                        }
+                    }
+
+                    post.Comments[commentIndex] = comment;
+                }
+                else
+                {
+                    if (dislike.IsSelected)
+                    {
+                        dislike.IsSelected = false;
+                        comment.Dislike.Remove(dislike);
+                        post.Comments[commentIndex] = comment;
+                    }
+                    else
+                    {
+                        dislike.IsSelected = true;
+                    }
+                }
+                await _postCollection.ReplaceOneAsync(x => x.Id == postId, post);
+            }
+
+            return post;
+        }
+
     }
 }

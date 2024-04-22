@@ -54,7 +54,7 @@ namespace Gamehub.Server.Services
 
                 if (postIndex >= 0)
                 {
-                    // Atualiza o post original com o novo comentário
+                    // Atualiza o post original
                     user.Posts[postIndex] = post;
                 }
                 else

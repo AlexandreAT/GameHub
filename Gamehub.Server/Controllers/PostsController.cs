@@ -112,5 +112,25 @@ namespace Gamehub.Server.Controllers
                 return NotFound("Comentário não encontrado");
             }
         }
+
+        [HttpPost("like")]
+        public async Task HandleLike(string postId, string userId, string? commentId)
+        {
+
+            User user = await _userServices.GetAsync(userId);
+            Post post = await _postServices.AddLike(postId, user, commentId);
+            await _userServices.AddPostAsync(user.Id, user, post);
+            
+        }
+
+        [HttpPost("dislike")]
+        public async Task HandleDislike(string postId, string userId, string? commentId)
+        {
+
+            User user = await _userServices.GetAsync(userId);
+            Post post = await _postServices.AddDislike(postId, user, commentId);
+            await _userServices.AddPostAsync(user.Id, user, post);
+
+        }
     }
 }
