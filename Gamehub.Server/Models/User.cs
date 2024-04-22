@@ -46,6 +46,7 @@ namespace Gamehub.Server.Models
 
         [BsonElement("Seguindo")]
         public List<AnotherUser>? Following { get; set; } = null;
+
         [BsonElement("Seguidores")]
         public List<AnotherUser>? Followers { get; set; } = null;
 
