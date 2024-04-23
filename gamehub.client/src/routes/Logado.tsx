@@ -5,6 +5,7 @@ import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 import { FaCommentSlash } from "react-icons/fa6";
+import * as qs from 'qs';
 
 import classes from "./Logado.module.css";
 import MakePostForm from '../components/MakePostForm';
@@ -22,6 +23,13 @@ interface User {
   imageSrc: string;
 }
 
+interface LikeDisLike {
+  userId: string;
+  userName: string;
+  userImageSrc: string;
+  IsSelected: boolean;
+}
+
 interface Post{
   id: string;
   author: string;
@@ -29,8 +37,8 @@ interface Post{
   content: string;
   comments: string;
   date: Date;
-  like: string[];
-  dislike: string[];
+  like: LikeDisLike[];
+  dislike: LikeDisLike[];
 }
 
 const Logado = () => {
@@ -74,17 +82,47 @@ const Logado = () => {
     }
   }
 
+  const checksFeedback = () => {
+    // Verifica se o usuário já deu like ou dislike
+    if (user) {
+      for (const post of posts) {
+          if(post.like && post.dislike){
+            const userLike = post.like.find(like => like.userId === user.id);
+            const userDislike = post.dislike.find(dislike => dislike.userId === user.id);
+    
+            if (userLike) {
+              setOpinionButtons(prevState => ({
+                ...prevState,
+                [post.id]: 'like',
+              }));
+            } else if (userDislike) {
+              setOpinionButtons(prevState => ({
+                ...prevState,
+                [post.id]: 'dislike',
+              }));
+            }
+            else{
+              setOpinionButtons(prevState => ({
+              ...prevState,
+              [post.id]: null,
+            }));
+          }
+        }
+      }
+    }
+  }
+
   //Recarrega os posts após 1 segundo
   useEffect(() => {
     getPosts();
+    checksFeedback();
     const interval = setInterval(() => {
       getPosts();
     }, 1000); // 1000 ms = 1 segundo
-  
     return () => {
       clearInterval(interval);
     }
-  }, [user, showForm]);
+  }, [posts, user, showForm, opinionButtons]);
 
   if(!user){
     return <h1 className='loading'>Carregando...</h1>
@@ -111,11 +149,53 @@ const Logado = () => {
     }
   }
 
-  const handleOpinionButtonClick = (postId: string, opinion: 'like' | 'dislike') => {
+  const handleOpinionButtonClick = async (postId: string, opinion: 'like' | 'dislike') => {
     setOpinionButtons(prevState => ({
       ...prevState,
       [postId]: opinion === prevState[postId] ? null : opinion
     }));
+
+    if (opinion === 'like') {
+      handleLike(postId);
+    } else {
+      handleDislike(postId);
+    }
+  };
+
+  const handleLike = async (postId: string) => {
+    if (!user) return;
+  
+    try {
+      const response = await axios.post("Posts/like", qs.stringify({
+        postId,
+        userId: user.id,
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      // response é a lista de likes desse post
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
+  
+  const handleDislike = async (postId: string) => {
+    if (!user) return;
+  
+    try {
+      const response = await axios.post("Posts/dislike", qs.stringify({
+        postId,
+        userId: user.id,
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      // response é a lista de dislikes desse post
+    } catch (error) {
+      console.error('Error disliking post:', error);
+    }
   };
 
   return (
@@ -158,20 +238,20 @@ const Logado = () => {
                   <p className={classes.content}>{post.content}</p>
                 </div>
                 <div className={classes.postFooter}>
-                <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>
-                  {opinionButtons[post.id] === 'like' ? (
-                    <SlLike className={`${classes.postIcon} ${classes.opinionActivatedLike} iconOpinion`} />
-                  ) : (
-                    <SlLike className={`${classes.postIcon} iconOpinion`} />
-                  )}
-                </button>
-                <button onClick={() => handleOpinionButtonClick(post.id, 'dislike')}>
-                  {opinionButtons[post.id] === 'dislike' ? (
-                    <SlDislike className={`${classes.postIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
-                  ) : (
-                    <SlDislike className={`${classes.postIconDislike} iconOpinion`} />
-                  )}
-                </button>
+                  <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>
+                    {opinionButtons[post.id] === 'like' ? (
+                      <SlLike className={`${classes.postIcon} ${classes.opinionActivatedLike} iconOpinion`} />
+                    ) : (
+                      <SlLike className={`${classes.postIcon} iconOpinion`} />
+                    )}
+                  </button>
+                  <button onClick={() => handleOpinionButtonClick(post.id, 'dislike')}>
+                    {opinionButtons[post.id] === 'dislike' ? (
+                      <SlDislike className={`${classes.postIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
+                    ) : (
+                      <SlDislike className={`${classes.postIconDislike} iconOpinion`} />
+                    )}
+                  </button>
 
                   <button onClick={() => handleShowFormComment(post.id)}>
                     {activeCommentButtons[post.id] ? (
