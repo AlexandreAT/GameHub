@@ -22,9 +22,9 @@ namespace Gamehub.Server.Models
 
         [JsonIgnore]
         public string? ImageSrc { get; set; }
-        
+
         [JsonIgnore]
-        public List<AnotherUser>? Following { get; set; }
+        public List<AnotherUser>? Following { get; set; } = null;
 
         [JsonIgnore]
         public List<AnotherUser>? Followers { get; set; } = null;
@@ -34,5 +34,14 @@ namespace Gamehub.Server.Models
 
         [JsonIgnore]
         public List<Community>? UserCreatedCommunities { get; set; } = null;
+
+        [JsonIgnore]
+        public string? Biography { get; set; } = null;
+
+        [JsonIgnore]
+        public string? City { get; set; } = null;
+
+        [JsonIgnore]
+        public string? State { get; set; } = null;
     }
 }

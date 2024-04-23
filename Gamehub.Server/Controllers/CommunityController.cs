@@ -32,6 +32,12 @@ namespace Gamehub.Server.Controllers
                 Name = creatorUser.Name,
                 ImgSrc = creatorUser.ImageSrc,
                 Posts = creatorUser.Posts,
+                Following = creatorUser.Following,
+                Biography = creatorUser.Biography,
+                City = creatorUser.City,
+                State = creatorUser.State,
+                UserCommunities = creatorUser.UserCommunities,
+                UserCreatedCommunities = creatorUser.UserCreatedCommunities,
             };
             Community community = new Community
             {

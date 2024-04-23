@@ -56,5 +56,14 @@ namespace Gamehub.Server.Models
         [BsonElement("Comunidades criadas")]
         public List<Community>? UserCreatedCommunities { get; set; } = null;
 
+        [BsonElement("Biografia")]
+        public string? Biography { get; set; } = null;
+
+        [BsonElement("Cidade")]
+        public string? City { get; set; } = null;
+
+        [BsonElement("Estado")]
+        public string? State { get; set; } = null;
+
     }
 }

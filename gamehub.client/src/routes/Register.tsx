@@ -183,7 +183,7 @@ const Cadastro = () => {
   
         try {
           setIsSubmitting(true); 
-          const response = await postData('https://localhost:7045/api/Users/', {
+          const response = await postData('/Users', {
             name,
             lastName,
             cpf,

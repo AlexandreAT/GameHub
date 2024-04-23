@@ -113,6 +113,9 @@ namespace Gamehub.Server.Controllers
                 Followers = userFound.Followers,
                 UserCommunities = userFound.UserCommunities,
                 UserCreatedCommunities = userFound.UserCreatedCommunities,
+                Biography = userFound.Biography,
+                City = userFound.City,
+                State = userFound.State,
             };
 
             // Retorna o usuário encontrado

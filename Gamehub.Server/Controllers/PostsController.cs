@@ -63,7 +63,13 @@ namespace Gamehub.Server.Controllers
                 Id = userFound.Id,
                 Name = userFound.Name,
                 ImgSrc = userFound.ImageSrc,
-                Posts = userFound.Posts
+                Posts = userFound.Posts,
+                Following = userFound.Following,
+                Biography = userFound.Biography,
+                City = userFound.City,
+                State = userFound.State,
+                UserCommunities = userFound.UserCommunities,
+                UserCreatedCommunities = userFound.UserCreatedCommunities,
             };
 
 
@@ -119,7 +125,8 @@ namespace Gamehub.Server.Controllers
 
             User user = await _userServices.GetAsync(userId);
             Post post = await _postServices.AddLike(postId, user, commentId);
-            await _userServices.AddPostAsync(user.Id, user, post);
+            User userOfPost = await _userServices.GetAsync(post.IdAuthor);
+            await _userServices.AddPostAsync(userOfPost.Id, userOfPost, post);
             
         }
 
@@ -129,7 +136,8 @@ namespace Gamehub.Server.Controllers
 
             User user = await _userServices.GetAsync(userId);
             Post post = await _postServices.AddDislike(postId, user, commentId);
-            await _userServices.AddPostAsync(user.Id, user, post);
+            User userOfPost = await _userServices.GetAsync(post.IdAuthor);
+            await _userServices.AddPostAsync(userOfPost.Id, userOfPost, post);
 
         }
 
