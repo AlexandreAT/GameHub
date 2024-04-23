@@ -114,7 +114,7 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("like")]
-        public async Task HandleLike(string postId, string userId, string? commentId)
+        public async Task HandleLike([FromForm]string postId, [FromForm]string userId, [FromForm]string? commentId)
         {
 
             User user = await _userServices.GetAsync(userId);
@@ -124,13 +124,25 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("dislike")]
-        public async Task HandleDislike(string postId, string userId, string? commentId)
+        public async Task HandleDislike([FromForm] string postId, [FromForm] string userId, [FromForm] string? commentId)
         {
 
             User user = await _userServices.GetAsync(userId);
             Post post = await _postServices.AddDislike(postId, user, commentId);
             await _userServices.AddPostAsync(user.Id, user, post);
 
+        }
+
+        [HttpGet("like")]
+        public async Task<List<LikeDisLike>> GetLike(string postId)
+        {
+            return await _postServices.GetLikeAsync(postId);
+        }
+
+        [HttpGet("dislike")]
+        public async Task<List<LikeDisLike>> GetDislike(string postId)
+        {
+            return await _postServices.GetDislikeAsync(postId);
         }
     }
 }

@@ -257,5 +257,19 @@ namespace Gamehub.Server.Services
             return post;
         }
 
+        public async Task<List<LikeDisLike>> GetLikeAsync(string id)
+        {
+            Post post = await GetAsync(id);
+            List<LikeDisLike> likes = new List<LikeDisLike>();
+            return likes = post.Like;
+        }
+
+        public async Task<List<LikeDisLike>> GetDislikeAsync(string id)
+        {
+            Post post = await GetAsync(id);
+            List<LikeDisLike> disLikes = new List<LikeDisLike>();
+            return disLikes = post.Dislike;
+        }
+
     }
 }
