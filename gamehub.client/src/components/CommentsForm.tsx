@@ -20,8 +20,15 @@ interface Comments {
     id: string,
     user: UserComment,
     content: string,
-    like: number,
-    dislike: number;
+    like: LikeDisLike[],
+    dislike: LikeDisLike[],
+}
+
+interface LikeDisLike {
+    userId: string,
+    userName: string,
+    userImageSrc: string,
+    IsSelected: boolean;
 }
 
 const CommentsForm = ({ postId, userId }: CommentProps) => {
@@ -43,6 +50,64 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
         }
     }
 
+    const checksFeedback = () => {
+        for (const comment of comments) {
+          if(comment.like && comment.dislike){
+            const userLike = comment.like.find(like => like.userId === userId);
+            const userDislike = comment.dislike.find(dislike => dislike.userId === userId);
+            
+            if (userLike) {
+              setOpinionButtons(prevState => ({
+                ...prevState,                    
+                [comment.id]: 'like',
+                }));
+            } else if (userDislike) {
+              setOpinionButtons(prevState => ({
+                ...prevState,
+                [comment.id]: 'dislike',
+                }));
+            } else{
+              setOpinionButtons(prevState => ({
+                ...prevState,
+                [comment.id]: null,
+                }));
+            }
+          }
+          else if(comment.like){
+            const userLike = comment.like.find(like => like.userId === userId);
+        
+            if (userLike) {
+                setOpinionButtons(prevState => ({
+                ...prevState,
+                [comment.id]: 'like',
+                }));
+            } 
+            else{
+                setOpinionButtons(prevState => ({
+                ...prevState,
+                [comment.id]: null,
+                }));
+            }
+        }
+        else if(comment.dislike){
+            const userDislike = comment.dislike.find(dislike => dislike.userId === userId);
+    
+            if (userDislike) {
+                setOpinionButtons(prevState => ({
+                ...prevState,
+                [comment.id]: 'dislike',
+                }));
+            }
+            else{
+                setOpinionButtons(prevState => ({
+                ...prevState,
+                [comment.id]: null,
+                }));
+            }
+            }
+        }
+    }
+
     useEffect(() => {
         getComments();
         const interval = setInterval(() => {
@@ -52,6 +117,10 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             clearInterval(interval);
         }
     }, [newComment, updatedComments]);
+
+    useEffect(() => {
+        checksFeedback();
+    }, [comments])
 
     const postData = async (url: string, data: any) => {
         try {
@@ -97,12 +166,52 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
         }
     }
 
-    const handleOpinionButtonClick = (postId: string, opinion: 'like' | 'dislike') => {
+    const handleOpinionButtonClick = async (commentId: string, opinion: 'like' | 'dislike') => {
         setOpinionButtons(prevState => ({
           ...prevState,
-          [postId]: opinion === prevState[postId] ? null : opinion
+          [commentId]: opinion === prevState[commentId] ? null : opinion
         }));
-    };
+    
+        if (opinion === 'like') {
+          handleLike(commentId, postId);
+        } else {
+          handleDislike(commentId, postId);
+        }
+      };
+    
+      const handleLike = async (commentId: string, postId: string) => {
+      
+        try {
+          await axios.post("Posts/like", qs.stringify({
+            postId,
+            userId: userId,
+            commentId: commentId,
+          }), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          });
+        } catch (error) {
+          console.error('Error liking post:', error);
+        }
+      };
+      
+      const handleDislike = async (commentId: string, postId: string) => {
+      
+        try {
+          await axios.post("Posts/dislike", qs.stringify({
+            postId,
+            userId: userId,
+            commentId: commentId,
+          }), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          });
+        } catch (error) {
+          console.error('Error disliking post:', error);
+        }
+      };
 
     const deleteComment = async (commentId: string) => {
         try{
@@ -142,16 +251,36 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                         <div className={classes.commentFooter}>
                             <button onClick={() => handleOpinionButtonClick(comment.id, 'like')}>
                                 {opinionButtons[comment.id] === 'like' ? (
-                                    <SlLike className={`${classes.commentIcon} ${classes.opinionActivatedLike} iconOpinion`} />
+                                    <div className={classes.divLike}>
+                                        <SlLike className={`${classes.commentIcon} ${classes.opinionActivatedLike} iconOpinion`} />
+                                        {comment.like && comment.like.length > 0 && (
+                                            <p>{comment.like.length}</p>
+                                        )}
+                                    </div>
                                 ) : (
-                                    <SlLike className={`${classes.commentIcon} iconOpinion`} />
+                                    <div className={classes.divLike}>
+                                        <SlLike className={`${classes.commentIcon} iconOpinion`} />
+                                        {comment.like && comment.like.length > 0 && (
+                                            <p>{comment.like.length}</p>
+                                        )}
+                                    </div>
                                 )}
-                                </button>
-                                <button onClick={() => handleOpinionButtonClick(comment.id, 'dislike')}>
+                            </button>
+                            <button onClick={() => handleOpinionButtonClick(comment.id, 'dislike')}>
                                 {opinionButtons[comment.id] === 'dislike' ? (
-                                    <SlDislike className={`${classes.commentIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
+                                    <div className={classes.divLike}>
+                                        <SlDislike className={`${classes.commentIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
+                                        {comment.dislike && comment.dislike.length > 0 && comment.user.id === userId && (
+                                            <p>{comment.dislike.length}</p>
+                                        )}
+                                    </div>
                                 ) : (
-                                    <SlDislike className={`${classes.commentIconDislike} iconOpinion`} />
+                                    <div className={classes.divLike}>
+                                        <SlDislike className={`${classes.commentIconDislike} iconOpinion`} />
+                                        {comment.dislike && comment.dislike.length > 0 && comment.user.id === userId && (
+                                            <p>{comment.dislike.length}</p>
+                                        )}
+                                    </div>
                                 )}
                             </button>
                         </div>

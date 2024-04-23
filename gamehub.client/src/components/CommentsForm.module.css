@@ -126,6 +126,7 @@
     padding-top: 5px;
     display: flex;
     flex-direction: row;
+    margin-bottom: 5px;
     gap: 8px;
 }
 
@@ -156,4 +157,16 @@
 .opinionActivatedDislike{
     fill: crimson;
     transform: scale(1.3);
+}
+
+.divLike{
+    position: relative;
+}
+
+.divLike p{
+    position: absolute;
+    margin-top: 0 auto;
+    width: 100%;
+    font-size: 10px;
+    color: var(--grey);
 }
