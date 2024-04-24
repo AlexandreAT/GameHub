@@ -1,11 +1,14 @@
-import Navbar from '../components/Navbar'
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 import { FaCommentSlash } from "react-icons/fa6";
+import Navbar from '../components/Navbar'
+
 import * as qs from 'qs';
+import Cookies from 'js-cookie';
 
 import classes from "./Logado.module.css";
 import MakePostForm from '../components/MakePostForm';
@@ -14,19 +17,12 @@ import CommentsForm from '../components/CommentsForm';
 interface User {
   id: string;
   name: string;
-  surname: string;
-  cpf: string;
-  phone: string;
-  email: string;
-  password: string;
-  posts: Post;
   imageSrc: string;
 }
 
 interface LikeDisLike {
   userId: string;
   userName: string;
-  userImageSrc: string;
   IsSelected: boolean;
 }
 
@@ -36,7 +32,6 @@ interface Post{
   idAuthor: string;
   title: string;
   content: string;
-  comments: string;
   date: Date;
   like: LikeDisLike[];
   dislike: LikeDisLike[];
@@ -52,13 +47,23 @@ const Logado = () => {
   const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
   const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get<User>('/Users/current');
         setUser(response.data);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.clear();
+        console.error('Error fetching user:', error);
+        
+        const token = Cookies.get('.AspNetCore.Application.Authorization');
+        
+        if (!token) {
+          navigate('/');
+          alert("Faça o login novamente");
+        }
       }
     };
 
@@ -79,7 +84,8 @@ const Logado = () => {
         date: isValidDateString(post.date) ? new Date(post.date) : new Date()
       })));
     }catch (error) {
-      console.error('Error fetching posts:', error);
+      console.clear();
+      console.log('Error fetching user:', error);
     }
   }
 
@@ -262,8 +268,12 @@ const Logado = () => {
             {posts && posts.map((post: Post) => (
               <div key={post.id} className={classes.divPost}>
                 <div className={classes.postHeader}>
-                  <p className={classes.author}>{post.author}</p>
-                  <p>-</p>
+                  {post.idAuthor === user.id ? 
+                    <Link to={"/perfil"}><p className={classes.author}>{post.author} (você)</p></Link>                
+                  :
+                    <Link to={`/AnotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
+                  }
+                  <span>-</span>
                   <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                 </div>
                 <div className={classes.postContent}>

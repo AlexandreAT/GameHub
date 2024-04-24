@@ -17,9 +17,9 @@ const Login = () => {
 
     const token = Cookies.get('.AspNetCore.Application.Authorization')
 
-  if (token) {
-    return <Navigate to="/logado" replace />
-  }
+    if (token) {
+        return <Navigate to="/logado" replace />
+    }
 
     const submitLogin = (e: FormEvent) => {
         e.preventDefault();
