@@ -207,6 +207,26 @@ namespace Gamehub.Server.Controllers
             return await _userServices.GetAsyncPosts(id);
         }
 
+        [HttpGet("anotherUser/{id}")]
+        public async Task<AnotherUser> GetAnotherUserAsync(string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            return new AnotherUser
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                ImgSrc = user.ImageSrc,
+                Posts = user.Posts,
+                Following = user.Following,
+                Biography = user.Biography,
+                City = user.City,
+                State = user.State,
+                UserCommunities = user.UserCommunities,
+                UserCreatedCommunities = user.UserCreatedCommunities,
+            };
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]

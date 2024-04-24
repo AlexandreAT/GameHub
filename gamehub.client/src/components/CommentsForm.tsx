@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import classes from './CommentsForm.module.css';
 import { SlDislike, SlLike } from "react-icons/sl";
 import { IoTrashBin } from "react-icons/io5";
+import { Link } from 'react-router-dom';
 import * as qs from 'qs';
 
 interface CommentProps {
@@ -46,7 +47,8 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             }});
             setComments(response.data);
         } catch(error){
-            console.error('Error fetching comments:', error);
+          console.clear();
+          console.log('Error fetching comments:', error);
         }
     }
 
@@ -241,10 +243,16 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             <div className={classes.divCommentsList}>
                 {comments && comments.map((comment: Comments) => (
                     <div key={comment.id} className={classes.containerComments}>
-                        <div className={classes.commentHeader}>
-                            <p className={classes.name}>{comment.user.name}</p>
-                            {comment.user.id === userId && (<button className={classes.trashButton} onClick={() => deleteComment(comment.id)}><IoTrashBin className={classes.trashIcon}/></button>)}
-                        </div>
+                        {comment.user.id === userId ? (
+                          <div className={classes.commentHeader}>
+                            <Link to={"/Perfil"}><p className={classes.name}>{comment.user.name} <span className={classes.youSpan}>(você)</span></p></Link>
+                            <button className={classes.trashButton} onClick={() => deleteComment(comment.id)}><IoTrashBin className={classes.trashIcon}/></button>
+                          </div>
+                        ): (
+                          <div className={classes.commentHeader}>
+                            <Link to={`/AnotherProfile/${comment.user.id}`}><p className={classes.name}>{comment.user.name}</p></Link>
+                          </div>
+                        )}
                         <div className={classes.commentContent}>
                             <p className={classes.content}>{comment.content}</p>
                         </div>

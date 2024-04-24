@@ -5,11 +5,6 @@ import { axios } from '../axios-config';
 interface User {
     id: string;
     name: string;
-    surname: string;
-    cpf: string;
-    phone: string;
-    email: string;
-    password: string;
   }
 
 const MakePostForm = ({ user }: { user: User | null }) => {

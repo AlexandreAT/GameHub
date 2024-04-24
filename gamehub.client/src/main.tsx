@@ -13,36 +13,47 @@ import ForgotPassword from './routes/ForgotPassword.tsx'
 import TermsOfCondition from './routes/TermsOfCondition.tsx'
 import Logado from './routes/Logado.tsx'
 import Perfil from './routes/Perfil.tsx'
+import AnotherUserProfile from './routes/AnotherUserProfile.tsx'
+import ErrorPage from './routes/ErrorPage.tsx'
 
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
         element: <Login/>,
       },
       {
-        path: "/register",
+        path: "register",
         element: <Register/>,
       },
       {
-        path: "/forgotPassword",
+        path: "forgotPassword",
         element: <ForgotPassword/>,
       },
       {
-        path: "/termsOfCondition",
+        path: "termsOfCondition",
         element: <TermsOfCondition/>,
       },
       {
-        path: "/logado",
+        path: "logado",
         element: <Logado/>,
       },
       {
-        path: "/perfil",
+        path: "perfil",
         element: <Perfil/>,
+      },
+      {
+        path: "AnotherProfile/:id",
+        element: <AnotherUserProfile/>,
+      },
+      {
+        path: "*",
+        element: <ErrorPage/>,
       }
     ]
   }

@@ -62,6 +62,7 @@ namespace Gamehub.Server.Controllers
             {
                 Id = userFound.Id,
                 Name = userFound.Name,
+                Surname = userFound.Surname,
                 ImgSrc = userFound.ImageSrc,
                 Posts = userFound.Posts,
                 Following = userFound.Following,
