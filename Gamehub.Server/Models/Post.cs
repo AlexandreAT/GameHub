@@ -22,7 +22,7 @@ namespace Gamehub.Server.Models
         public string Title { get; set; } = null;
 
         [Required(ErrorMessage = "O post precisa de um conteúdo.")]
-        [StringLength(100, MinimumLength = 10, ErrorMessage = "O conteúdo do post deve ter no mínimo 10 caracteres.")]
+        [StringLength(2000, MinimumLength = 10, ErrorMessage = "O conteúdo do post deve ter no mínimo 10 caracteres.")]
         [BsonElement("Conteúdo")]
         public string Content { get; set; } = null;
 

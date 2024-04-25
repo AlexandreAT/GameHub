@@ -7,7 +7,7 @@ namespace Gamehub.Server.Models
     {
         public string? Id{ get; set; }
 
-        public AnotherUser User { get; set; }
+        public SimplifiedUser User { get; set; }
         public string Content { get; set; }
         public List<LikeDisLike>? Like { get; set; } = null;
         public List<LikeDisLike>? Dislike { get; set; } = null;

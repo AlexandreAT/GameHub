@@ -31,6 +31,7 @@ namespace Gamehub.Server.Controllers
                 Id = creatorUser.Id,
                 Name = creatorUser.Name,
                 Surname = creatorUser.Surname,
+                Nickname = creatorUser.Nickname,
                 ImgSrc = creatorUser.ImageSrc,
                 Posts = creatorUser.Posts,
                 Following = creatorUser.Following,

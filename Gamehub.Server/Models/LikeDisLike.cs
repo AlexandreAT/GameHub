@@ -2,9 +2,7 @@
 {
     public class LikeDisLike
     {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string UserImageSrc { get; set; }
+        public SimplifiedUser simplifiedUser { get; set; }
         public Boolean IsSelected { get; set; }
     }
 }

@@ -28,6 +28,7 @@ const Cadastro = () => {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [termsOfCondition, setTermsOfCondition] = useState(false);
+  const [nickname, setNickname] = useState('');
 
   const [formError, setFormError] = useState({
     cpf: "",
@@ -37,7 +38,8 @@ const Cadastro = () => {
     confirmPassword: "",
     name: "",
     lastName: "",
-    termsOfCondition: ""
+    termsOfCondition: "",
+    nickname: ""
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -52,7 +54,8 @@ const Cadastro = () => {
             Cpf: data.cpf,
             Phone: data.clearPhone,
             Email: data.email,
-            Password: data.password
+            Password: data.password,
+            Nickname: data.nickname
         };
 
         const response = await axios.post(url, userPascalCase, {
@@ -82,7 +85,8 @@ const Cadastro = () => {
       confirmPassword: "",
       name: "",
       lastName: "",
-      termsOfCondition: ""
+      termsOfCondition: "",
+      nickname: ""
     };
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -107,6 +111,13 @@ const Cadastro = () => {
       };
     }
 
+    if (nickname.length < 2){
+      inputError = {
+        ...inputError,
+        lastName: "O apelido deve ter pelo menos 2 caracteres"
+      };
+    }
+
     if(password.length < 6 || password.length > 20){
       inputError = {
         ...inputError,
@@ -114,7 +125,7 @@ const Cadastro = () => {
       }
     }
 
-    if (!cpf || !email || !password || !confirmPassword || !name || !lastName) {
+    if (!cpf || !email || !password || !confirmPassword || !name || !lastName || !nickname) {
       inputError = {
         ...inputError,
         cpf: !cpf ? "Campo obrigatório!" : "",
@@ -122,7 +133,8 @@ const Cadastro = () => {
         password: !password ? "Campo obrigatório!" : "",
         confirmPassword: !confirmPassword ? "Campo obrigatório!" : "",
         name: !name ? "Campo obrigatório!" : "",
-        lastName: !lastName ? "Campo obrigatório!" : ""
+        lastName: !lastName ? "Campo obrigatório!" : "",
+        nickname: !nickname ? "Campo obrigatório!" : "",
       }
     }
 
@@ -176,6 +188,7 @@ const Cadastro = () => {
         console.log("Formulário submetido!");
         console.log(name);
         console.log(lastName);
+        console.log(nickname);
         console.log(cpf);
         console.log(clearPhone);
         console.log(email);
@@ -186,6 +199,7 @@ const Cadastro = () => {
           const response = await postData('/Users', {
             name,
             lastName,
+            nickname,
             cpf,
             clearPhone,
             email,
@@ -219,6 +233,7 @@ const Cadastro = () => {
     setConfirmPassword("");
     setName("");
     setLastName("");
+    setNickname("");
   }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,6 +242,10 @@ const Cadastro = () => {
   }
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLastName(e.target.value);
+    validateForm();
+  }
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
     validateForm();
   }
   const handleCPFChange = (e: any) => {
@@ -272,6 +291,11 @@ const Cadastro = () => {
               <input type="text" name='surname' placeholder='Digite o seu sobrenome...' onChange={handleLastNameChange} value={lastName} onBlur={validateForm}/>
               {formSubmitted && (<p className='errorMessage'>{formError.lastName}</p>)}
             </div>
+          </div>
+          <div>
+            <label htmlFor="nickname">Apelido (nickname) <span className={classes.required}>*</span></label>
+            <input type="text" name='nickname' placeholder='Digite seu nickname...' onChange={handleNicknameChange} value={nickname} onBlur={validateForm} />
+            {formSubmitted && (<p className='errorMessage'>{formError.nickname}</p>)}
           </div>
           <div className={classes.fieldsSideBySide}>
             <div>
