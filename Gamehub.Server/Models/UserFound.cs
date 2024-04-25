@@ -19,22 +19,19 @@ namespace Gamehub.Server.Models
         public string Password { get; set; }
 
         [JsonIgnore]
-        public List<Post> Posts { get; set; }
-
-        [JsonIgnore]
         public string? ImageSrc { get; set; }
 
         [JsonIgnore]
-        public List<AnotherUser>? Following { get; set; } = null;
+        public List<SimplifiedUser>? Following { get; set; } = null;
 
         [JsonIgnore]
-        public List<AnotherUser>? Followers { get; set; } = null;
+        public List<SimplifiedUser>? Followers { get; set; } = null;
 
         [JsonIgnore]
-        public List<Community>? UserCommunities { get; set; } = null;
+        public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;
 
         [JsonIgnore]
-        public List<Community>? UserCreatedCommunities { get; set; } = null;
+        public List<SimplifiedCommunity>? UserCreatedCommunities { get; set; } = null;
 
         [JsonIgnore]
         public string? Biography { get; set; } = null;
