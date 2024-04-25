@@ -4,7 +4,7 @@ import { axios } from '../axios-config';
 
 interface User {
     id: string;
-    name: string;
+    nickname: string;
   }
 
 const MakePostForm = ({ user }: { user: User | null }) => {
@@ -71,7 +71,7 @@ const MakePostForm = ({ user }: { user: User | null }) => {
   const submitPost = async (e: FormEvent) => {
     e.preventDefault();
 
-    const author = user.name;
+    const author = user.nickname;
     const idAuthor = user.id;
     try{
       const response = await postData('/Posts', {

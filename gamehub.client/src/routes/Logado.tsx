@@ -16,13 +16,18 @@ import CommentsForm from '../components/CommentsForm';
 
 interface User {
   id: string;
-  name: string;
+  nickname: string;
   imageSrc: string;
 }
 
+interface SimplifiedUser{
+    userId: string;
+    nickName: string;
+    userImageSrc: string;
+}
+
 interface LikeDisLike {
-  userId: string;
-  userName: string;
+  simplifiedUser: SimplifiedUser
   IsSelected: boolean;
 }
 
@@ -94,8 +99,8 @@ const Logado = () => {
     if (user) {
       for (const post of posts) {
           if(post.like && post.dislike){
-            const userLike = post.like.find(like => like.userId === user.id);
-            const userDislike = post.dislike.find(dislike => dislike.userId === user.id);
+            const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
+            const userDislike = post.dislike.find(dislike => dislike.simplifiedUser.userId === user.id);
 
             if (userLike) {
               setOpinionButtons(prevState => ({
@@ -115,7 +120,7 @@ const Logado = () => {
             }
           }
           else if(post.like){
-            const userLike = post.like.find(like => like.userId === user.id);
+            const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
     
             if (userLike) {
               setOpinionButtons(prevState => ({
@@ -131,7 +136,7 @@ const Logado = () => {
           }
         }
         else if(post.dislike){
-          const userDislike = post.dislike.find(dislike => dislike.userId === user.id);
+          const userDislike = post.dislike.find(dislike => dislike.simplifiedUser.userId === user.id);
 
           if (userDislike) {
             setOpinionButtons(prevState => ({
@@ -278,7 +283,7 @@ const Logado = () => {
                 </div>
                 <div className={classes.postContent}>
                   <h3 className={classes.title}>{post.title}</h3>
-                  <p className={classes.content}>{post.content}</p>
+                  <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
                 </div>
                 <div className={classes.postFooter}>
                   <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>

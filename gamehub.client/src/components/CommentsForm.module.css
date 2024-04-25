@@ -120,6 +120,8 @@
 .commentContent .content{
     font-size: 15px;
     color: var(--lightGrey);
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .commentFooter{

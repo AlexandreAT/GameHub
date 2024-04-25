@@ -96,6 +96,9 @@
 .postContent{
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
     gap: 1rem;
 }
 
@@ -107,6 +110,8 @@
 .postContent .content{
     font-size: 18px;
     color: var(--lightGrey);
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .postFooter{

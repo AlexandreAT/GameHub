@@ -21,6 +21,11 @@ namespace Gamehub.Server.Models
         [BsonElement("Sobrenome")]
         public string Surname { get; set; } = null;
 
+        [Required(ErrorMessage = "O usuário precisa de um apelido.")]
+        [StringLength(15, MinimumLength = 2, ErrorMessage = "O apelido deve ter entre 2 a 15 caracteres.")]
+        [BsonElement("Apelido")]
+        public string Nickname { get; set; } = null;
+
         [Required(ErrorMessage = "O CPF deve ser preenchido.")]
         [BsonElement("CPF")]
         public string Cpf { get; set; }

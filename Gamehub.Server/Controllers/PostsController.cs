@@ -42,6 +42,9 @@ namespace Gamehub.Server.Controllers
             return post;
         }
 
+        [HttpGet("userPosts")]
+        public async Task<List<Post>> GetUserPosts(string id) => await _postServices.GetUserPosts(id);
+
         [HttpPost("comment")]
         public async Task PostComment([FromForm]string postId, [FromForm]string userId, [FromForm]string comment)
         {
@@ -58,19 +61,11 @@ namespace Gamehub.Server.Controllers
             var userFound = await _userServices.GetAsync(userId);
             var postCommented = await _postServices.GetAsync(postId);
 
-            var userCommented = new AnotherUser
+            var userCommented = new SimplifiedUser
             {
-                Id = userFound.Id,
-                Name = userFound.Name,
-                Surname = userFound.Surname,
-                ImgSrc = userFound.ImageSrc,
-                Posts = userFound.Posts,
-                Following = userFound.Following,
-                Biography = userFound.Biography,
-                City = userFound.City,
-                State = userFound.State,
-                UserCommunities = userFound.UserCommunities,
-                UserCreatedCommunities = userFound.UserCreatedCommunities,
+                UserId = userFound.Id,
+                NickName = userFound.Nickname,
+                UserImageSrc = userFound.ImageSrc,
             };
 
 

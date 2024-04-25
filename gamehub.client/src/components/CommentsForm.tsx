@@ -11,25 +11,23 @@ interface CommentProps {
     userId: string;
 }
 
-interface UserComment {
-    id: string,
-    name: string,
-    imgSrc: string;
-}
-
 interface Comments {
     id: string,
-    user: UserComment,
+    user: SimplifiedUser,
     content: string,
     like: LikeDisLike[],
     dislike: LikeDisLike[],
 }
 
+interface SimplifiedUser{
+  userId: string;
+  nickName: string;
+  userImageSrc: string;
+}
+
 interface LikeDisLike {
-    userId: string,
-    userName: string,
-    userImageSrc: string,
-    IsSelected: boolean;
+simplifiedUser: SimplifiedUser
+IsSelected: boolean;
 }
 
 const CommentsForm = ({ postId, userId }: CommentProps) => {
@@ -39,6 +37,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
 
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
     const [updatedComments, setUpdatedComments] = useState(false);
+    const [opinionChanges, setOpinionChanges] = useState(false);
 
     const getComments = async () => {
         try{
@@ -52,11 +51,11 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
         }
     }
 
-    const checksFeedback = () => {
+    const checksFeedback = () => {      
         for (const comment of comments) {
           if(comment.like && comment.dislike){
-            const userLike = comment.like.find(like => like.userId === userId);
-            const userDislike = comment.dislike.find(dislike => dislike.userId === userId);
+            const userLike = comment.like.find(like => like.simplifiedUser.userId === userId);
+            const userDislike = comment.dislike.find(dislike => dislike.simplifiedUser.userId === userId);
             
             if (userLike) {
               setOpinionButtons(prevState => ({
@@ -76,7 +75,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             }
           }
           else if(comment.like){
-            const userLike = comment.like.find(like => like.userId === userId);
+            const userLike = comment.like.find(like => like.simplifiedUser.userId === userId);
         
             if (userLike) {
                 setOpinionButtons(prevState => ({
@@ -92,7 +91,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             }
         }
         else if(comment.dislike){
-            const userDislike = comment.dislike.find(dislike => dislike.userId === userId);
+            const userDislike = comment.dislike.find(dislike => dislike.simplifiedUser.userId === userId);
     
             if (userDislike) {
                 setOpinionButtons(prevState => ({
@@ -112,13 +111,14 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
 
     useEffect(() => {
         getComments();
+        
         const interval = setInterval(() => {
             getComments();
         }, 60000);
         return () => {
             clearInterval(interval);
         }
-    }, [newComment, updatedComments]);
+    }, [newComment, updatedComments, opinionChanges]);
 
     useEffect(() => {
         checksFeedback();
@@ -193,6 +193,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
               'Content-Type': 'application/x-www-form-urlencoded'
             }
           });
+          setOpinionChanges(!opinionChanges);
         } catch (error) {
           console.error('Error liking post:', error);
         }
@@ -210,6 +211,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
               'Content-Type': 'application/x-www-form-urlencoded'
             }
           });
+          setOpinionChanges(!opinionChanges);
         } catch (error) {
           console.error('Error disliking post:', error);
         }
@@ -243,18 +245,18 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             <div className={classes.divCommentsList}>
                 {comments && comments.map((comment: Comments) => (
                     <div key={comment.id} className={classes.containerComments}>
-                        {comment.user.id === userId ? (
+                        {comment.user.userId === userId ? (
                           <div className={classes.commentHeader}>
-                            <Link to={"/Perfil"}><p className={classes.name}>{comment.user.name} <span className={classes.youSpan}>(você)</span></p></Link>
+                            <Link to={"/Perfil"}><p className={classes.name}>{comment.user.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
                             <button className={classes.trashButton} onClick={() => deleteComment(comment.id)}><IoTrashBin className={classes.trashIcon}/></button>
                           </div>
                         ): (
                           <div className={classes.commentHeader}>
-                            <Link to={`/AnotherProfile/${comment.user.id}`}><p className={classes.name}>{comment.user.name}</p></Link>
+                            <Link to={`/AnotherProfile/${comment.user.userId}`}><p className={classes.name}>{comment.user.nickName}</p></Link>
                           </div>
                         )}
                         <div className={classes.commentContent}>
-                            <p className={classes.content}>{comment.content}</p>
+                            <p className={classes.content} dangerouslySetInnerHTML={{ __html: comment.content.replace(/\n/g, '<br/>') }}></p>
                         </div>
                         <div className={classes.commentFooter}>
                             <button onClick={() => handleOpinionButtonClick(comment.id, 'like')}>
@@ -278,14 +280,14 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                                 {opinionButtons[comment.id] === 'dislike' ? (
                                     <div className={classes.divLike}>
                                         <SlDislike className={`${classes.commentIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
-                                        {comment.dislike && comment.dislike.length > 0 && comment.user.id === userId && (
+                                        {comment.dislike && comment.dislike.length > 0 && comment.user.userId === userId && (
                                             <p>{comment.dislike.length}</p>
                                         )}
                                     </div>
                                 ) : (
                                     <div className={classes.divLike}>
                                         <SlDislike className={`${classes.commentIconDislike} iconOpinion`} />
-                                        {comment.dislike && comment.dislike.length > 0 && comment.user.id === userId && (
+                                        {comment.dislike && comment.dislike.length > 0 && comment.user.userId === userId && (
                                             <p>{comment.dislike.length}</p>
                                         )}
                                     </div>

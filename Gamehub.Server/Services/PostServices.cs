@@ -31,6 +31,12 @@ namespace Gamehub.Server.Services
             return post;
         }
 
+        public async Task<List<Post>> GetUserPosts(string userId)
+        {
+            List<Post> posts = await GetAsync();
+            return posts.FindAll(x => x.IdAuthor == userId);
+        }
+
         public async Task RemoveAsync(string id) => await _postCollection.DeleteOneAsync(x => x.Id == id);
 
         public async Task<Post> AddComment(Comment comment, Post post)
@@ -89,15 +95,16 @@ namespace Gamehub.Server.Services
                     post.Like = new List<LikeDisLike>();
                 }
 
-                var like = post.Like.FirstOrDefault(x => x.UserId == user.Id);
+                var like = post.Like.FirstOrDefault(x => x.simplifiedUser.UserId == user.Id);
 
                 if (like == null)
                 {
-                    post.Like.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+                    SimplifiedUser simplifiedUser = new SimplifiedUser{ UserId = user.Id, NickName = user.Nickname, UserImageSrc = user.ImageSrc};
+                    post.Like.Add(new LikeDisLike { simplifiedUser = simplifiedUser, IsSelected = true });
 
                     if (post.Dislike != null)
                     {
-                        var disLikeIndex = post.Dislike.FindIndex(x => x.UserId == user.Id);
+                        var disLikeIndex = post.Dislike.FindIndex(x => x.simplifiedUser.UserId == user.Id);
                         if (disLikeIndex >= 0)
                         {
                             post.Dislike.RemoveAt(disLikeIndex);
@@ -129,15 +136,16 @@ namespace Gamehub.Server.Services
                     comment.Like = new List<LikeDisLike>();
                 }
 
-                var like = comment.Like.FirstOrDefault(x => x.UserId == user.Id);
+                var like = comment.Like.FirstOrDefault(x => x.simplifiedUser.UserId == user.Id);
 
                 if (like == null)
                 {
-                    comment.Like.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+                    SimplifiedUser simplifiedUser = new SimplifiedUser { UserId = user.Id, NickName = user.Nickname, UserImageSrc = user.ImageSrc };
+                    comment.Like.Add(new LikeDisLike { simplifiedUser = simplifiedUser, IsSelected = true });
 
                     if (comment.Dislike != null)
                     {
-                        var disLikeIndex = comment.Dislike.FindIndex(x => x.UserId == user.Id);
+                        var disLikeIndex = comment.Dislike.FindIndex(x => x.simplifiedUser.UserId == user.Id);
                         if (disLikeIndex >= 0)
                         {
                             comment.Dislike.RemoveAt(disLikeIndex);
@@ -181,15 +189,16 @@ namespace Gamehub.Server.Services
                     post.Dislike = new List<LikeDisLike>();
                 }
 
-                var dislike = post.Dislike.FirstOrDefault(x => x.UserId == user.Id);
+                var dislike = post.Dislike.FirstOrDefault(x => x.simplifiedUser.UserId == user.Id);
 
                 if (dislike == null)
                 {
-                    post.Dislike.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+                    SimplifiedUser simplifiedUser = new SimplifiedUser { UserId = user.Id, NickName = user.Nickname, UserImageSrc = user.ImageSrc };
+                    post.Dislike.Add(new LikeDisLike { simplifiedUser = simplifiedUser, IsSelected = true });
 
                     if (post.Like != null)
                     {
-                        var likeIndex = post.Like.FindIndex(x => x.UserId == user.Id);
+                        var likeIndex = post.Like.FindIndex(x => x.simplifiedUser.UserId == user.Id);
                         if (likeIndex >= 0)
                         {
                             post.Like.RemoveAt(likeIndex);
@@ -221,15 +230,16 @@ namespace Gamehub.Server.Services
                     comment.Dislike = new List<LikeDisLike>();
                 }
 
-                var dislike = comment.Dislike.FirstOrDefault(x => x.UserId == user.Id);
+                var dislike = comment.Dislike.FirstOrDefault(x => x.simplifiedUser.UserId == user.Id);
 
                 if (dislike == null)
                 {
-                    comment.Dislike.Add(new LikeDisLike { UserId = user.Id, UserName = user.Name, UserImageSrc = user.ImageSrc, IsSelected = true });
+                    SimplifiedUser simplifiedUser = new SimplifiedUser { UserId = user.Id, NickName = user.Nickname, UserImageSrc = user.ImageSrc };
+                    comment.Dislike.Add(new LikeDisLike { simplifiedUser = simplifiedUser, IsSelected = true });
 
                     if (comment.Like != null)
                     {
-                        var likeIndex = comment.Like.FindIndex(x => x.UserId == user.Id);
+                        var likeIndex = comment.Like.FindIndex(x => x.simplifiedUser.UserId == user.Id);
                         if (likeIndex >= 0)
                         {
                             comment.Like.RemoveAt(likeIndex);
