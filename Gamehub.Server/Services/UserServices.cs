@@ -85,13 +85,13 @@ namespace Gamehub.Server.Services
             }
         }
 
-        public async Task AddCreatedCommunities(Community community, User user)
+        public async Task AddCreatedCommunities(SimplifiedCommunity community, User user)
         {
             if (community != null)
             {
                 if(user.UserCreatedCommunities == null)
                 {
-                    user.UserCreatedCommunities = new List<Community>();
+                    user.UserCreatedCommunities = new List<SimplifiedCommunity>();
                 }
                 user.UserCreatedCommunities.Add(community);
             }

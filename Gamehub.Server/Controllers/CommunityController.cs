@@ -26,20 +26,11 @@ namespace Gamehub.Server.Controllers
         public async Task<Community> PostCommunity(string creatorId, string name, string? game)
         {
             User creatorUser = await _userServices.GetAsync(creatorId);
-            AnotherUser creator = new AnotherUser
+            SimplifiedUser creator = new SimplifiedUser
             {
-                Id = creatorUser.Id,
-                Name = creatorUser.Name,
-                Surname = creatorUser.Surname,
-                Nickname = creatorUser.Nickname,
-                ImgSrc = creatorUser.ImageSrc,
-                Posts = creatorUser.Posts,
-                Following = creatorUser.Following,
-                Biography = creatorUser.Biography,
-                City = creatorUser.City,
-                State = creatorUser.State,
-                UserCommunities = creatorUser.UserCommunities,
-                UserCreatedCommunities = creatorUser.UserCreatedCommunities,
+                UserId = creatorUser.Id,
+                NickName = creatorUser.Nickname,
+                UserImageSrc = creatorUser.ImageSrc,
             };
             Community community = new Community
             {
@@ -47,15 +38,21 @@ namespace Gamehub.Server.Controllers
                 Name = name,
                 Game = game
             };
-            await _communityServices.CreateAsync(community);
-            await _userServices.AddCreatedCommunities(community, creatorUser);
+            Community newCommunity = await _communityServices.CreateAsync(community);
+            SimplifiedCommunity simplifiedCommunity = new SimplifiedCommunity
+            {
+                Id = newCommunity.Id,
+                Name = newCommunity.Name,
+                CreatorId = newCommunity.Creator.NickName
+            };
+            await _userServices.AddCreatedCommunities(simplifiedCommunity, creatorUser);
             return community;
         }
 
         [HttpPut("{id}")]
         public async Task UpdateCommunity(string id, Community community)
         {
-            User creatorUser = await _userServices.GetAsync(community.Creator.Id);
+            User creatorUser = await _userServices.GetAsync(community.Creator.UserId);
             if (id != community.Id)
             {
                 throw new Exception("Erro ao encontrar o id da comunidade");

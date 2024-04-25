@@ -12,7 +12,7 @@ namespace Gamehub.Server.Models
 
         [Required]
         [BsonElement("Criador")]
-        public AnotherUser Creator { get; set; } = null;
+        public SimplifiedUser Creator { get; set; } = null;
 
         [Required(ErrorMessage = "A comunidade precisa de um nome.")]
         [BsonElement("Nome da comunidade")]
@@ -28,7 +28,7 @@ namespace Gamehub.Server.Models
         public List<Post>? Post { get; set; } = null;
 
         [BsonElement("Seguidores")]
-        public List<AnotherUser>? Followers { get; set; } = null;
+        public List<SimplifiedUser>? Followers { get; set; } = null;
 
     }
 }

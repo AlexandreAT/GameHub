@@ -3,11 +3,10 @@ import Navbar from '../components/Navbar'
 import { axios } from '../axios-config';
 import { useParams } from 'react-router-dom';
 
-interface Community {
-    id: string;
-    creator: AnotherUser;
-    name: string;
-    game: string;
+interface SimplifiedCommunity{
+  id: string;
+  Name: string;
+  CreatorId: string;
 }
 
 interface AnotherUser {
@@ -15,18 +14,22 @@ interface AnotherUser {
     name: string;
     surname: string;
     imgSrc: string;
-    posts: Post[];
-    following: AnotherUser[];
+    following: SimplifiedUser[];
     biography: string;
     city: string;
     state: string;
-    UserCommunities: Community[];
-    UserCreatedCommunities: Community[];
+    UserCommunities: SimplifiedCommunity[];
+    UserCreatedCommunities: SimplifiedCommunity[];
+}
+
+interface SimplifiedUser{
+  userId: string;
+  nickName: string;
+  userImageSrc: string;
 }
 
 interface LikeDisLike {
-  userId: string;
-  userName: string;
+  simplifiedUser: SimplifiedUser
   IsSelected: boolean;
 }
 
@@ -75,8 +78,8 @@ const AnotherUserProfile = () => {
         <p>Seguindo: {!anotherUser.following ? (
           <span>Sem seguidores</span> 
         ):
-        anotherUser.following.map((following: AnotherUser) => (
-          <p key={following.id}>{following.name}</p>
+        anotherUser.following.map((following: SimplifiedUser) => (
+          <p key={following.userId}>{following.nickName}</p>
         ))
         }</p>
         <p>Biografia: {!anotherUser.biography ? (
@@ -97,27 +100,20 @@ const AnotherUserProfile = () => {
         <p>Comunidades em que faz parte: {!anotherUser.UserCommunities ? (
           <span>Não faz parte de comunidades</span>
         ): 
-          anotherUser.UserCommunities.map((community: Community) => (
-          <p key={community.id}>{community.name}</p>
+          anotherUser.UserCommunities.map((community: SimplifiedCommunity) => (
+          <p key={community.id}>{community.Name}</p>
         ))
         }</p>
         <p>Comunidades criadas: {!anotherUser.UserCreatedCommunities ? (
           <span>Sem comunidades criadas</span>
         ):
-          anotherUser.UserCreatedCommunities.map((community: Community) => (
-            <p key={community.id}>{community.name}</p>
+          anotherUser.UserCreatedCommunities.map((community: SimplifiedCommunity) => (
+            <p key={community.id}>{community.Name}</p>
           ))
         }</p>
         <br />
         <br />
         <h3>Posts:</h3>
-        {anotherUser.posts && anotherUser.posts.map((post: Post) => (
-          <div key={post.id}>
-            <h3>{post.title}</h3>
-            <p>{post.content}</p>
-            <br />
-          </div>
-        ))}
     </div>
   )
 }

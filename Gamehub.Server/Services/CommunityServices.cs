@@ -23,11 +23,12 @@ namespace Gamehub.Server.Services
 
         public async Task<Community> GetAsync(string id) => await _communityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateAsync(Community community)
+        public async Task<Community> CreateAsync(Community community)
         {
             community.Id = null;
             await _communityCollection.InsertOneAsync(community);
             community.Id = community.Id ?? _communityCollection.Find(x => x.Id == community.Id).FirstOrDefault()?.Id;
+            return community;
         }
 
         public async Task UpdateAsync(string id, Community community) => await _communityCollection.ReplaceOneAsync(x => x.Id == id, community);

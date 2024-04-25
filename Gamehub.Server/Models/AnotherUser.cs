@@ -10,12 +10,11 @@ namespace Gamehub.Server.Models
         public string Surname {  get; set; }
         public string Nickname { get; set; } = null;
         public string? ImgSrc { get; set; } = null;
-        public List<Post>? Posts { get; set; } = null;
-        public List<AnotherUser>? Following { get; set; } = null;
+        public List<SimplifiedUser>? Following { get; set; } = null;
         public string? Biography { get; set; } = null;
         public string? City { get; set; } = null;
         public string? State { get; set; } = null;
-        public List<Community>? UserCommunities { get; set; } = null;
-        public List<Community>? UserCreatedCommunities { get; set; } = null;
+        public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;
+        public List<SimplifiedCommunity>? UserCreatedCommunities { get; set; } = null;
     }
 }
