@@ -12,9 +12,9 @@ import Register from './routes/Register.tsx'
 import ForgotPassword from './routes/ForgotPassword.tsx'
 import TermsOfCondition from './routes/TermsOfCondition.tsx'
 import Logado from './routes/Logado.tsx'
-import Perfil from './routes/Perfil.tsx'
 import AnotherUserProfile from './routes/AnotherUserProfile.tsx'
 import ErrorPage from './routes/ErrorPage.tsx'
+import Profile from './routes/Profile.tsx'
 
 
 const router = createBrowserRouter([
@@ -44,11 +44,11 @@ const router = createBrowserRouter([
         element: <Logado/>,
       },
       {
-        path: "perfil",
-        element: <Perfil/>,
+        path: "profile",
+        element: <Profile/>,
       },
       {
-        path: "AnotherProfile/:id",
+        path: "anotherProfile/:id",
         element: <AnotherUserProfile/>,
       },
       {

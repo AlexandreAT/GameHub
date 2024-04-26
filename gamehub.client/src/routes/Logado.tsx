@@ -274,9 +274,9 @@ const Logado = () => {
               <div key={post.id} className={classes.divPost}>
                 <div className={classes.postHeader}>
                   {post.idAuthor === user.id ? 
-                    <Link to={"/perfil"}><p className={classes.author}>{post.author} (você)</p></Link>                
+                    <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>                
                   :
-                    <Link to={`/AnotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
+                    <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
                   }
                   <span>-</span>
                   <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>

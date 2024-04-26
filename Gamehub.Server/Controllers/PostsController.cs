@@ -42,7 +42,7 @@ namespace Gamehub.Server.Controllers
             return post;
         }
 
-        [HttpGet("userPosts")]
+        [HttpGet("userPosts/{id}")]
         public async Task<List<Post>> GetUserPosts(string id) => await _postServices.GetUserPosts(id);
 
         [HttpPost("comment")]

@@ -57,7 +57,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    width: 60%;
     gap: 1rem;
 }
 
@@ -80,6 +80,7 @@
 
 .postHeader{
     display: flex;
+    align-items: center;
     flex-direction: row;
     gap: 5px;
 }
@@ -91,6 +92,7 @@
 
 .postHeader .author{
     font-weight: bold;
+    font-size: 18px;
 }
 
 .postContent{
@@ -103,8 +105,10 @@
 }
 
 .postContent .title{
-    font-size: 22px;
+    font-size: 25px;
     font-weight: bold;
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .postContent .content{
@@ -166,6 +170,11 @@
 }
 
 .youSpan{
-    font-size: 12px;
+    font-size: 14px;
     color: var(--grey);
+    display: none;
+}
+
+.author:hover .youSpan{
+    display: inline;
 }

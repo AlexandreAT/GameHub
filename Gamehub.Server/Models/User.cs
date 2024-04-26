@@ -11,12 +11,12 @@ namespace Gamehub.Server.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
 
-        [Required(ErrorMessage = "O nome deve ter entre 2 e 100 caracteres.")]
+        [Required(ErrorMessage = "O nome deve ter entre 2 e 20 caracteres.")]
         [StringLength(20, MinimumLength = 2, ErrorMessage = "O nome deve ter entre 2 e 20 caracteres.")]
         [BsonElement("Nome")]
         public string Name { get; set; } = null;
 
-        [Required(ErrorMessage = "O sobrenome deve ter entre 2 e 100 caracteres.")]
+        [Required(ErrorMessage = "O sobrenome deve ter entre 2 e 50 caracteres.")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "O sobrenome deve ter entre 2 e 50 caracteres.")]
         [BsonElement("Sobrenome")]
         public string Surname { get; set; } = null;
