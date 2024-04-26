@@ -4,17 +4,21 @@ import { axios } from '../axios-config';
 import Cookies from 'js-cookie';
 import { Navigate } from 'react-router-dom';
 
-interface Community {
+interface SimplifiedCommunity{
   id: string;
-  creator: AnotherUser;
   name: string;
-  game: string;
+  creatorId: string;
 }
 
-interface AnotherUser {
-  id: string;
-  name: string;
-  imgSrc: string;
+interface SimplifiedUser{
+  userId: string;
+  nickName: string;
+  userImageSrc: string;
+}
+
+interface LikeDisLike {
+  simplifiedUser: SimplifiedUser
+  IsSelected: boolean;
 }
 
 interface User {
@@ -27,18 +31,12 @@ interface User {
     password: string;
     posts: Post[];
     imgSrc: string;
-    following: AnotherUser[];
-    UserCommunities: Community[];
-    UserCreatedCommunities: Community[];
+    following: SimplifiedUser[];
+    UserCommunities: SimplifiedCommunity[];
+    UserCreatedCommunities: SimplifiedCommunity[];
     biography: string;
     city: string;
     state: string;
-}
-
-interface LikeDisLike {
-  userId: string;
-  userName: string;
-  IsSelected: boolean;
 }
 
 interface Post{
@@ -85,8 +83,8 @@ function Perfil() {
         <p>Seguindo: {!user.following ? (
           <span>Sem seguidores</span> 
         ):
-        user.following.map((following: AnotherUser) => (
-          <p key={following.id}>{following.name}</p>
+        user.following.map((following: SimplifiedUser) => (
+          <p key={following.userId}>{following.nickName}</p>
         ))
         }</p>
         <p>Biografia: {!user.biography ? (
@@ -107,14 +105,14 @@ function Perfil() {
         <p>Comunidades em que faz parte: {!user.UserCommunities ? (
           <span>Não faz parte de comunidades</span>
         ): 
-          user.UserCommunities.map((community: Community) => (
+          user.UserCommunities.map((community: SimplifiedCommunity) => (
           <p key={community.id}>{community.name}</p>
         ))
         }</p>
         <p>Comunidades criadas: {!user.UserCreatedCommunities ? (
           <span>Sem comunidades criadas</span>
         ):
-          user.UserCreatedCommunities.map((community: Community) => (
+          user.UserCreatedCommunities.map((community: SimplifiedCommunity) => (
             <p key={community.id}>{community.name}</p>
           ))
         }</p>

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { axios } from '../axios-config';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 interface SimplifiedCommunity{
   id: string;
-  Name: string;
-  CreatorId: string;
+  name: string;
+  creatorId: string;
 }
 
 interface AnotherUser {
@@ -44,10 +45,39 @@ interface Post{
   dislike: LikeDisLike[];
 }
 
+interface User {
+  id: string;
+  nickname: string;
+  imageSrc: string;
+}
+
 const AnotherUserProfile = () => {
 
   const { id } = useParams();
   const [anotherUser, setAnotherUser] = useState<AnotherUser>();
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get<User>('/Users/current');
+        setUser(response.data);
+      } catch (error) {
+        console.clear();
+        console.error('Error fetching user:', error);
+        
+        const token = Cookies.get('.AspNetCore.Application.Authorization');
+        
+        if (!token) {
+          navigate('/');
+          alert("Faça o login novamente");
+        }
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const fetchAnotherUser = async () => {
@@ -101,14 +131,14 @@ const AnotherUserProfile = () => {
           <span>Não faz parte de comunidades</span>
         ): 
           anotherUser.UserCommunities.map((community: SimplifiedCommunity) => (
-          <p key={community.id}>{community.Name}</p>
+          <p key={community.id}>{community.name}</p>
         ))
         }</p>
         <p>Comunidades criadas: {!anotherUser.UserCreatedCommunities ? (
           <span>Sem comunidades criadas</span>
         ):
           anotherUser.UserCreatedCommunities.map((community: SimplifiedCommunity) => (
-            <p key={community.id}>{community.Name}</p>
+            <p key={community.id}>{community.name}</p>
           ))
         }</p>
         <br />

@@ -12,17 +12,17 @@ namespace Gamehub.Server.Models
         public string? Id { get; set; }
 
         [Required(ErrorMessage = "O nome deve ter entre 2 e 100 caracteres.")]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "O nome deve ter entre 2 e 100 caracteres.")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "O nome deve ter entre 2 e 20 caracteres.")]
         [BsonElement("Nome")]
         public string Name { get; set; } = null;
 
         [Required(ErrorMessage = "O sobrenome deve ter entre 2 e 100 caracteres.")]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "O sobrenome deve ter entre 2 e 100 caracteres.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "O sobrenome deve ter entre 2 e 50 caracteres.")]
         [BsonElement("Sobrenome")]
         public string Surname { get; set; } = null;
 
         [Required(ErrorMessage = "O usuário precisa de um apelido.")]
-        [StringLength(15, MinimumLength = 2, ErrorMessage = "O apelido deve ter entre 2 a 15 caracteres.")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "O apelido deve ter entre 2 a 20 caracteres.")]
         [BsonElement("Apelido")]
         public string Nickname { get; set; } = null;
 
@@ -42,9 +42,6 @@ namespace Gamehub.Server.Models
         [StringLength(20, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 20 caracteres.")]
         [BsonElement("Senha")]
         public string Password { get; set; } = null;
-
-        [BsonElement("Posts")]
-        public List<Post>? Posts { get; set; } = null;
 
         [BsonElement("Imagem")]
         public string? ImageSrc { get; set; } = null;

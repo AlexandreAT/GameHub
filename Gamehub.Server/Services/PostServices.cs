@@ -63,7 +63,7 @@ namespace Gamehub.Server.Services
             return post.Comments;
         }
 
-        public async Task<Post> RemoveAsyncComment(Post post, string commentId)
+        public async Task RemoveAsyncComment(Post post, string commentId)
         {
             var postIndex = post.Comments.FindIndex(p => p.Id == commentId);
 
@@ -71,7 +71,6 @@ namespace Gamehub.Server.Services
             {
                 post.Comments.RemoveAt(postIndex);
                 await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
-                return post;
             }
             else
             {

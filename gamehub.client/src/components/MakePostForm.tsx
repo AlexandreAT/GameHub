@@ -44,25 +44,6 @@ const MakePostForm = ({ user }: { user: User | null }) => {
     }
   }
 
-  const addPostUser = async (url: string, post: any) => {
-    try{
-      await axios.post(url, post, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }catch (error: any) {
-        console.error('Error posting data:', error);
-        if (error.response) {
-          return { data: null, error: error.response.data };
-        } else if (error.request) {
-          return { data: null, error: { message: 'No response received from the server.' } };
-        } else {
-          return { data: null, error: { message: 'Error making the request.' } };
-        }
-    }
-  }
-
   const clearPostForm = () => {
     setTitle('');
     setContent('');
@@ -100,7 +81,6 @@ const MakePostForm = ({ user }: { user: User | null }) => {
         }
       } else {
         console.log('Postado com sucesso!', response.data);
-        await addPostUser('/Users/posts/'+user.id, response.data);
         clearPostForm();
       }
     }catch (error) {
