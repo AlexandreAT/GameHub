@@ -187,25 +187,13 @@ namespace Gamehub.Server.Controllers
             return Ok(user);
         }
 
-        [HttpPost("posts/{id}")]
-        public async Task<ActionResult<Post>> AddPostToUser(string id, Post post)
-        {
-            var user = await _userServices.GetAsync(id);
-
-            if(user == null)
-            {
-                return NotFound();
-            }
-
-            await _userServices.AddPostAsync(id, user, post);
-            return Ok(user.Posts);
-        }
-
+        /*
         [HttpGet("posts/{id}")]
         public async Task<ActionResult<List<Post>>> GetUserPosts(string id)
         {
             return await _userServices.GetAsyncPosts(id);
         }
+        */
 
         [HttpGet("anotherUser/{id}")]
         public async Task<AnotherUser> GetAnotherUserAsync(string userId)

@@ -75,19 +75,7 @@ namespace Gamehub.Server.Controllers
                 Content = comment,
             };
 
-            var newComment = await _postServices.AddComment(commentary, postCommented);
-
-            if (postCommented.IdAuthor != null)
-            {
-                var postUser = await _userServices.GetAsync(postCommented.IdAuthor);
-
-                // Atualiza a propriedade "posts" do usuário que fez o post original
-                await _userServices.AddPostAsync(postUser.Id, postUser, newComment);
-            }
-            else
-            {
-                throw new Exception("O post não tem o ID do Autor");
-            }
+            await _postServices.AddComment(commentary, postCommented);
         }
 
         [HttpGet("comments")]
@@ -105,8 +93,7 @@ namespace Gamehub.Server.Controllers
 
             if (comment != null)
             {
-                Post newPost = await _postServices.RemoveAsyncComment(post, commentId);
-                await _userServices.RemovePostComment(newPost);
+                await _postServices.RemoveAsyncComment(post, commentId);
                 return Ok("Comentário removido com sucesso!");
             }
             else
@@ -122,7 +109,6 @@ namespace Gamehub.Server.Controllers
             User user = await _userServices.GetAsync(userId);
             Post post = await _postServices.AddLike(postId, user, commentId);
             User userOfPost = await _userServices.GetAsync(post.IdAuthor);
-            await _userServices.AddPostAsync(userOfPost.Id, userOfPost, post);
             
         }
 
@@ -133,7 +119,6 @@ namespace Gamehub.Server.Controllers
             User user = await _userServices.GetAsync(userId);
             Post post = await _postServices.AddDislike(postId, user, commentId);
             User userOfPost = await _userServices.GetAsync(post.IdAuthor);
-            await _userServices.AddPostAsync(userOfPost.Id, userOfPost, post);
 
         }
 

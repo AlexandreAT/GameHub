@@ -40,38 +40,7 @@ namespace Gamehub.Server.Services
         public async Task UpdateAsync(string id, User user) => await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
         public async Task RemoveAsync(string id) => await _userCollection.DeleteOneAsync(x => x.Id == id);
 
-        public async Task AddPostAsync(string id, User user, Post post)
-        {
-            if(post != null)
-            {
-                if(user.Posts == null)
-                {
-                    user.Posts = new List<Post>();
-                }
-
-                // Encontra o post original na lista de posts do usuário
-                var postIndex = user.Posts.FindIndex(p => p.Id == post.Id);
-
-                if (postIndex >= 0)
-                {
-                    // Atualiza o post original
-                    user.Posts[postIndex] = post;
-                }
-                else
-                {
-                    // Se o post não foi encontrado na lista de posts do usuário, adiciona-o
-                    user.Posts.Add(post);
-                }
-            }
-            else
-            {
-                throw new Exception("É necessário um objeto Post correto para adiciona na lista!");
-            }
-
-            await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
-            
-        }
-
+        /*
         public async Task<List<Post>> GetAsyncPosts(string id)
         {
             var user = await GetAsync(id);
@@ -84,6 +53,7 @@ namespace Gamehub.Server.Services
                 throw new Exception("Usuário sem posts!");
             }
         }
+        */
 
         public async Task AddCreatedCommunities(SimplifiedCommunity community, User user)
         {
@@ -100,31 +70,6 @@ namespace Gamehub.Server.Services
                 throw new Exception("É necessário um objeto Community correto para adicionar na lista!");
             }
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
-        }
-
-        public async Task RemovePostComment(Post post)
-        {
-            var user = await GetAsync(post.IdAuthor);
-            if (post.Comments != null)
-            {
-                var userPostIndex = user.Posts.FindIndex(p => p.Id == post.Id);
-                if (userPostIndex >= 0)
-                {
-                    // Atualiza o post sem o comentário
-                    user.Posts[userPostIndex] = post;
-
-                    // Atualiza o usuário no banco de dados
-                    await UpdateAsync(user.Id, user);
-                }
-                else
-                {
-                    throw new Exception("Comentário não encontrado");
-                }
-            }
-            else
-            {
-                throw new Exception("Post sem comentários");
-            }
         }
     }
 }
