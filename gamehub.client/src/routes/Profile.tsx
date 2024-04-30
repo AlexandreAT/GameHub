@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 import classes from "./Profile.module.css";
+import UserPostsComponent from '../components/UserPostsComponent';
 
 interface SimplifiedCommunity{
   id: string;
@@ -32,7 +33,7 @@ interface User {
     phone: string;
     email: string;
     password: string;
-    imgSrc: string;
+    imageSrc: string;
     following: SimplifiedUser[];
     Followers: SimplifiedUser[];
     UserCommunities: SimplifiedCommunity[];
@@ -57,7 +58,6 @@ interface Post{
 function Profile() {
 
     const [user, setUser] = useState<User | null>(null);
-    const [posts, setPosts] = useState<Post[]>([]);
     const [showPostsContainer, setShowPostsContainer] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [showBiographyForm, setShowBiographyForm] = useState(false);
@@ -89,36 +89,6 @@ function Profile() {
         return <h1 className='loading'>Carregando...</h1>
     }
 
-    function isValidDateString(dateString: Date): boolean {
-      const date = new Date(dateString);
-      return !isNaN(date.getTime());
-    }
-
-    const getUserPosts = async (url: string, userId: string) => {
-      try{
-        const response = await axios.get<Post[]>(url, {params: {
-          id: userId
-        }})
-        setPosts(response.data.map(post => ({
-          ...post,
-          date: isValidDateString(post.date) ? new Date(post.date) : new Date()
-        })));
-      } catch (error){
-        console.clear();
-        console.log('Error fetching posts: ' +error);
-      }
-    }
-
-    const showPosts = async () => {
-      try{
-        await getUserPosts(`/Posts/userPosts/${user.id}`, user.id);
-        setShowPostsContainer(!showPostsContainer);
-      } catch(error){
-        console.clear();
-        console.log('Error fetching posts: ' +error);
-      }
-    }
-
     const showForm = () => {
       setShowEditForm(!showEditForm);
     }
@@ -135,7 +105,7 @@ function Profile() {
             <div className={classes.divUserInfo}>
               <div className={classes.userInfoContent}>
                 <div className={classes.userImg}>
-                  <img src={user.imgSrc} alt='Foto de perfil' className={classes.userImage}/>
+                  <img src={user.imageSrc} alt='Foto de perfil' className={classes.userImage}/>
                   <button className={classes.btnImg}>Alterar imagem</button>
                 </div>
                 <div className={classes.userData}>
@@ -227,27 +197,7 @@ function Profile() {
                 </div>
             </div>
 
-            <button onClick={showPosts}>Mostrar seus posts</button>
-            {showPostsContainer === true && (
-              <div className={classes.containerPosts}>
-                {posts && posts.map((post: Post) => (
-                    <div key={post.id} className={classes.divPost}>
-                        <div className={classes.postHeader}>
-                          <p className={classes.author}>{post.author}</p>
-                          <span>-</span>
-                          <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
-                        </div>
-                        <div className={classes.postContent}>
-                          <h3 className={classes.title}>{post.title}</h3>
-                          <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
-                        </div>
-                    </div>
-                ))}
-                {!posts.length && (
-                  <h3>Usuário sem posts!</h3>
-                )}
-              </div>
-            )}
+            {<UserPostsComponent user={user}/>}
           </div>
         ): (
           <button onClick={showForm} className={classes.btnCancelar}>Cancelar</button>

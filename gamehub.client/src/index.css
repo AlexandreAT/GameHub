@@ -72,6 +72,22 @@ h1, .logoDetail{
   transform: scale(1.05);
 }
 
+.btnTransparent{
+  background-color: transparent;
+  padding: 5px 18px 5px 15px;
+  font-size: 22px;
+  font-weight: bold;
+  border: 2px solid var(--lightGrey);
+  border-radius: 50px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btnTransparent:hover{
+  border-color: var(--turquoise);
+  color: var(--turquoise);
+  transform: scale(1.02);
+}
+
 .link{
   position: relative;
   transition: all 0.3s ease;
