@@ -14,7 +14,7 @@
     height: 100%;
 }
 
-.divUser button, .btnCancelar{
+.divUser .divUserInfo button, .btnCancelar{
     background-color: transparent;
     padding: 5px 18px 5px 15px;
     font-size: 22px;
@@ -24,7 +24,7 @@
     transition: all 0.2s ease-in-out;
 }
 
-.divUser button:hover, .btnCancelar:hover{
+.divUser .divUserInfo button:hover, .btnCancelar:hover{
     border-color: var(--turquoise);
     color: var(--turquoise);
     transform: scale(1.02);
@@ -197,7 +197,7 @@
     display: none;
 }
 
-.footerFormBiography button{
+.divBiography .footerFormBiography button{
     background-color: transparent;
     border-bottom: 2px solid transparent;
     border: 5px;
@@ -208,7 +208,7 @@
     transition: all 0.2s ease-in-out;
 }
 
-.footerFormBiography button:hover{
+.divBiography .footerFormBiography button:hover{
     background-color: var(--clearblack);
     color: var(--lightGrey);
     border-bottom-color: var(--lightGrey);
@@ -216,71 +216,4 @@
 
 .formBiography:focus-within .footerFormBiography{
     display: flex;
-}
-
-.containerPosts{
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 90%;
-    gap: 1rem;
-}
-
-.divPost{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-bottom: 2px solid var(--mediumgrey);
-    width: 100%;
-    padding: 1rem 10px 1rem 10px;
-    gap: 15px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.divPost:hover{
-    background-color: var(--clearblack);
-}
-
-.postHeader{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
-
-.postHeader p, .author, .date{
-    font-size: 14px;
-    color: var(--lightGrey);
-}
-
-.postHeader .author{
-    font-weight: bold;
-    font-size: 20px;
-}
-
-.postContent{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    height: 100%;
-    width: 100%;
-    gap: 1rem;
-}
-
-.postContent .title{
-    font-size: 25px;
-    font-weight: bold;
-    max-width: 100%;
-    overflow-wrap: break-word;
-}
-
-.postContent .content{
-    font-size: 18px;
-    color: var(--lightGrey);
-    max-width: 100%;
-    overflow-wrap: break-word;
 }

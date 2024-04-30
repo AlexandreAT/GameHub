@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import classes from './AnotherUserProfile.module.css'
+import UserPostsComponent from '../components/UserPostsComponent';
 
 interface SimplifiedCommunity{
   id: string;
@@ -84,8 +85,7 @@ const AnotherUserProfile = () => {
 
     fetchUsers();
   }, []);
-
-
+  
   useEffect(() => {
     const fetchAnotherUser = async () => {
       try {
@@ -104,6 +104,10 @@ const AnotherUserProfile = () => {
 
   if(!anotherUser){
     return <h1 className='loading'>Carregando usuário...</h1>
+  }
+
+  if(!user){
+    return <h1 className='loading'>Carregando...</h1>
   }
 
   function isValidDateString(dateString: Date): boolean {
@@ -136,8 +140,6 @@ const AnotherUserProfile = () => {
     }
   }
 
-
-
   return (
     <div className={classes.divProfileMain}>
         <div className='navbar'>{<Navbar />}</div>
@@ -146,11 +148,11 @@ const AnotherUserProfile = () => {
               <div className={classes.userInfoContent}>
                 <div className={classes.userImg}>
                   <img src={anotherUser.imgSrc} alt='Foto de perfil' className={classes.anotherUserImage}/>
-                  <button className={classes.btnImg}>Alterar imagem</button>
                 </div>
                 <div className={classes.anotherUserData}>
                   <header className={classes.anotherUserDataHeader}>
                     <h2>{anotherUser.nickname}</h2>
+                    <button className='btnTransparent'>Seguir</button>
                   </header>
                   <div className={classes.anotherUserDataContent}>
                     <div>
@@ -206,27 +208,7 @@ const AnotherUserProfile = () => {
                 </div>
             </div>
 
-            <button onClick={showPosts}>Mostrar posts do usuário</button>
-            {showPostsContainer === true && (
-              <div className={classes.containerPosts}>
-                {posts && posts.map((post: Post) => (
-                    <div key={post.id} className={classes.divPost}>
-                        <div className={classes.postHeader}>
-                          <p className={classes.author}>{post.author}</p>
-                          <span>-</span>
-                          <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
-                        </div>
-                        <div className={classes.postContent}>
-                          <h3 className={classes.title}>{post.title}</h3>
-                          <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
-                        </div>
-                    </div>
-                ))}
-                {!posts.length && (
-                  <h3>Usuário sem posts!</h3>
-                )}
-              </div>
-            )}
+            <UserPostsComponent user={user} anotherUser={anotherUser}/>
           </div>
     </div>
   )
