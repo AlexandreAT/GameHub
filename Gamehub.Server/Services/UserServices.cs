@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Xml.Linq;
 
+
 namespace Gamehub.Server.Services
 {
     public class UserServices
@@ -71,5 +72,26 @@ namespace Gamehub.Server.Services
             }
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
+
+        public async Task<User> UploadImageAsync(string id, IFormFile image)
+        {
+            var user = await _userCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                throw new Exception("Usuário não encontrado.");
+            }
+            using (var ms = new MemoryStream())
+            {
+                await image.CopyToAsync(ms);
+                user.ImageSrc = ms.ToArray();
+                await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
+            }
+            return user;
+        }
+
+        /*public string GetImageUrl(byte[] image)
+        {
+            //Preciso implementar a lógica para buscar a imagem, pois se eu apenas buscar o array de byte no frontend, e tentar exibir a imagem com base naquilo, vai dar erro
+        }*/
     }
 }

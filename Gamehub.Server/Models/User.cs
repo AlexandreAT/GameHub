@@ -44,7 +44,7 @@ namespace Gamehub.Server.Models
         public string Password { get; set; } = null;
 
         [BsonElement("Imagem")]
-        public string? ImageSrc { get; set; } = null;
+        public byte[]? ImageSrc { get; set; } = null;
 
         [BsonElement("Seguindo")]
         public List<SimplifiedUser>? Following { get; set; } = null;

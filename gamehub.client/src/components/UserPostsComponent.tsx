@@ -24,7 +24,7 @@ interface User {
 interface AnotherUser {
   id: string;
   nickname: string;
-  imgSrc: string;
+  imageSrc: string;
 }
 
 interface SimplifiedUser{

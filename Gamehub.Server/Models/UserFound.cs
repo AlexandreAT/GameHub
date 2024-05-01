@@ -19,7 +19,7 @@ namespace Gamehub.Server.Models
         public string Password { get; set; }
 
         [JsonIgnore]
-        public string? ImageSrc { get; set; }
+        public byte[]? ImageSrc { get; set; }
 
         [JsonIgnore]
         public List<SimplifiedUser>? Following { get; set; } = null;

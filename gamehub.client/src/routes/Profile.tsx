@@ -3,6 +3,7 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 import Cookies from 'js-cookie';
 import { Navigate, useNavigate } from 'react-router-dom';
+import * as qs from 'qs';
 
 import classes from "./Profile.module.css";
 import UserPostsComponent from '../components/UserPostsComponent';
@@ -17,11 +18,6 @@ interface SimplifiedUser{
   userId: string;
   nickName: string;
   userImageSrc: string;
-}
-
-interface LikeDisLike {
-  simplifiedUser: SimplifiedUser
-  IsSelected: boolean;
 }
 
 interface User {
@@ -43,24 +39,13 @@ interface User {
     state: string;
 }
 
-interface Post{
-  id: string;
-  author: string;
-  idAuthor: string;
-  title: string;
-  content: string;
-  date: Date;
-  like: LikeDisLike[];
-  dislike: LikeDisLike[];
-  game: string;
-}
-
 function Profile() {
 
     const [user, setUser] = useState<User | null>(null);
-    const [showPostsContainer, setShowPostsContainer] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [showBiographyForm, setShowBiographyForm] = useState(false);
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -89,6 +74,32 @@ function Profile() {
         return <h1 className='loading'>Carregando...</h1>
     }
 
+    const handleImageChange = (event: any) => {
+      setImage(event.target.files[0]);
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
+    };
+  
+    const handleUploadImage = async () => {
+      if (!image) return;
+    
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('id', user.id);
+    
+      try {
+        const response = await axios.post('/Users/upload-image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+    
+        // Atualizar o estado do usuário com a nova imagem
+        setUser({...user, imageSrc: response.data.imageSrc });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
     const showForm = () => {
       setShowEditForm(!showEditForm);
     }
@@ -105,8 +116,13 @@ function Profile() {
             <div className={classes.divUserInfo}>
               <div className={classes.userInfoContent}>
                 <div className={classes.userImg}>
-                  <img src={user.imageSrc} alt='Foto de perfil' className={classes.userImage}/>
-                  <button className={classes.btnImg}>Alterar imagem</button>
+                  {imagePreview ? (
+                    <img src={imagePreview} alt='Preview da imagem' className={classes.imagePreview} />
+                  ): (
+                    <img alt='Sem imagem' className={classes.imagePreview} />
+                  )}
+                  <input type='file' onChange={handleImageChange} />
+                  <button onClick={handleUploadImage}>Upload imagem</button>
                 </div>
                 <div className={classes.userData}>
                   <header className={classes.userDataHeader}>
