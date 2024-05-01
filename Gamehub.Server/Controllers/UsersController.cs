@@ -205,7 +205,7 @@ namespace Gamehub.Server.Controllers
                 Name = user.Name,
                 Surname = user.Surname,
                 Nickname = user.Nickname,
-                ImgSrc = user.ImageSrc,
+                ImageSrc = user.ImageSrc,
                 Following = user.Following,
                 Biography = user.Biography,
                 City = user.City,
@@ -214,6 +214,25 @@ namespace Gamehub.Server.Controllers
                 UserCreatedCommunities = user.UserCreatedCommunities,
             };
         }
+
+        [HttpPost("upload-image")]
+        public async Task<ActionResult<User>> UploadImage([FromForm] IFormFile image, [FromForm] string id)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("Imagem não pode ser nula ou vazia.");
+            }
+            var user = await _userServices.UploadImageAsync(id, image);
+            return Ok(user);
+        }
+
+        /*[HttpGet("getImage")]
+        public async Task<ActionResult<string>> GetImage(string id)
+        {
+            User user = await _userServices.GetAsync(id);
+            string imageSrc = await _userServices.GetImageUrl(user.ImageSrc);
+            return Ok(imageSrc);
+        }*/
 
         private string GenerateJwtToken(User user)
         {

@@ -40,5 +40,8 @@ namespace Gamehub.Server.Models
 
         [BsonElement("Jogo relacionado ao post")]
         public string? Game { get; set; } = null;
+
+        [BsonElement("Imagem")]
+        public byte[]? ImageSrc { get; set; } = null;
     }
 }

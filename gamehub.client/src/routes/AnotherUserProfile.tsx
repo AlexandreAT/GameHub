@@ -18,7 +18,7 @@ interface AnotherUser {
     name: string;
     surname: string;
     nickname: string;
-    imgSrc: string;
+    imageSrc: string;
     following: SimplifiedUser[];
     biography: string;
     city: string;
@@ -147,7 +147,7 @@ const AnotherUserProfile = () => {
             <div className={classes.divUserInfo}>
               <div className={classes.userInfoContent}>
                 <div className={classes.userImg}>
-                  <img src={anotherUser.imgSrc} alt='Foto de perfil' className={classes.anotherUserImage}/>
+                  <img src={anotherUser.imageSrc} alt='Foto de perfil' className={classes.anotherUserImage}/>
                 </div>
                 <div className={classes.anotherUserData}>
                   <header className={classes.anotherUserDataHeader}>

@@ -9,7 +9,7 @@ namespace Gamehub.Server.Models
         public string Name { get; set; }
         public string Surname {  get; set; }
         public string Nickname { get; set; } = null;
-        public string? ImgSrc { get; set; } = null;
+        public byte[]? ImageSrc { get; set; } = null;
         public List<SimplifiedUser>? Following { get; set; } = null;
         public string? Biography { get; set; } = null;
         public string? City { get; set; } = null;
