@@ -5,6 +5,7 @@ import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 import { FaCommentSlash } from "react-icons/fa6";
+import { IoTrashBin } from "react-icons/io5";
 import Navbar from '../components/Navbar'
 
 import * as qs from 'qs';
@@ -244,6 +245,10 @@ const Logado = () => {
     }
   };
 
+  const deletePost = async (postId: string) => {
+    
+  }
+
   return (
     <div className={classes.divMain}>
 
@@ -280,13 +285,22 @@ const Logado = () => {
                   ) : (
                     <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
                   )}
-                  {post.idAuthor === user.id ? 
-                    <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>                
-                  :
-                    <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
-                  }
-                  <span>-</span>
-                  <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                  {post.idAuthor === user.id ? (
+                    <div className={classes.postUser}>
+                      <div className={classes.postHeader}>
+                        <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>                
+                        <span>-</span>
+                        <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                      </div>
+                      <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon}/></button>
+                    </div>
+                  ):(
+                    <div className={classes.postHeader}>
+                      <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
+                      <span>-</span>
+                      <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                    </div>
+                  )}
                 </div>
                 <div className={classes.postContent}>
                   <h3 className={classes.title}>{post.title}</h3>
