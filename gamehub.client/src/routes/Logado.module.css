@@ -93,6 +93,31 @@
     align-items: center;
 }
 
+.postUser .trashButton{
+    display: none;
+}
+
+.postUser .trashButton{
+    padding: 2px;
+    background-color: transparent;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.trashButton{
+    display: none;
+}
+
+.trashButton .trashIcon{
+    fill: var(--grey);
+    transition: all 0.3s ease;
+}
+
+.trashButton:hover .trashIcon{
+    fill: crimson;
+    transform: scale(1.3);
+}
+
 .postHeader img{
     border-radius: 50%;
     width: 50px;
@@ -109,6 +134,23 @@
 .postHeader .author{
     font-weight: bold;
     font-size: 22px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.author::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 2px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+  
+.author:hover::after{
+    width: 100%;
 }
 
 .postContent{
@@ -132,6 +174,65 @@
     color: var(--lightGrey);
     max-width: 100%;
     overflow-wrap: break-word;
+}
+
+.postContent .postImage{
+    max-width: 100%;
+    max-height: 665px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid var(--mediumgrey);
+    transition: all 0.3s ease;
+}
+
+.divPost:hover .postImage{
+    border-color: var(--grey);
+    box-shadow: 0px 0px 5px var(--black);
+}
+
+.divPost .divBtnImage{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divPost .divBtnImage div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.divPost .divBtnImage label{
+    font-size: 14px;
+    color: var(--grey);
+}
+
+.divPost .btnShowImage{
+    background-color: transparent;
+    padding: 0px;
+    color: var(--lightGrey);
+    font-size: 15px;
+    font-weight: bold;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.btnShowImage::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 1px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+  
+.btnShowImage:hover::after{
+    width: 100%;
 }
 
 .postFooter{
@@ -191,6 +292,8 @@
     display: none;
 }
 
-.author:hover .youSpan{
+.divPost:hover .youSpan,
+.divPost:hover .trashButton
+{
     display: inline;
 }
