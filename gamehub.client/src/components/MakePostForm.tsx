@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import classes from './MakePostForm.module.css'
 import { axios } from '../axios-config';
 
@@ -12,9 +12,8 @@ const MakePostForm = ({ user }: { user: User | null }) => {
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [file, setFile] = useState<File | null>(null);
+    const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [imageUrl, setImageUrl] = useState('');
 
     if(!user){
         return <h1 className='loading'>Carregando...</h1>
@@ -60,13 +59,12 @@ const MakePostForm = ({ user }: { user: User | null }) => {
     const author = user.nickname;
     const idAuthor = user.id;
     let imageSrc = null;
-    console.log("2-" +file);
-    
-    if(file){
-      await handleUploadImage(file);
-      imageSrc = imageUrl;
+
+    if(image){
+      const response = await handleUploadImage();
+      imageSrc = response.data.url;
     }
-    
+
     try{
       const response = await postData('/Posts', {
         author,
@@ -75,6 +73,7 @@ const MakePostForm = ({ user }: { user: User | null }) => {
         content,
         imageSrc
       })
+      
       if (response.error) {
         console.log('Error from the backend:', response.error);
         if(response.error.errors.Title !== undefined){
@@ -103,18 +102,13 @@ const MakePostForm = ({ user }: { user: User | null }) => {
   }
 
   const handleFile = (event: any) => {
-    setFile(event.target.files[0]);
+    setImage(event.target.files[0]);
     setImagePreview(URL.createObjectURL(event.target.files[0]));
   }
 
-  const handleUploadImage = async (newFile: any) => {
-    console.log(newFile);
+  const handleUploadImage = async () => {
+    if(!image) return;
     
-    if(!newFile) return;
-
-    console.log("3");
-    
-    const image = newFile;
     const url = `https://api.imgbb.com/1/upload?key=b7374e73063a610d12c9922f0c360a20&name=${image}`;
     const formData = new FormData();
     formData.append('image', image);
@@ -125,11 +119,7 @@ const MakePostForm = ({ user }: { user: User | null }) => {
         body: formData,
       });
       const responseApi = await responseJsonApi.json();
-      console.log(responseJsonApi);
-      
-      setImageUrl(responseApi.url);
-      console.log(imageUrl);
-      
+      return responseApi;
     } catch (error) {
       console.error(error);
     }
