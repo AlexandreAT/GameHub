@@ -73,7 +73,7 @@ namespace Gamehub.Server.Services
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
 
-        public async Task<User> UploadImageAsync(string id, IFormFile image)
+        /*public async Task<User> UploadImageAsync(string id, IFormFile image)
         {
             var user = await _userCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
             if (user == null)
@@ -87,7 +87,7 @@ namespace Gamehub.Server.Services
                 await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
             }
             return user;
-        }
+        }*/
 
         /*public string GetImageUrl(byte[] image)
         {

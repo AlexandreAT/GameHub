@@ -48,6 +48,7 @@ interface Post{
     like: LikeDisLike[];
     dislike: LikeDisLike[];
     game: string;
+    imageSrc: string;
 }
 
 function UserPostsComponent({user, anotherUser}: PostProps) {
@@ -280,6 +281,19 @@ function UserPostsComponent({user, anotherUser}: PostProps) {
         {posts && posts.map((post: Post) => (
           <div key={post.id} className={classes.divPost}>
             <div className={classes.postHeader}>
+              {anotherUser ? (
+                anotherUser.imageSrc ? (
+                  <img src={anotherUser.imageSrc} alt={anotherUser.nickname} />
+                ) : (
+                  <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                )
+              ) : (
+                user.imageSrc ? (
+                  <img src={user.imageSrc} alt={user.nickname} />
+                ) : (
+                  <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                )
+              )}
               <p className={classes.author}>{post.author}</p>
               <span>-</span>
               <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
@@ -287,6 +301,9 @@ function UserPostsComponent({user, anotherUser}: PostProps) {
             <div className={classes.postContent}>
               <h3 className={classes.title}>{post.title}</h3>
               <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+              {post.imageSrc && (
+                <img className={classes.postImage} src={post.imageSrc} alt={post.title} />
+              )}
             </div>
             <div className={classes.postFooter}>
               <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>

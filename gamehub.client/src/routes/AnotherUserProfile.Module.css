@@ -58,7 +58,8 @@
     border-radius: 50%;
     width: 350px;
     height: 350px;
-    border: 2px solid var(--turquoise);
+    object-fit: cover;
+    border: 2px solid var(--black);
 }
 
 .anotherUserData{

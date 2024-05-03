@@ -50,15 +50,36 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 400px;
-    height: 400px;
+    width: 420px;
+    height: 420px;
 }
 
 .userImg img{
     border-radius: 50%;
     width: 350px;
     height: 350px;
-    border: 2px solid var(--turquoise);
+    object-fit: cover;
+    border: 2px solid var(--black);
+}
+
+.userImg input[type="file"]{
+    display: none;
+}
+
+.userImg label, .userImg span{
+    cursor: pointer;
+    color: var(--lightGrey);
+    transition: all 0.2s ease;
+}
+
+.userImg span{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.userImg label:hover, .userImg label:hover span{
+    color: var(--turquoise);
+    transform: scale(1.01);
 }
 
 .userData{

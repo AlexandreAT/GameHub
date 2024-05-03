@@ -13,6 +13,9 @@ namespace Gamehub.Server.Models
         [BsonElement("Autor")]
         public string Author { get; set; } = null;
 
+        [BsonElement("Imagem do autor")]
+        public string? AuthorImage { get; set; } = null;
+
         [BsonElement("ID do autor")]
         public string? IdAuthor { get; set; } = null;
 
@@ -42,6 +45,6 @@ namespace Gamehub.Server.Models
         public string? Game { get; set; } = null;
 
         [BsonElement("Imagem")]
-        public byte[]? ImageSrc { get; set; } = null;
+        public string? ImageSrc { get; set; } = null;
     }
 }

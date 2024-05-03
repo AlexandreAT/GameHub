@@ -247,12 +247,26 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                     <div key={comment.id} className={classes.containerComments}>
                         {comment.user.userId === userId ? (
                           <div className={classes.commentHeader}>
-                            <Link to={"/Perfil"}><p className={classes.name}>{comment.user.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
+                            <div>
+                              {comment.user.userImageSrc ? (
+                                <img src={comment.user.userImageSrc} alt={comment.user.nickName} />
+                              ) : (
+                                <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                              )}
+                              <Link to={"/Profile"}><p className={classes.name}>{comment.user.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
+                            </div>
                             <button className={classes.trashButton} onClick={() => deleteComment(comment.id)}><IoTrashBin className={classes.trashIcon}/></button>
                           </div>
                         ): (
                           <div className={classes.commentHeader}>
-                            <Link to={`/AnotherProfile/${comment.user.userId}`}><p className={classes.name}>{comment.user.nickName}</p></Link>
+                            <div>
+                              {comment.user.userImageSrc ? (
+                                <img src={comment.user.userImageSrc} alt={comment.user.nickName} />
+                              ) : (
+                                <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                              )}
+                              <Link to={`/AnotherProfile/${comment.user.userId}`}><p className={classes.name}>{comment.user.nickName}</p></Link>
+                            </div>
                           </div>
                         )}
                         <div className={classes.commentContent}>
