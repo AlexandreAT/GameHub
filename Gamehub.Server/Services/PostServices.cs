@@ -37,6 +37,43 @@ namespace Gamehub.Server.Services
             return posts.FindAll(x => x.IdAuthor == userId);
         }
 
+        public async Task UpdateAsync(string id, Post post) => await _postCollection.ReplaceOneAsync(x => x.Id == id, post);
+
+        public async Task UpdatePostsImage(User user)
+        {
+            List<Post> posts = await GetUserPosts(user.Id);
+
+            foreach (Post post in posts)
+            {
+                if (post.AuthorImage != user.ImageSrc)
+                {
+                    post.AuthorImage = user.ImageSrc;
+                    await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
+                }
+            }
+        }
+
+        public async Task UpdateCommentsImages(User user)
+        {
+            List<Post> posts = await GetAsync();
+
+            foreach (Post post in posts)
+            {
+                if (post.Comments != null)
+                {
+                    for (int i = 0; i < post.Comments.Count; i++)
+                    {
+                        if (post.Comments[i].User.UserId == user.Id)
+                        {
+                            post.Comments[i].User.UserImageSrc = user.ImageSrc;
+                        }
+                    }
+
+                    await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
+                }
+            }
+        }
+
         public async Task RemoveAsync(string id) => await _postCollection.DeleteOneAsync(x => x.Id == id);
 
         public async Task<Post> AddComment(Comment comment, Post post)

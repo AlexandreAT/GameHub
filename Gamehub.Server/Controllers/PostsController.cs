@@ -26,7 +26,8 @@ namespace Gamehub.Server.Controllers
         [HttpPost]
         public async Task<Post> PostPost(Post post)
         {
-
+            User user = await _userServices.GetAsync(post.IdAuthor);
+            post.AuthorImage = user.ImageSrc;
             if (post.Title == null)
             {
                 throw new Exception("O post deve conter um título!");

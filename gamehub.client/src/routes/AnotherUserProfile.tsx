@@ -147,7 +147,11 @@ const AnotherUserProfile = () => {
             <div className={classes.divUserInfo}>
               <div className={classes.userInfoContent}>
                 <div className={classes.userImg}>
-                  <img src={anotherUser.imageSrc} alt='Foto de perfil' className={classes.anotherUserImage}/>
+                  {anotherUser.imageSrc ? (
+                    <img src={anotherUser.imageSrc} alt={anotherUser.nickname} />
+                  ) : (
+                    <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                  )}
                 </div>
                 <div className={classes.anotherUserData}>
                   <header className={classes.anotherUserDataHeader}>

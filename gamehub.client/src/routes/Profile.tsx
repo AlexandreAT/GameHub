@@ -3,6 +3,7 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 import Cookies from 'js-cookie';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { CgProfile } from "react-icons/cg";
 import * as qs from 'qs';
 
 import classes from "./Profile.module.css";
@@ -44,7 +45,7 @@ function Profile() {
     const [user, setUser] = useState<User | null>(null);
     const [showEditForm, setShowEditForm] = useState(false);
     const [showBiographyForm, setShowBiographyForm] = useState(false);
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -53,7 +54,6 @@ function Profile() {
         try {
           const response = await axios.get<User>('/Users/current');
           setUser(response.data);
-          
         } catch (error) {
           console.clear();
           console.error('Error fetching user:', error);
@@ -81,12 +81,21 @@ function Profile() {
   
     const handleUploadImage = async () => {
       if (!image) return;
-    
+
+      const url = `https://api.imgbb.com/1/upload?key=b7374e73063a610d12c9922f0c360a20&name=${image.name}`;
       const formData = new FormData();
       formData.append('image', image);
-      formData.append('id', user.id);
     
       try {
+        const responseJsonApi = await fetch(url, {
+          method: 'POST',
+          body: formData,
+        });
+        const responseApi = await responseJsonApi.json();
+
+        formData.delete('image');
+        formData.append('image', responseApi.data.url);
+        formData.append('id', user.id);
         const response = await axios.post('/Users/upload-image', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -117,12 +126,17 @@ function Profile() {
               <div className={classes.userInfoContent}>
                 <div className={classes.userImg}>
                   {imagePreview ? (
-                    <img src={imagePreview} alt='Preview da imagem' className={classes.imagePreview} />
+                    <img src={imagePreview} alt='Preview da imagem' />
                   ): (
-                    <img alt='Sem imagem' className={classes.imagePreview} />
+                    user.imageSrc ? (
+                      <img src={user.imageSrc} alt={user.nickname} />
+                    ): (
+                      <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                    )
                   )}
-                  <input type='file' onChange={handleImageChange} />
-                  <button onClick={handleUploadImage}>Upload imagem</button>
+                  <label htmlFor='file'><span>Clique aqui</span> e escolha uma imagem nova</label>
+                  <input type='file' name='file' id='file' onChange={handleImageChange} />
+                  <button onClick={handleUploadImage}>Trocar imagem</button>
                 </div>
                 <div className={classes.userData}>
                   <header className={classes.userDataHeader}>

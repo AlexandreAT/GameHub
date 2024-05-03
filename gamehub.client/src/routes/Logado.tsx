@@ -35,11 +35,13 @@ interface Post{
   id: string;
   author: string;
   idAuthor: string;
+  authorImage: string;
   title: string;
   content: string;
   date: Date;
   like: LikeDisLike[];
   dislike: LikeDisLike[];
+  imageSrc: string;
 }
 
 const Logado = () => {
@@ -273,6 +275,11 @@ const Logado = () => {
             {posts && posts.map((post: Post) => (
               <div key={post.id} className={classes.divPost}>
                 <div className={classes.postHeader}>
+                  {post.authorImage ? (
+                    <img src={post.authorImage} alt={post.author} />
+                  ) : (
+                    <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
+                  )}
                   {post.idAuthor === user.id ? 
                     <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>                
                   :
@@ -284,6 +291,9 @@ const Logado = () => {
                 <div className={classes.postContent}>
                   <h3 className={classes.title}>{post.title}</h3>
                   <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                  {post.imageSrc && (
+                    <img className={classes.postImage} src={post.imageSrc} alt={post.title} />
+                  )}
                 </div>
                 <div className={classes.postFooter}>
                   <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>

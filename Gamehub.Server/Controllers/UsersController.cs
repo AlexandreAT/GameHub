@@ -19,6 +19,7 @@ namespace Gamehub.Server.Controllers
     {
 
         private readonly UserServices _userServices;
+        private readonly PostServices _postServices;
         private readonly IConfiguration _configuration;
 
         public class LoginResponse
@@ -27,10 +28,11 @@ namespace Gamehub.Server.Controllers
             public string Token { get; set; }
         }
 
-        public UsersController(UserServices userServices, IConfiguration configuration)
+        public UsersController(UserServices userServices, IConfiguration configuration, PostServices postServices)
         {
             _userServices = userServices;
             _configuration = configuration;
+            _postServices = postServices;
         }
 
         [HttpGet]
@@ -216,13 +218,17 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("upload-image")]
-        public async Task<ActionResult<User>> UploadImage([FromForm] IFormFile image, [FromForm] string id)
+        public async Task<ActionResult<User>> UploadImage([FromForm] string image, [FromForm] string id)
         {
             if (image == null || image.Length == 0)
             {
                 return BadRequest("Imagem não pode ser nula ou vazia.");
             }
-            var user = await _userServices.UploadImageAsync(id, image);
+            User user = await _userServices.GetAsync(id);
+            user.ImageSrc = image;
+            await _userServices.UpdateAsync(id, user);
+            await _postServices.UpdatePostsImage(user);
+            await _postServices.UpdateCommentsImages(user);
             return Ok(user);
         }
 
