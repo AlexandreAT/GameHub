@@ -247,7 +247,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                     <div key={comment.id} className={classes.containerComments}>
                         {comment.user.userId === userId ? (
                           <div className={classes.commentHeader}>
-                            <div>
+                            <div className={classes.commentUser}>
                               {comment.user.userImageSrc ? (
                                 <img src={comment.user.userImageSrc} alt={comment.user.nickName} />
                               ) : (

@@ -54,6 +54,9 @@ const Logado = () => {
   const [showFormComment, setShowFormComment] = useState<{ id: string; show: boolean }[]>([]);
   const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
   const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
+  const [updatedPosts, setUpdatedPosts] = useState(false);
+  const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
+  const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
 
   const navigate = useNavigate();
 
@@ -167,7 +170,7 @@ const Logado = () => {
     return () => {
       clearInterval(interval);
     }
-  }, [user, showForm]);
+  }, [user, showForm, updatedPosts]);
 
   useEffect(() => {
     checksFeedback();
@@ -246,7 +249,33 @@ const Logado = () => {
   };
 
   const deletePost = async (postId: string) => {
+    try {
+      await axios.delete(`/Posts/${postId}`, {
+        params: {
+          postId
+        }
+      });
+      setUpdatedPosts(!updatedPosts);
+    } catch (error) {
+      console.error('Error delete post:', error);
+    }
+  }
+
+  const handleShowImage = (id: string) => {
     
+    setActiveImageButton(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+
+    const index = showImage.findIndex(item => item.id === id);
+    if (index >= 0) {
+      const newShowImage = [...showImage];
+      newShowImage[index] = { id, show:!newShowImage[index].show };
+      setShowImage(newShowImage);
+    } else {
+      setShowImage([...showImage, { id, show: true }]);
+    }
   }
 
   return (
@@ -305,7 +334,18 @@ const Logado = () => {
                 <div className={classes.postContent}>
                   <h3 className={classes.title}>{post.title}</h3>
                   <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
-                  {post.imageSrc && (
+                  {post.imageSrc &&
+                    <div className={classes.divBtnImage}>
+                    {activeImageButton[post.id] ? (
+                      <button className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Ocultar imagem</button>
+                    ): (
+                      <div>
+                        <label htmlFor='btnImage'>Este post contém uma imagem</label>
+                        <button name='btnImage' className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Mostrar imagem</button>
+                      </div>
+                    )}</div>
+                  }
+                  {showImage.some(item => item.id === post.id) && showImage.find(item => item.id === post.id)!.show && post.imageSrc && (
                     <img className={classes.postImage} src={post.imageSrc} alt={post.title} />
                   )}
                 </div>

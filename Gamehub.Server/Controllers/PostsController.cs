@@ -46,6 +46,9 @@ namespace Gamehub.Server.Controllers
         [HttpGet("userPosts/{id}")]
         public async Task<List<Post>> GetUserPosts(string id) => await _postServices.GetUserPosts(id);
 
+        [HttpDelete("{id}")]
+        public async Task DeletePost(string postId) => await _postServices.RemoveAsync(postId);
+
         [HttpPost("comment")]
         public async Task PostComment([FromForm]string postId, [FromForm]string userId, [FromForm]string comment)
         {

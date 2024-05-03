@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
+import { IoTrashBin } from "react-icons/io5";
 import * as qs from 'qs';
 
 import classes from './UserPostsComponent.module.css'
@@ -58,6 +59,9 @@ function UserPostsComponent({user, anotherUser}: PostProps) {
     const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
     const [showPostsContainer, setShowPostsContainer] = useState(false);
+    const [updatedPosts, setUpdatedPosts] = useState(false);
+    const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
+    const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
 
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
@@ -268,6 +272,36 @@ function UserPostsComponent({user, anotherUser}: PostProps) {
       }
     };
 
+    const deletePost = async (postId: string) => {
+      try {
+        await axios.delete(`/Posts/${postId}`, {
+          params: {
+            postId
+          }
+        });
+        setUpdatedPosts(!updatedPosts);
+      } catch (error) {
+        console.error('Error delete post:', error);
+      }
+    }
+
+    const handleShowImage = (id: string) => {
+    
+      setActiveImageButton(prevState => ({
+        ...prevState,
+        [id]: !prevState[id]
+      }));
+  
+      const index = showImage.findIndex(item => item.id === id);
+      if (index >= 0) {
+        const newShowImage = [...showImage];
+        newShowImage[index] = { id, show:!newShowImage[index].show };
+        setShowImage(newShowImage);
+      } else {
+        setShowImage([...showImage, { id, show: true }]);
+      }
+    }
+
   return (
     <>
       {!anotherUser ? (
@@ -294,16 +328,40 @@ function UserPostsComponent({user, anotherUser}: PostProps) {
                   <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
                 )
               )}
-              <p className={classes.author}>{post.author}</p>
-              <span>-</span>
-              <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+              {post.idAuthor === user.id ? (
+                <div className={classes.postUser}>
+                  <div className={classes.postHeader}>
+                    <p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p>
+                    <span>-</span>
+                    <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                  </div>
+                  <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                </div>
+              ) : (
+                <div className={classes.postHeader}>
+                  <p className={classes.author}>{post.author}</p>
+                  <span>-</span>
+                  <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                </div>
+              )}
             </div>
             <div className={classes.postContent}>
               <h3 className={classes.title}>{post.title}</h3>
               <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
-              {post.imageSrc && (
-                <img className={classes.postImage} src={post.imageSrc} alt={post.title} />
-              )}
+              {post.imageSrc &&
+                    <div className={classes.divBtnImage}>
+                    {activeImageButton[post.id] ? (
+                      <button className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Ocultar imagem</button>
+                    ): (
+                      <div>
+                        <label htmlFor='btnImage'>Este post contém uma imagem</label>
+                        <button name='btnImage' className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Mostrar imagem</button>
+                      </div>
+                    )}</div>
+                  }
+                  {showImage.some(item => item.id === post.id) && showImage.find(item => item.id === post.id)!.show && post.imageSrc && (
+                    <img className={classes.postImage} src={post.imageSrc} alt={post.title} />
+                  )}
             </div>
             <div className={classes.postFooter}>
               <button onClick={() => handleOpinionButtonClick(post.id, 'like')}>
