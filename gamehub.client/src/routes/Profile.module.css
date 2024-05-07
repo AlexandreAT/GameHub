@@ -44,6 +44,27 @@
     justify-content: space-around;
 }
 
+.divUserInfo p{
+    position: relative;
+}
+
+p .spanPublic{
+    position: absolute;
+    top: -15px;
+    display: none;
+    font-size: 12px;
+    color: var(--grey);
+    text-shadow: none;
+}
+
+p:hover .spanPublic{
+    display: block;
+}
+
+/* .userInfoContent:hover .spanPublic{
+    display: block;
+} */
+
 .userImg{
     display: flex;
     flex-direction: column;
@@ -169,6 +190,11 @@
 .divBiography{
     display: flex;
     flex-direction: column;
+}
+
+.divBiography p{
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .userInfoFooter button {

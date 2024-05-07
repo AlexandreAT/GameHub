@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import { axios } from '../axios-config';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import * as qs from 'qs';
 
 import classes from './AnotherUserProfile.module.css'
 import UserPostsComponent from '../components/UserPostsComponent';
@@ -20,6 +21,7 @@ interface AnotherUser {
     nickname: string;
     imageSrc: string;
     following: SimplifiedUser[];
+    followers: string[];
     biography: string;
     city: string;
     state: string;
@@ -33,23 +35,6 @@ interface SimplifiedUser{
   userImageSrc: string;
 }
 
-interface LikeDisLike {
-  simplifiedUser: SimplifiedUser
-  IsSelected: boolean;
-}
-
-interface Post{
-  id: string;
-  author: string;
-  idAuthor: string;
-  title: string;
-  content: string;
-  date: Date;
-  like: LikeDisLike[];
-  dislike: LikeDisLike[];
-  game: string;
-}
-
 interface User {
   id: string;
   nickname: string;
@@ -61,8 +46,6 @@ const AnotherUserProfile = () => {
   const { id } = useParams();
   const [anotherUser, setAnotherUser] = useState<AnotherUser>();
   const [user, setUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [showPostsContainer, setShowPostsContainer] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -110,33 +93,24 @@ const AnotherUserProfile = () => {
     return <h1 className='loading'>Carregando...</h1>
   }
 
-  function isValidDateString(dateString: Date): boolean {
-    const date = new Date(dateString);
-    return !isNaN(date.getTime());
-  }
+  const followUser = async () => {
 
-  const getUserPosts = async (url: string, userId: string) => {
-    try{
-      const response = await axios.get<Post[]>(url, {params: {
-        id: userId
-      }})
-      setPosts(response.data.map(post => ({
-        ...post,
-        date: isValidDateString(post.date) ? new Date(post.date) : new Date()
-      })));
-    } catch (error){
-      console.clear();
-      console.log('Error fetching posts: ' +error);
-    }
-  }
+    const data = {
+      followingId: anotherUser.id,
+      userId: user.id,
+    };
 
-  const showPosts = async () => {
     try{
-      await getUserPosts(`/Posts/userPosts/${anotherUser.id}`, anotherUser.id);
-      setShowPostsContainer(!showPostsContainer);
+      await axios.post("/Users/followUser", qs.stringify(data), {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+
+      window.location.reload();
     } catch(error){
       console.clear();
-      console.log('Error fetching posts: ' +error);
+      console.log('Error following user:', error);
     }
   }
 
@@ -156,7 +130,18 @@ const AnotherUserProfile = () => {
                 <div className={classes.anotherUserData}>
                   <header className={classes.anotherUserDataHeader}>
                     <h2>{anotherUser.nickname}</h2>
-                    <button className='btnTransparent'>Seguir</button>
+                    <button className='btnTransparent' onClick={followUser}>
+                      {anotherUser.followers.length !== 0 ? 
+                      (anotherUser.followers.map((followerId: string) => (
+                        followerId !== user.id ? (
+                          <span>seguir</span>
+                        ): (
+                          <span>deixar de seguir</span>
+                        )
+                      ))): (
+                        <span>seguir</span>
+                      )}
+                    </button>
                   </header>
                   <div className={classes.anotherUserDataContent}>
                     <div>
@@ -167,12 +152,12 @@ const AnotherUserProfile = () => {
                       <p>Cidade: {!anotherUser.city ? (
                         <span className={classes.noRegistry}>Sem uma cidade registrada</span>
                       ):
-                        <span className={classes.spanData}>anotherUser.city</span>
+                        <span className={classes.spanData}>{anotherUser.city}</span>
                       }</p>
                       <p>Estado: {!anotherUser.state ? (
                         <span className={classes.noRegistry}>Sem um estado registrado</span>
                       ):
-                        <span className={classes.spanData}>anotherUser.state</span>
+                        <span className={classes.spanData}>{anotherUser.state}</span>
                       }</p>
                     </div>
                   </div>
@@ -183,9 +168,7 @@ const AnotherUserProfile = () => {
                     <p>Seguindo: {!anotherUser.following ? (
                       <span className={classes.noRegistry}>Não segue ninguém</span> 
                     ):
-                    anotherUser.following.map((following: SimplifiedUser) => (
-                      <span key={following.userId} className={classes.spanData}>{following.nickName}</span>
-                    ))
+                      <span>{anotherUser.following.length}</span>
                     }</p>
                     <p>Comunidades em que faz parte: {!anotherUser.UserCommunities ? (
                       <span className={classes.noRegistry}>Não faz parte de comunidades</span>
@@ -206,7 +189,7 @@ const AnotherUserProfile = () => {
                     <p>Biografia: {!anotherUser.biography ? (
                       <span className={classes.noRegistry}>Sem biografia</span>
                     ):
-                      <span className={classes.spanData}>anotherUser.biography</span>
+                      <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: anotherUser.biography.replace(/\n/g, '<br/>') }}></span>
                     }</p>
                   </div>
                 </div>
