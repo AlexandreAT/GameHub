@@ -114,7 +114,7 @@ const Cadastro = () => {
     if (nickname.length < 2){
       inputError = {
         ...inputError,
-        lastName: "O apelido deve ter pelo menos 2 caracteres"
+        nickname: "O apelido deve ter pelo menos 2 caracteres"
       };
     }
 

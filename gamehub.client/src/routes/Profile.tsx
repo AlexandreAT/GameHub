@@ -8,6 +8,7 @@ import * as qs from 'qs';
 
 import classes from "./Profile.module.css";
 import UserPostsComponent from '../components/UserPostsComponent';
+import UpdateUserComponnent from '../components/UpdateUserComponnent';
 
 interface SimplifiedCommunity{
   id: string;
@@ -47,6 +48,7 @@ function Profile() {
     const [showBiographyForm, setShowBiographyForm] = useState(false);
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -160,12 +162,12 @@ function Profile() {
                       <p>Cidade: {!user.city ? (
                         <span className={classes.noRegistry}>Sem uma cidade registrada</span>
                       ):
-                        <span className={classes.spanData}>user.city</span>
+                        <span className={classes.spanData}>{user.city}</span>
                       }</p>
                       <p>Estado: {!user.state ? (
                         <span className={classes.noRegistry}>Sem um estado registrado</span>
                       ):
-                        <span className={classes.spanData}>user.state</span>
+                        <span className={classes.spanData}>{user.state}</span>
                       }</p>
                     </div>
                     <div>
@@ -212,7 +214,7 @@ function Profile() {
                     <p>Biografia: {!user.biography ? (
                       <span className={classes.noRegistry}>Sem biografia</span>
                     ):
-                      <span className={classes.spanData}>user.biography</span>
+                      <span className={classes.spanData}>{user.biography}</span>
                     }</p>
                     <button onClick={handleBiography}>Editar biografia</button>
                     {showBiographyForm && (
@@ -230,7 +232,10 @@ function Profile() {
             {<UserPostsComponent user={user}/>}
           </div>
         ): (
-          <button onClick={showForm} className={classes.btnCancelar}>Cancelar</button>
+          <div className={classes.divEditUser}>
+            <button onClick={showForm} className={classes.btnCancelar}>Cancelar</button>
+            {<UpdateUserComponnent user={user} />}
+          </div>
         )}
     </div>
   )
