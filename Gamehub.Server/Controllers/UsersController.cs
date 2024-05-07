@@ -136,7 +136,7 @@ namespace Gamehub.Server.Controllers
                 userFound.State = state;
                 userFound.Phone = phone;
                 userFound.Password = password;
-                if (biography != null)
+                if (biography != userFound.Biography)
                 {
                     userFound.Biography = biography;
                 }
@@ -215,6 +215,14 @@ namespace Gamehub.Server.Controllers
         public async Task<AnotherUser> GetAnotherUserAsync(string userId)
         {
             User user = await _userServices.GetAsync(userId);
+            List<string> followersId = new List<string>();
+            if(user.Followers != null)
+            {
+                foreach (SimplifiedUser follower in user.Followers)
+                {
+                    followersId.Add(follower.UserId);
+                }
+            }
             return new AnotherUser
             {
                 Id = user.Id,
@@ -223,6 +231,7 @@ namespace Gamehub.Server.Controllers
                 Nickname = user.Nickname,
                 ImageSrc = user.ImageSrc,
                 Following = user.Following,
+                Followers = followersId,
                 Biography = user.Biography,
                 City = user.City,
                 State = user.State,
@@ -246,13 +255,12 @@ namespace Gamehub.Server.Controllers
             return Ok(user);
         }
 
-        /*[HttpGet("getImage")]
-        public async Task<ActionResult<string>> GetImage(string id)
+        [HttpPost("followUser")]
+        public async Task FollowUser([FromForm] string followingId, [FromForm] string userId)
         {
-            User user = await _userServices.GetAsync(id);
-            string imageSrc = await _userServices.GetImageUrl(user.ImageSrc);
-            return Ok(imageSrc);
-        }*/
+            User user = await _userServices.GetAsync(userId);
+            await _userServices.HandleFollowing(followingId, user);
+        }
 
         private string GenerateJwtToken(User user)
         {

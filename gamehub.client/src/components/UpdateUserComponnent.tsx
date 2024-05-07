@@ -9,11 +9,10 @@ import { cleanPhoneNumber } from '../utils/clearPhoneNumber';
 interface User {
     id: string;
     nickname: string;
-    phone: string;
+    phone?: string;
     password: string;
-    biography: string;
-    city: string;
-    state: string;
+    city?: string;
+    state?: string;
 }
 
 interface Props {
@@ -46,9 +45,15 @@ const UpdateUserComponnent = ({ user }: Props) => {
 
     useEffect(() => {
         setNickname(user.nickname);
-        setPhone(user.phone);
-        setCity(user.city);
-        setState(user.state);
+        if(user.phone){
+            setPhone(user.phone);
+        }
+        if(user.city){
+            setCity(user.city);
+        }
+        if(user.state){
+            setState(user.state);
+        }
         setPassword(user.password);
         setConfirmPassword(user.password);
     }, [])
@@ -60,9 +65,8 @@ const UpdateUserComponnent = ({ user }: Props) => {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
-            console.log(data.phone);
             return { data: response.data, error: null };
-            
+
         } catch (error: any) {
             console.error('Error posting data:', error);
             if (error.response) {
@@ -80,7 +84,7 @@ const UpdateUserComponnent = ({ user }: Props) => {
     }, [formError])
 
     const validateForm = (clearPhone: string) => {
-        
+
         let inputError = {
             phone: "",
             password: "",
@@ -89,36 +93,41 @@ const UpdateUserComponnent = ({ user }: Props) => {
             city: "",
             state: ""
         };
-        console.log("teste");
-        
+
         setPhone(cleanPhoneNumber(phone));
-        if(clearPhone != null || clearPhone != ""){
-            if(clearPhone.length < 10 || clearPhone.length > 11){
+        
+        if (clearPhone) {
+            
+            if (clearPhone.length < 10 || clearPhone.length > 11) {
                 inputError = {
-                   ...inputError,
+                    ...inputError,
                     phone: "O telefone deve ter entre 10 e 11 caracteres, ou deve ser deixado em branco"
                 };
             }
         }
-
-        if (city != "" && city.length < 3) {
-            inputError = {
-                ...inputError,
-                city: "A cidade deve ter 3 ou mais caracteres, ou deve ser deixada em branco"
-            };
+        
+        if (city) {
+            if(city.length < 3){
+                inputError = {
+                    ...inputError,
+                    city: "A cidade deve ter 3 ou mais caracteres, ou deve ser deixada em branco"
+                };
+            }
+        }
+        
+        if (state) {
+            if (state.length < 3){
+                inputError = {
+                    ...inputError,
+                    state: "O estado deve ter 3 ou mais caracteres, ou deve ser deixado em branco"
+                };
+            }
         }
 
-        if (state != "" && state.length < 3) {
+        if (nickname.length < 2 || nickname.length > 20) {
             inputError = {
                 ...inputError,
-                state: "O estado deve ter 3 ou mais caracteres, ou deve ser deixado em branco"
-            };
-        }
-
-        if (nickname.length < 2) {
-            inputError = {
-                ...inputError,
-                nickname: "O apelido deve ter pelo menos 2 caracteres"
+                nickname: "O apelido deve ter entre 2 e 20 caracteres"
             };
         }
 
@@ -144,28 +153,23 @@ const UpdateUserComponnent = ({ user }: Props) => {
                 confirmPassword: confirmPassword !== password ? "As senhas não conferem!" : ""
             }
         }
-
-        console.log("entrei aqui 1");
-        console.log(formError);
         return inputError;
-        
+
     }
 
     const updateUser = async (e: FormEvent) => {
         e.preventDefault();
         if (!user) return
-        
+
         let clearPhone = cleanPhoneNumber(phone);
-        console.log(clearPhone);
         let newFormError = validateForm(clearPhone);
         setFormError(newFormError);
         setFormSubmitted(true);
-        
+
         const hasErrors = Object.values(newFormError).some(error => error !== '');
         if (!hasErrors) {
             try {
-                console.log("entrei aqui 2");
-                
+
                 const response = await putData(`/Users/${user.id}`, {
                     id: user.id,
                     nickname,
@@ -176,15 +180,16 @@ const UpdateUserComponnent = ({ user }: Props) => {
                 });
                 if (response.error) {
                     console.log('Error from the backend:', response.error);
-                  } else {
+                } else {
                     console.log('Usuário atualizado com sucesso!');
-                  }
+                    window.location.reload();
+                }
             } catch (error) {
                 console.clear();
                 console.error('Erro ao atualizar usuário:', error);
             }
         }
-        else{
+        else {
             console.error('Há erros no formulário!');
         }
     }
@@ -218,10 +223,10 @@ const UpdateUserComponnent = ({ user }: Props) => {
             </div>
             <div>
                 <label htmlFor="password">Confirme a senha:</label>
-                <input type="password" name='password' placeholder='Digite a nova senha...' onChange={(e) => setConfirmPassword(e.target.value)} value={password} />
+                <input type="password" name='password' placeholder='Digite a nova senha...' onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} />
                 {formSubmitted && (<p className='errorMessage'>{formError.confirmPassword}</p>)}
             </div>
-            <button type='submit' className='btnTransparent'>Atualizar os posts</button>
+            <button type='submit' className='btnTransparent'>Atualizar os dados</button>
         </form>
     )
 }

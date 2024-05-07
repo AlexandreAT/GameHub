@@ -11,6 +11,7 @@ namespace Gamehub.Server.Models
         public string Nickname { get; set; } = null;
         public string? ImageSrc { get; set; } = null;
         public List<SimplifiedUser>? Following { get; set; } = null;
+        public List<string>? Followers { get; set; } = null;
         public string? Biography { get; set; } = null;
         public string? City { get; set; } = null;
         public string? State { get; set; } = null;
