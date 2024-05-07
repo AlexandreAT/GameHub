@@ -261,7 +261,7 @@ const Logado = () => {
     }
   }
 
-  const handleShowImage = (id: string) => {
+  const handleShowImage = (id: string, image?: any) => {
     
     setActiveImageButton(prevState => ({
       ...prevState,
@@ -341,7 +341,7 @@ const Logado = () => {
                     ): (
                       <div>
                         <label htmlFor='btnImage'>Este post contém uma imagem</label>
-                        <button name='btnImage' className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Mostrar imagem</button>
+                        <button name='btnImage' className={classes.btnShowImage} onClick={() => handleShowImage(post.id, post.imageSrc)}>Mostrar imagem</button>
                       </div>
                     )}</div>
                   }

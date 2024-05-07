@@ -39,7 +39,7 @@ namespace Gamehub.Server.Services
 
         public async Task UpdateAsync(string id, Post post) => await _postCollection.ReplaceOneAsync(x => x.Id == id, post);
 
-        public async Task UpdatePostsImage(User user)
+        public async Task UpdateUserPosts(User user)
         {
             List<Post> posts = await GetUserPosts(user.Id);
 
@@ -50,10 +50,15 @@ namespace Gamehub.Server.Services
                     post.AuthorImage = user.ImageSrc;
                     await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
                 }
+                if (post.Author != user.Nickname)
+                {
+                    post.Author = user.Nickname;
+                    await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
+                }
             }
         }
 
-        public async Task UpdateCommentsImages(User user)
+        public async Task UpdateUserComments(User user)
         {
             List<Post> posts = await GetAsync();
 
@@ -65,7 +70,14 @@ namespace Gamehub.Server.Services
                     {
                         if (post.Comments[i].User.UserId == user.Id)
                         {
-                            post.Comments[i].User.UserImageSrc = user.ImageSrc;
+                            if (post.Comments[i].User.UserImageSrc != user.ImageSrc)
+                            {
+                                post.Comments[i].User.UserImageSrc = user.ImageSrc;
+                            }
+                            if (post.Comments[i].User.NickName != user.Nickname)
+                            {
+                                post.Comments[i].User.NickName = user.Nickname;
+                            }
                         }
                     }
 

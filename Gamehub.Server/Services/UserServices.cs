@@ -39,6 +39,7 @@ namespace Gamehub.Server.Services
         }
 
         public async Task UpdateAsync(string id, User user) => await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
+
         public async Task RemoveAsync(string id) => await _userCollection.DeleteOneAsync(x => x.Id == id);
 
         /*

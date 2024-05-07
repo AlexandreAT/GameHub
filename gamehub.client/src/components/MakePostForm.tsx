@@ -51,6 +51,8 @@ const MakePostForm = ({ user }: { user: User | null }) => {
   const clearPostForm = () => {
     setTitle('');
     setContent('');
+    setImage(null);
+    setImagePreview(null);
   }
 
   const submitPost = async (e: FormEvent) => {

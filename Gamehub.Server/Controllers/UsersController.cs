@@ -125,16 +125,30 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<List<User>>> UpdateUser(string id, User user)
-        {
-            if (id != user.Id)
+        public async Task UpdateUser([FromForm] string id, [FromForm] string nickname, [FromForm] string? phone, [FromForm] string? city, [FromForm] string? state, [FromForm] string password, [FromForm] string? biography)
+        {   
+            User userFound = await _userServices.GetAsync(id);
+
+            if (userFound != null)
             {
-                return BadRequest();
+                userFound.Nickname = nickname;
+                userFound.City = city;
+                userFound.State = state;
+                userFound.Phone = phone;
+                userFound.Password = password;
+                if (biography != null)
+                {
+                    userFound.Biography = biography;
+                }
+            }
+            else
+            {
+                throw new Exception("Usuário não encontrado!");
             }
 
-            await _userServices.UpdateAsync(id, user);
-
-            return await _userServices.GetAsync();
+            await _userServices.UpdateAsync(userFound.Id, userFound);
+            await _postServices.UpdateUserPosts(userFound);
+            await _postServices.UpdateUserComments(userFound);
         }
 
         [HttpDelete("{id}")]
@@ -227,8 +241,8 @@ namespace Gamehub.Server.Controllers
             User user = await _userServices.GetAsync(id);
             user.ImageSrc = image;
             await _userServices.UpdateAsync(id, user);
-            await _postServices.UpdatePostsImage(user);
-            await _postServices.UpdateCommentsImages(user);
+            await _postServices.UpdateUserPosts(user);
+            await _postServices.UpdateUserComments(user);
             return Ok(user);
         }
 
