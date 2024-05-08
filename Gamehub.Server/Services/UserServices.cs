@@ -109,5 +109,39 @@ namespace Gamehub.Server.Services
                 throw new Exception("Usuário não encontrado!");
             }
         }
+
+        public async Task UpdateSimplifiedUser(User currentUser)
+        {
+            List<User> allUsers = await GetAsync();
+
+            SimplifiedUser newSimplifiedUser = new SimplifiedUser
+            {
+                UserId = currentUser.Id,
+                NickName = currentUser.Nickname,
+                UserImageSrc = currentUser.ImageSrc
+            };
+
+            foreach(User user in allUsers)
+            {
+                if(user.Following != null)
+                {
+                    var userFoundIndex = user.Following.FindIndex(x => x.UserId == currentUser.Id);
+                    if (userFoundIndex >= 0)
+                    {
+                        user.Following[userFoundIndex] = newSimplifiedUser;
+                        await UpdateAsync(user.Id, user);
+                    }
+                }
+                if(user.Followers != null)
+                {
+                    var userFoundIndex = user.Followers.FindIndex(x => x.UserId == currentUser.Id);
+                    if(userFoundIndex >= 0)
+                    {
+                        user.Followers[userFoundIndex] = newSimplifiedUser;
+                        await UpdateAsync(user.Id, user);
+                    }
+                }
+            }
+        }
     }
 }

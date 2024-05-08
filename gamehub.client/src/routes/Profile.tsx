@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar'
 import { useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import * as qs from 'qs';
 
 import classes from "./Profile.module.css";
@@ -232,25 +232,39 @@ function Profile() {
                 <p><span className={classes.spanPublic}>(info publica)</span>Seguindo: {!user.following ? (
                   <span className={classes.noRegistry}>Não segue ninguém</span>
                 ) :
-                  <span>{user.following.length}</span>
+                  <div className={classes.divShowSimplified}>
+                    <span className={classes.spanData}>{user.following.length}</span>
+                    <div className={classes.divSimplifiedData}>
+                      {user.following.map((user: SimplifiedUser) => (
+                        <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                      ))}
+                    </div>
+                  </div>
                 }</p>
                 <p><span className={classes.spanPublic}>(info privada)</span>Seguidores: {!user.followers ? (
                   <span className={classes.noRegistry}>Sem seguidores</span>
                 ) :
-                  <span>{user.followers.length}</span>
+                  <div className={classes.divShowSimplified}>
+                    <span className={classes.spanData}>{user.followers.length}</span>
+                    <div className={classes.divSimplifiedData}>
+                      {user.followers.map((user: SimplifiedUser) => (
+                        <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                      ))}
+                    </div>
+                  </div>
                 }</p>
                 <p><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.UserCommunities ? (
                   <span className={classes.noRegistry}>Não faz parte de comunidades</span>
                 ) :
                   user.UserCommunities.map((community: SimplifiedCommunity) => (
-                    <p key={community.id}>{community.name} className={classes.spanData}</p>
+                    <p key={community.id} className={classes.spanData}>{community.name}</p>
                   ))
                 }</p>
                 <p><span className={classes.spanPublic}>(info publica)</span>Comunidades criadas: {!user.UserCreatedCommunities ? (
                   <span className={classes.noRegistry}>Sem comunidades criadas</span>
                 ) :
                   user.UserCreatedCommunities.map((community: SimplifiedCommunity) => (
-                    <p key={community.id}>{community.name} className={classes.spanData}</p>
+                    <p key={community.id} className={classes.spanData}>{community.name}</p>
                   ))
                 }</p>
               </div>
@@ -258,7 +272,7 @@ function Profile() {
                 <p><span className={classes.spanPublic}>(info publica)</span>Biografia: {!user.biography ? (
                   <span className={classes.noRegistry}>Sem biografia</span>
                 ) :
-                  <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: user.biography.replace(/\n/g, '<br/>') }}></span>
+                  <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: user.biography.replace(/\n/g,'<br/>')}}></span>
                 }</p>
                 <button onClick={handleBiography}>Editar biografia</button>
                 {showBiographyForm && (

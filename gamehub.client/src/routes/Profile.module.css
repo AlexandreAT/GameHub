@@ -185,16 +185,64 @@ p:hover .spanPublic{
     font-size: 18px;
     color: var(--lightGrey);
     font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.divShowSimplified{
+    position: relative;
+    cursor: default;
+}
+
+.divSimplifiedData{
+    display: none;
+    position: absolute;
+    padding: 3px 5px;
+    border: 1px solid var(--lightGrey);
+    border-radius: 5px;
+    background-color: var(--black);
+    z-index: 1;
+}
+
+.divSimplifiedData p{
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.divSimplifiedData p:hover{
+    color: var(--whitesmoke);
+}
+
+.divSimplifiedData p img{
+    width: 30px;
+    height: 30px;
+}
+
+p .divShowSimplified:hover .divSimplifiedData{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    top: 15px;
 }
 
 .divBiography{
     display: flex;
     flex-direction: column;
+    max-width: 100%;
 }
 
 .divBiography p{
+    display: flex;
+    flex-direction: column;
     max-width: 100%;
     overflow-wrap: break-word;
+}
+
+.divBiography .spanData{
+    max-width: 100%;
 }
 
 .userInfoFooter button {
