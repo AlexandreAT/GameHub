@@ -149,6 +149,7 @@ namespace Gamehub.Server.Controllers
             await _userServices.UpdateAsync(userFound.Id, userFound);
             await _postServices.UpdateUserPosts(userFound);
             await _postServices.UpdateUserComments(userFound);
+            await _userServices.UpdateSimplifiedUser(userFound);
         }
 
         [HttpDelete("{id}")]
@@ -252,6 +253,7 @@ namespace Gamehub.Server.Controllers
             await _userServices.UpdateAsync(id, user);
             await _postServices.UpdateUserPosts(user);
             await _postServices.UpdateUserComments(user);
+            await _userServices.UpdateSimplifiedUser(user);
             return Ok(user);
         }
 
