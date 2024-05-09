@@ -33,5 +33,56 @@ namespace Gamehub.Server.Services
 
         public async Task UpdateAsync(string id, Community community) => await _communityCollection.ReplaceOneAsync(x => x.Id == id, community);
 
+        public async Task UpdateUserInCommunitiesAsync(User user)
+        {
+            List<Community> allCommunities = await GetAsync();
+
+            foreach(Community community in allCommunities)
+            {
+                if(community.Creator.UserId == user.Id)
+                {
+                    community.Creator.NickName = user.Nickname;
+                    community.Creator.UserImageSrc = user.ImageSrc;
+                    await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
+                }
+                if (community.Post != null)
+                {
+                    for (int i = 0; i < community.Post.Count; i++)
+                    {
+                        if (community.Post[i].IdAuthor == user.Id)
+                        {
+                            if (community.Post[i].AuthorImage != user.ImageSrc)
+                            {
+                                community.Post[i].AuthorImage = user.ImageSrc;
+                            }
+                            if (community.Post[i].Author != user.Nickname)
+                            {
+                                community.Post[i].Author = user.Nickname;
+                            }
+                        }
+                        if (community.Post[i].Comments != null)
+                        {
+                            for (int j = 0; j < community.Post[i].Comments.Count; j++)
+                            {
+                                if (community.Post[i].Comments[j].User.UserId == user.Id)
+                                {
+                                    if (community.Post[i].Comments[j].User.UserImageSrc != user.ImageSrc)
+                                    {
+                                        community.Post[i].Comments[j].User.UserImageSrc = user.ImageSrc;
+                                    }
+                                    if (community.Post[i].Comments[j].User.NickName != user.Nickname)
+                                    {
+                                        community.Post[i].Comments[j].User.NickName = user.Nickname;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
+            }
+        }
+
     }
 }

@@ -9,7 +9,7 @@
     border-bottom: 2px solid var(--mediumgrey);
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
-    background-color: var(--clearblack);
+    background-color: var(--lightBlack);
 }
 
 .ulNavbar{
