@@ -6,6 +6,7 @@ import { SlDislike, SlLike } from "react-icons/sl";
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
+import { FaPeopleGroup } from "react-icons/fa6";
 import Navbar from '../components/Navbar'
 
 import * as qs from 'qs';
@@ -21,10 +22,10 @@ interface User {
   imageSrc: string;
 }
 
-interface SimplifiedUser{
-    userId: string;
-    nickName: string;
-    userImageSrc: string;
+interface SimplifiedUser {
+  userId: string;
+  nickName: string;
+  userImageSrc: string;
 }
 
 interface LikeDisLike {
@@ -32,7 +33,7 @@ interface LikeDisLike {
   IsSelected: boolean;
 }
 
-interface Post{
+interface Post {
   id: string;
   author: string;
   idAuthor: string;
@@ -68,9 +69,9 @@ const Logado = () => {
       } catch (error) {
         console.clear();
         console.error('Error fetching user:', error);
-        
+
         const token = Cookies.get('.AspNetCore.Application.Authorization');
-        
+
         if (!token) {
           navigate('/');
           alert("Faça o login novamente");
@@ -87,14 +88,14 @@ const Logado = () => {
   }
 
   const getPosts = async () => {
-    try{
+    try {
       if (!user) return;
       const response = await axios.get<Post[]>('/Posts');
       setPosts(response.data.map(post => ({
         ...post,
         date: isValidDateString(post.date) ? new Date(post.date) : new Date()
       })));
-    }catch (error) {
+    } catch (error) {
       console.clear();
       console.log('Error fetching user:', error);
     }
@@ -104,44 +105,44 @@ const Logado = () => {
     // Verifica se o usuário já deu like ou dislike
     if (user) {
       for (const post of posts) {
-          if(post.like && post.dislike){
-            const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
-            const userDislike = post.dislike.find(dislike => dislike.simplifiedUser.userId === user.id);
+        if (post.like && post.dislike) {
+          const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
+          const userDislike = post.dislike.find(dislike => dislike.simplifiedUser.userId === user.id);
 
-            if (userLike) {
-              setOpinionButtons(prevState => ({
-                ...prevState,
-                [post.id]: 'like',
-              }));
-            } else if (userDislike) {
-              setOpinionButtons(prevState => ({
-                ...prevState,
-                [post.id]: 'dislike',
-              }));
-            } else{
-              setOpinionButtons(prevState => ({
-                ...prevState,
-                [post.id]: null,
-              }));
-            }
-          }
-          else if(post.like){
-            const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
-    
-            if (userLike) {
-              setOpinionButtons(prevState => ({
-                ...prevState,
-                [post.id]: 'like',
-              }));
-            } 
-            else{
-              setOpinionButtons(prevState => ({
+          if (userLike) {
+            setOpinionButtons(prevState => ({
+              ...prevState,
+              [post.id]: 'like',
+            }));
+          } else if (userDislike) {
+            setOpinionButtons(prevState => ({
+              ...prevState,
+              [post.id]: 'dislike',
+            }));
+          } else {
+            setOpinionButtons(prevState => ({
               ...prevState,
               [post.id]: null,
             }));
           }
         }
-        else if(post.dislike){
+        else if (post.like) {
+          const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
+
+          if (userLike) {
+            setOpinionButtons(prevState => ({
+              ...prevState,
+              [post.id]: 'like',
+            }));
+          }
+          else {
+            setOpinionButtons(prevState => ({
+              ...prevState,
+              [post.id]: null,
+            }));
+          }
+        }
+        else if (post.dislike) {
           const userDislike = post.dislike.find(dislike => dislike.simplifiedUser.userId === user.id);
 
           if (userDislike) {
@@ -150,7 +151,7 @@ const Logado = () => {
               [post.id]: 'dislike',
             }));
           }
-          else{
+          else {
             setOpinionButtons(prevState => ({
               ...prevState,
               [post.id]: null,
@@ -176,7 +177,7 @@ const Logado = () => {
     checksFeedback();
   }, [posts])
 
-  if(!user){
+  if (!user) {
     return <h1 className='loading'>Carregando...</h1>
   }
 
@@ -194,7 +195,7 @@ const Logado = () => {
     const index = showFormComment.findIndex(item => item.id === id);
     if (index >= 0) {
       const newShowFormComment = [...showFormComment];
-      newShowFormComment[index] = { id, show:!newShowFormComment[index].show };
+      newShowFormComment[index] = { id, show: !newShowFormComment[index].show };
       setShowFormComment(newShowFormComment);
     } else {
       setShowFormComment([...showFormComment, { id, show: true }]);
@@ -216,9 +217,9 @@ const Logado = () => {
 
   const handleLike = async (postId: string) => {
     if (!user) return;
-  
+
     try {
-        await axios.post("Posts/like", qs.stringify({
+      await axios.post("Posts/like", qs.stringify({
         postId,
         userId: user.id,
       }), {
@@ -230,12 +231,12 @@ const Logado = () => {
       console.error('Error liking post:', error);
     }
   };
-  
+
   const handleDislike = async (postId: string) => {
     if (!user) return;
-  
+
     try {
-        await axios.post("Posts/dislike", qs.stringify({
+      await axios.post("Posts/dislike", qs.stringify({
         postId,
         userId: user.id,
       }), {
@@ -262,7 +263,7 @@ const Logado = () => {
   }
 
   const handleShowImage = (id: string, image?: any) => {
-    
+
     setActiveImageButton(prevState => ({
       ...prevState,
       [id]: !prevState[id]
@@ -271,7 +272,7 @@ const Logado = () => {
     const index = showImage.findIndex(item => item.id === id);
     if (index >= 0) {
       const newShowImage = [...showImage];
-      newShowImage[index] = { id, show:!newShowImage[index].show };
+      newShowImage[index] = { id, show: !newShowImage[index].show };
       setShowImage(newShowImage);
     } else {
       setShowImage([...showImage, { id, show: true }]);
@@ -282,24 +283,37 @@ const Logado = () => {
     <div className={classes.divMain}>
 
       <div className='navbar'>{<Navbar />}</div>
-      
-      <button className={classes.buttonMakePost} onClick={handleShowForm}>
-      {showForm ? (
-        <div className={classes.divMakePost}>
-          <TbPencilX  className={classes.makePostIcon}/>
-          <p>Cancelar</p>
-        </div>
-      ) : (
-        <div className={classes.divMakePost}>
-          <TbPencilPlus className={classes.makePostIcon}/>
-          <p>Criar post</p>
-        </div>
-      )}
-      </button>
 
-      <div className={classes.formMakePost}>
-        {showForm && <MakePostForm user={user} />}
-      </div>
+      <div className={classes.divCenter}>
+        <div className={classes.sideDiv}>
+          <div className={classes.divCommunities}>
+            <FaPeopleGroup className={classes.sideIcon}/>
+            <label htmlFor="communities">Comunidades</label>
+          </div>
+          <div>
+            <button className="btnTransparent"></button>
+          </div>
+          <div>
+            <button className="btnTransparent"></button>
+          </div>
+        </div>
+        <button className={classes.buttonMakePost} onClick={handleShowForm}>
+          {showForm ? (
+            <div className={classes.divMakePost}>
+              <TbPencilX className={classes.makePostIcon} />
+              <p>Cancelar</p>
+            </div>
+          ) : (
+            <div className={classes.divMakePost}>
+              <TbPencilPlus className={classes.makePostIcon} />
+              <p>Criar post</p>
+            </div>
+          )}
+        </button>
+
+        <div className={classes.formMakePost}>
+          {showForm && <MakePostForm user={user} />}
+        </div>
         {!posts ? (
           <div className={classes.containerPosts}>
             <h1 className="loading">Carregando posts...</h1>
@@ -317,13 +331,13 @@ const Logado = () => {
                   {post.idAuthor === user.id ? (
                     <div className={classes.postUser}>
                       <div className={classes.postHeader}>
-                        <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>                
+                        <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>
                         <span>-</span>
                         <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                       </div>
-                      <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon}/></button>
+                      <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
                     </div>
-                  ):(
+                  ) : (
                     <div className={classes.postHeader}>
                       <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
                       <span>-</span>
@@ -336,14 +350,14 @@ const Logado = () => {
                   <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
                   {post.imageSrc &&
                     <div className={classes.divBtnImage}>
-                    {activeImageButton[post.id] ? (
-                      <button className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Ocultar imagem</button>
-                    ): (
-                      <div>
-                        <label htmlFor='btnImage'>Este post contém uma imagem</label>
-                        <button name='btnImage' className={classes.btnShowImage} onClick={() => handleShowImage(post.id, post.imageSrc)}>Mostrar imagem</button>
-                      </div>
-                    )}</div>
+                      {activeImageButton[post.id] ? (
+                        <button className={classes.btnShowImage} onClick={() => handleShowImage(post.id)}>Ocultar imagem</button>
+                      ) : (
+                        <div>
+                          <label htmlFor='btnImage'>Este post contém uma imagem</label>
+                          <button name='btnImage' className={classes.btnShowImage} onClick={() => handleShowImage(post.id, post.imageSrc)}>Mostrar imagem</button>
+                        </div>
+                      )}</div>
                   }
                   {showImage.some(item => item.id === post.id) && showImage.find(item => item.id === post.id)!.show && post.imageSrc && (
                     <img className={classes.postImage} src={post.imageSrc} alt={post.title} />
@@ -372,14 +386,14 @@ const Logado = () => {
                       <div className={classes.divLike}>
                         <SlDislike className={`${classes.postIconDislike} ${classes.opinionActivatedDislike} iconOpinion`} />
                         {post.dislike && post.dislike.length > 0 && post.idAuthor === user.id && (
-                            <p>{post.dislike.length}</p>
+                          <p>{post.dislike.length}</p>
                         )}
                       </div>
                     ) : (
                       <div className={classes.divLike}>
                         <SlDislike className={`${classes.postIconDislike} iconOpinion`} />
                         {post.dislike && post.dislike.length > 0 && post.idAuthor === user.id && (
-                            <p>{post.dislike.length}</p>
+                          <p>{post.dislike.length}</p>
                         )}
                       </div>
                     )}
@@ -392,15 +406,16 @@ const Logado = () => {
                       <FaRegComment className={`${classes.postIcon} iconOpinion`} />
                     )}
                   </button>
-                    
+
                 </div>
                 <div>
-                { showFormComment.some(item => item.id === post.id) && showFormComment.find(item => item.id === post.id)!.show && <CommentsForm postId={post.id} userId={user.id}/>}
+                  {showFormComment.some(item => item.id === post.id) && showFormComment.find(item => item.id === post.id)!.show && <CommentsForm postId={post.id} userId={user.id} />}
                 </div>
               </div>
             ))}
           </div>
         )}
+      </div>
     </div>
   );
 };

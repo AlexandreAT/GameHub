@@ -13,6 +13,7 @@
   --grey: rgb(106, 106, 106);
   --mediumgrey: rgb(80, 80, 80);
   --clearblack: rgba(35, 35, 35, 0.8);
+  --lightBlack: rgb(35,35,35);
   --black-blue: rgb(22, 22, 32);
   --black: rgb(23, 23, 23);
   /*-----------------------------------*/
@@ -137,6 +138,8 @@ h1, .logoDetail{
 .navbar{
   margin: 0 0 15px 0;
   width: 100%;
+  position: fixed;
+  z-index: 2;
 }
 
 .loading{

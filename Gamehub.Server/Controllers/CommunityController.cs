@@ -23,7 +23,7 @@ namespace Gamehub.Server.Controllers
         public async Task<List<Community>> GetCommunities() => await _communityServices.GetAsync();
 
         [HttpPost]
-        public async Task<Community> PostCommunity(string creatorId, string name, string? game)
+        public async Task<Community> PostCommunity(string creatorId, Community community)
         {
             User creatorUser = await _userServices.GetAsync(creatorId);
             SimplifiedUser creator = new SimplifiedUser
@@ -32,12 +32,7 @@ namespace Gamehub.Server.Controllers
                 NickName = creatorUser.Nickname,
                 UserImageSrc = creatorUser.ImageSrc,
             };
-            Community community = new Community
-            {
-                Creator = creator,
-                Name = name,
-                Game = game
-            };
+            community.Creator = creator;
             Community newCommunity = await _communityServices.CreateAsync(community);
             SimplifiedCommunity simplifiedCommunity = new SimplifiedCommunity
             {

@@ -20,6 +20,7 @@ namespace Gamehub.Server.Controllers
 
         private readonly UserServices _userServices;
         private readonly PostServices _postServices;
+        private readonly CommunityServices _communityServices;
         private readonly IConfiguration _configuration;
 
         public class LoginResponse
@@ -28,11 +29,12 @@ namespace Gamehub.Server.Controllers
             public string Token { get; set; }
         }
 
-        public UsersController(UserServices userServices, IConfiguration configuration, PostServices postServices)
+        public UsersController(UserServices userServices, IConfiguration configuration, PostServices postServices, CommunityServices communityServices)
         {
             _userServices = userServices;
             _configuration = configuration;
             _postServices = postServices;
+            _communityServices = communityServices;
         }
 
         [HttpGet]
@@ -150,6 +152,7 @@ namespace Gamehub.Server.Controllers
             await _postServices.UpdateUserPosts(userFound);
             await _postServices.UpdateUserComments(userFound);
             await _userServices.UpdateSimplifiedUser(userFound);
+            await _communityServices.UpdateUserInCommunitiesAsync(userFound);
         }
 
         [HttpDelete("{id}")]
@@ -203,14 +206,6 @@ namespace Gamehub.Server.Controllers
             // Retorna o usuário encontrado
             return Ok(user);
         }
-
-        /*
-        [HttpGet("posts/{id}")]
-        public async Task<ActionResult<List<Post>>> GetUserPosts(string id)
-        {
-            return await _userServices.GetAsyncPosts(id);
-        }
-        */
 
         [HttpGet("anotherUser/{id}")]
         public async Task<AnotherUser> GetAnotherUserAsync(string userId)

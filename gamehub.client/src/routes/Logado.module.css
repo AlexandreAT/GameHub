@@ -1,8 +1,72 @@
 .divMain{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+}
+
+.divCenter{
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-top: 95px;
+}
+
+.sideDiv{
+    position: fixed;
+    left: 0px;
+    width: 90px;
+    max-width: 250px;
+    border-right: 2px solid var(--mediumgrey);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 85%;
+    padding: 20px 0;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.sideDiv:hover{
+    width: 250px;
+}
+
+.sideDiv label{
+    display: none;
+}
+
+.sideDiv:hover label{
+    display: block;
+    cursor: pointer;
+}
+
+.sideDiv div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    /* border: 2px solid crimson;
+    background-color: var(--clearblack); */
+}
+
+.sideDiv div label,
+.sideDiv div .sideIcon{
+    color: var(--lightGrey);
+    fill: var(--lightGrey);
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.sideDiv div:hover label,
+.sideDiv div:hover .sideIcon{
+    color: var(--turquoise);
+    fill: var(--turquoise);
+    transform: scale(1.02);
 }
 
 .buttonMakePost{
