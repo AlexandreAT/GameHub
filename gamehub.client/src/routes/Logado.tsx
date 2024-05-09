@@ -7,6 +7,10 @@ import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
 import { FaPeopleGroup } from "react-icons/fa6";
+import { TiGroup } from "react-icons/ti";
+import { FaRunning } from "react-icons/fa";
+import { GoPlusCircle } from "react-icons/go";
+
 import Navbar from '../components/Navbar'
 
 import * as qs from 'qs';
@@ -20,6 +24,16 @@ interface User {
   id: string;
   nickname: string;
   imageSrc: string;
+  userCommunities: SimplifiedCommunity[];
+  userCreatedCommunities: SimplifiedCommunity[];
+  following: SimplifiedUser[];
+}
+
+interface SimplifiedCommunity{
+  id: string;
+  name: string;
+  creatorId: string;
+  iconeImageSrc: string;
 }
 
 interface SimplifiedUser {
@@ -285,18 +299,67 @@ const Logado = () => {
       <div className='navbar'>{<Navbar />}</div>
 
       <div className={classes.divCenter}>
+
         <div className={classes.sideDiv}>
-          <div className={classes.divCommunities}>
-            <FaPeopleGroup className={classes.sideIcon}/>
-            <label htmlFor="communities">Comunidades</label>
+          <div className={classes.sideDivContainer}>
+            <div className={classes.sideHeader}>
+              <FaPeopleGroup className={classes.sideIcon}/>
+              <label htmlFor="communities">Comunidades</label>
+            </div>
+            <div className={classes.sideContent}>
+              {user.userCommunities ? (
+                user.userCommunities.map((community: SimplifiedCommunity) => (
+                  <div key={community.id} className={classes.divData}>
+                    <img src={community.iconeImageSrc} alt={community.name} />
+                    <p>{community.name}</p>
+                  </div>
+                ))
+              ): (
+                <p className={classes.noRegistry}>Sem comunidades</p>
+              )}
+            </div>
           </div>
-          <div>
-            <button className="btnTransparent"></button>
+          <div className={classes.sideDivContainer}>
+            <div className={classes.sideHeader}>
+              <TiGroup className={classes.sideIcon}/>
+              <label htmlFor="communitiesCreated">Comunidades criadas</label>
+            </div>
+            <div className={classes.sideContent}>
+              {user.userCreatedCommunities ? (
+                user.userCreatedCommunities.map((community: SimplifiedCommunity) => (
+                  <div key={community.id} className={classes.divData}>
+                    <img src={community.iconeImageSrc} alt={community.name} />
+                    <p>{community.name}</p>
+                  </div>
+                ))
+              ): (
+                <p className={classes.noRegistry}>Sem comunidades</p>
+              )}
+            </div>
+            <div className={classes.sideFooter}>
+              <GoPlusCircle className={classes.sideIcon}/>
+            </div>
           </div>
-          <div>
-            <button className="btnTransparent"></button>
+          <div className={classes.sideDivContainer}>
+            <div className={classes.sideHeader}>
+              <FaRunning className={classes.sideIcon}/>
+              <label htmlFor="following">Pessoas que você segue</label>
+            </div>
+            <div className={classes.sideContent}>
+              {user.following ? (
+                user.following.map((following: SimplifiedUser) => (
+                  <Link to={`/anotherProfile/${following.userId}`}><div key={following.userId} className={classes.divData}>
+                    <img src={following.userImageSrc} alt={following.nickName} />
+                    <p>{following.nickName}</p>
+                  </div></Link>
+                ))
+              ): (
+                <p className={classes.noRegistry}>Sem comunidades</p>
+              )}
+            </div>
           </div>
         </div>
+
         <button className={classes.buttonMakePost} onClick={handleShowForm}>
           {showForm ? (
             <div className={classes.divMakePost}>

@@ -38,7 +38,8 @@ namespace Gamehub.Server.Controllers
             {
                 Id = newCommunity.Id,
                 Name = newCommunity.Name,
-                CreatorId = newCommunity.Creator.NickName
+                CreatorId = newCommunity.Creator.NickName,
+                IconeImageSrc = newCommunity.iconeImageSrc
             };
             await _userServices.AddCreatedCommunities(simplifiedCommunity, creatorUser);
             return community;
