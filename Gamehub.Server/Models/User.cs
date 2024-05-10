@@ -47,10 +47,10 @@ namespace Gamehub.Server.Models
         public string? ImageSrc { get; set; } = null;
 
         [BsonElement("Seguindo")]
-        public List<SimplifiedUser>? Following { get; set; } = null;
+        public List<string>? Following { get; set; } = null;
 
         [BsonElement("Seguidores")]
-        public List<SimplifiedUser>? Followers { get; set; } = null;
+        public List<string>? Followers { get; set; } = null;
 
         [BsonElement("Comunidades")]
         public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;
