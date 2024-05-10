@@ -22,10 +22,10 @@ namespace Gamehub.Server.Models
         public string ImageSrc { get; set; }
 
         [JsonIgnore]
-        public List<SimplifiedUser>? Following { get; set; } = null;
+        public List<string>? Following { get; set; } = null;
 
         [JsonIgnore]
-        public List<SimplifiedUser>? Followers { get; set; } = null;
+        public List<string>? Followers { get; set; } = null;
 
         [JsonIgnore]
         public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;

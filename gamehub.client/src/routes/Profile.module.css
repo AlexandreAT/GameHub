@@ -192,7 +192,17 @@ p:hover .spanPublic{
 
 .divShowSimplified{
     position: relative;
-    cursor: default;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divShowSimplified span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
 }
 
 .divSimplifiedData{
@@ -225,7 +235,8 @@ p .divShowSimplified:hover .divSimplifiedData{
     display: flex;
     flex-direction: column;
     gap: 5px;
-    top: 15px;
+    top: -2px;
+    left: -2px;
 }
 
 .divBiography{

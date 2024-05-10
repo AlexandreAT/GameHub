@@ -31,8 +31,8 @@ interface User {
   email: string;
   password: string;
   imageSrc: string;
-  following: SimplifiedUser[];
-  followers: SimplifiedUser[];
+  following: string[];
+  followers: string[];
   UserCommunities: SimplifiedCommunity[];
   UserCreatedCommunities: SimplifiedCommunity[];
   biography: string;
@@ -48,6 +48,8 @@ function Profile() {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [biography, setBiography] = useState<string | undefined>(undefined);
+  const [simplifiedUsers, setSimplifiedUsers] = useState<SimplifiedUser[] | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -55,7 +57,7 @@ function Profile() {
     const fetchUsers = async () => {
       try {
         const response = await axios.get<User>('/Users/current');
-        setUser(response.data);        
+        setUser(response.data);
       } catch (error) {
         console.clear();
         console.error('Error fetching user:', error);
@@ -167,6 +169,35 @@ function Profile() {
 
   }
 
+  const getFollowersOrFollowing = async (url: string, data: any) => {
+    try {
+      //Erro aqui
+      const response = await axios.post(url, qs.stringify(data), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      setSimplifiedUsers(response.data);
+    } catch (error) {
+      console.clear();
+      console.error(error);
+    }
+  }
+
+  const getUsers = async (opt: string) => {
+
+    await setSimplifiedUsers(undefined);
+
+    try {
+      await getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
+        opt: opt,
+        userId: user.id
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={classes.divProfileMain}>
       <div className='navbar'>{<Navbar />}</div>
@@ -233,24 +264,28 @@ function Profile() {
                   <span className={classes.noRegistry}>Não segue ninguém</span>
                 ) :
                   <div className={classes.divShowSimplified}>
-                    <span className={classes.spanData}>{user.following.length}</span>
-                    <div className={classes.divSimplifiedData}>
-                      {user.following.map((user: SimplifiedUser) => (
-                        <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
-                      ))}
-                    </div>
+                    <span className={classes.spanData} onMouseOver={() => getUsers("following")} onMouseOut={() => setSimplifiedUsers(undefined)}>{user.following.length}</span>
+                    {simplifiedUsers !== undefined && (
+                      <div className={classes.divSimplifiedData}>
+                        {simplifiedUsers && simplifiedUsers.map((user: SimplifiedUser) => (
+                          <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 }</p>
                 <p><span className={classes.spanPublic}>(info privada)</span>Seguidores: {!user.followers ? (
                   <span className={classes.noRegistry}>Sem seguidores</span>
                 ) :
-                  <div className={classes.divShowSimplified}>
-                    <span className={classes.spanData}>{user.followers.length}</span>
-                    <div className={classes.divSimplifiedData}>
-                      {user.followers.map((user: SimplifiedUser) => (
-                        <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
-                      ))}
-                    </div>
+                  <div className={classes.divShowSimplified} >
+                    <span className={classes.spanData} onMouseOver={() => getUsers("followers")}>{user.followers.length}</span>
+                    {simplifiedUsers !== undefined && (
+                      <div className={classes.divSimplifiedData}>
+                        {simplifiedUsers && simplifiedUsers.map((user: SimplifiedUser) => (
+                          <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 }</p>
                 <p><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.UserCommunities ? (
@@ -272,7 +307,7 @@ function Profile() {
                 <p><span className={classes.spanPublic}>(info publica)</span>Biografia: {!user.biography ? (
                   <span className={classes.noRegistry}>Sem biografia</span>
                 ) :
-                  <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: user.biography.replace(/\n/g,'<br/>')}}></span>
+                  <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: user.biography.replace(/\n/g, '<br/>') }}></span>
                 }</p>
                 <button onClick={handleBiography}>Editar biografia</button>
                 {showBiographyForm && (

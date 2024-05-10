@@ -20,7 +20,7 @@ interface AnotherUser {
   surname: string;
   nickname: string;
   imageSrc: string;
-  following: SimplifiedUser[];
+  following: string[];
   followers: string[];
   biography: string;
   city: string;
@@ -46,6 +46,7 @@ const AnotherUserProfile = () => {
   const { id } = useParams();
   const [anotherUser, setAnotherUser] = useState<AnotherUser>();
   const [user, setUser] = useState<User | null>(null);
+  const [simplifiedUsers,setSimplifiedUsers] = useState<SimplifiedUser[] | undefined>(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,6 +122,29 @@ const AnotherUserProfile = () => {
     window.location.reload();
   }
 
+  const getFollowersOrFollowing = async (url: string, data: any) => {
+    try{
+      //Erro aqui
+      const response = await axios.post(url, qs.stringify(data));
+      setSimplifiedUsers(response.data);
+    } catch(error){
+      console.clear();
+      console.error(error);
+    }
+  }
+
+  const getUsers = (opt: string) => {
+    try{
+      getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
+        opt: opt,
+        userId: user.id
+      });
+    }
+    catch(error){
+      console.error(error);
+    }
+  }
+
   return (
     <div className={classes.divProfileMain}>
       <div className='navbar'>{<Navbar />}</div>
@@ -138,7 +162,7 @@ const AnotherUserProfile = () => {
               <header className={classes.anotherUserDataHeader}>
                 <h2>{anotherUser.nickname}</h2>
                 <button className='btnTransparent' onClick={followUser}>
-                  {anotherUser.followers.includes(user.id) ? (
+                  {anotherUser.followers != undefined && anotherUser.followers.includes(user.id) ? (
                     <span>deixar de seguir</span>
                   ) : (
                     <span>seguir</span>
@@ -171,9 +195,9 @@ const AnotherUserProfile = () => {
                 <span className={classes.noRegistry}>Não segue ninguém</span>
               ) :
                 <div className={classes.divShowSimplified}>
-                  <span className={classes.spanData}>{anotherUser.following.length}</span>
+                  <span className={classes.spanData} onMouseOver={() => getUsers("following")} onMouseOut={() => setSimplifiedUsers(undefined)}>{anotherUser.following.length}</span>
                   <div className={classes.divSimplifiedData}>
-                    {anotherUser.following.map((mapUser: SimplifiedUser) => (
+                    {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
                       mapUser.userId === user.id ? (
                         <Link to={"/profile"}><p key={mapUser.userId} className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
                       ): (

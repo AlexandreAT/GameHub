@@ -151,7 +151,7 @@ namespace Gamehub.Server.Controllers
             await _userServices.UpdateAsync(userFound.Id, userFound);
             await _postServices.UpdateUserPosts(userFound);
             await _postServices.UpdateUserComments(userFound);
-            await _userServices.UpdateSimplifiedUser(userFound);
+            //await _userServices.UpdateSimplifiedUser(userFound);
             await _communityServices.UpdateUserInCommunitiesAsync(userFound);
         }
 
@@ -211,14 +211,6 @@ namespace Gamehub.Server.Controllers
         public async Task<AnotherUser> GetAnotherUserAsync(string userId)
         {
             User user = await _userServices.GetAsync(userId);
-            List<string> followersId = new List<string>();
-            if(user.Followers != null)
-            {
-                foreach (SimplifiedUser follower in user.Followers)
-                {
-                    followersId.Add(follower.UserId);
-                }
-            }
             return new AnotherUser
             {
                 Id = user.Id,
@@ -227,7 +219,7 @@ namespace Gamehub.Server.Controllers
                 Nickname = user.Nickname,
                 ImageSrc = user.ImageSrc,
                 Following = user.Following,
-                Followers = followersId,
+                Followers = user.Followers,
                 Biography = user.Biography,
                 City = user.City,
                 State = user.State,
@@ -248,7 +240,7 @@ namespace Gamehub.Server.Controllers
             await _userServices.UpdateAsync(id, user);
             await _postServices.UpdateUserPosts(user);
             await _postServices.UpdateUserComments(user);
-            await _userServices.UpdateSimplifiedUser(user);
+            //await _userServices.UpdateSimplifiedUser(user);
             return Ok(user);
         }
 
@@ -257,6 +249,14 @@ namespace Gamehub.Server.Controllers
         {
             User user = await _userServices.GetAsync(userId);
             await _userServices.HandleFollowing(followingId, user);
+        }
+
+        [HttpPost("getFollowersOrFollowing")]
+        public async Task<List<SimplifiedUser>> GetFollowersOrFollowing([FromForm] string opt, [FromForm] string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync(opt, user);
+            return simplifiedUsers;
         }
 
         private string GenerateJwtToken(User user)

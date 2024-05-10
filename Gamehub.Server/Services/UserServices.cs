@@ -67,36 +67,34 @@ namespace Gamehub.Server.Services
 
                 if(user.Following == null)
                 {
-                    user.Following = new List<SimplifiedUser>();
+                    user.Following = new List<string>();
                 }
 
                 User userFollowing = await GetAsync(followingId);
                 if(userFollowing.Followers == null)
                 {
-                    userFollowing.Followers = new List<SimplifiedUser>();
+                    userFollowing.Followers = new List<string>();
                 }
 
-                var followingFound = user.Following.FirstOrDefault(x => x.UserId == followingId);
+                var followingFound = user.Following.FirstOrDefault(x => x == followingId);
                 if (followingFound == null)
                 {
-                    SimplifiedUser simplifiedCurrentUser = new SimplifiedUser { UserId = user.Id, NickName = user.Nickname, UserImageSrc = user.ImageSrc };
-                    userFollowing.Followers.Add(simplifiedCurrentUser);
+                    userFollowing.Followers.Add(user.Id);
                     await _userCollection.ReplaceOneAsync(x => x.Id == userFollowing.Id, userFollowing);
 
-                    SimplifiedUser simplifiedAnotherUser = new SimplifiedUser { UserId = userFollowing.Id, NickName = userFollowing.Nickname, UserImageSrc = userFollowing.ImageSrc };
-                    user.Following.Add(simplifiedAnotherUser);
+                    user.Following.Add(userFollowing.Id);
                     await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
                 }
                 else
                 {
-                    var currentUserIndex = userFollowing.Followers.FindIndex(x => x.UserId == user.Id);
+                    var currentUserIndex = userFollowing.Followers.FindIndex(x => x == user.Id);
                     if (currentUserIndex >= 0)
                     {
                         userFollowing.Followers.RemoveAt(currentUserIndex);
                         await _userCollection.ReplaceOneAsync(x => x.Id == userFollowing.Id, userFollowing);
                     }
 
-                    var anotherUserIndex = user.Following.FindIndex(x => x.UserId == userFollowing.Id);
+                    var anotherUserIndex = user.Following.FindIndex(x => x == userFollowing.Id);
                     if (anotherUserIndex >= 0)
                     {
                         user.Following.RemoveAt(anotherUserIndex);
@@ -110,7 +108,47 @@ namespace Gamehub.Server.Services
             }
         }
 
-        public async Task UpdateSimplifiedUser(User currentUser)
+        public async Task<List<SimplifiedUser>> GetSimplifiedUsersAsync(string opt, User user)
+        {
+            if(opt == "following")
+            {
+                List<SimplifiedUser> users = new List<SimplifiedUser>();
+                foreach(string followingId in user.Following)
+                {
+                    User currentUser = await GetAsync(followingId);
+                    SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                    {
+                        UserId = followingId,
+                        NickName = currentUser.Nickname,
+                        UserImageSrc = currentUser.ImageSrc
+                    };
+                    users.Add(newSimplifiedUser);
+                }
+                return users;
+            }
+            else if(opt == "followers")
+            {
+                List<SimplifiedUser> users = new List<SimplifiedUser>();
+                foreach (string followersId in user.Followers)
+                {
+                    User currentUser = await GetAsync(followersId);
+                    SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                    {
+                        UserId = followersId,
+                        NickName = currentUser.Nickname,
+                        UserImageSrc = currentUser.ImageSrc
+                    };
+                    users.Add(newSimplifiedUser);
+                }
+                return users;
+            }
+            else
+            {
+                throw new Exception("Erro ao verificar a opção passada!");
+            }
+        }
+
+        /*public async Task UpdateSimplifiedUser(User currentUser)
         {
             List<User> allUsers = await GetAsync();
 
@@ -142,6 +180,6 @@ namespace Gamehub.Server.Services
                     }
                 }
             }
-        }
+        }*/
     }
 }
