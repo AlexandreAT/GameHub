@@ -194,17 +194,28 @@ namespace Gamehub.Server.Controllers
             // Obtém o ID do usuário do token JWT
             var userId = jwtToken.Claims.First(x => x.Type == "Id").Value;
 
-            // Obtém o usuário com base no ID
-            var user = _userServices.GetAsync(userId).Result;
-
-            // Verifica se o usuário foi encontrado
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                // Obtém o usuário com base no ID
+                var user = _userServices.GetAsync(userId).Result;
 
-            // Retorna o usuário encontrado
-            return Ok(user);
+                // Verifica se o usuário foi encontrado
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                // Retorna o usuário encontrado
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                // Remove o cookie do token JWT
+                Response.Cookies.Delete(".AspNetCore.Application.Authorization");
+
+                // Retorna uma resposta de erro
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("anotherUser/{id}")]

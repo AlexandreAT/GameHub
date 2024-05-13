@@ -44,10 +44,12 @@
     justify-content: space-around;
 }
 
-.divUserInfo p{
+.divUserInfo p,
+.divUserInfo .paragraph{
     position: relative;
 }
 
+.paragraph .spanPublic,
 p .spanPublic{
     position: absolute;
     top: -15px;
@@ -57,7 +59,8 @@ p .spanPublic{
     text-shadow: none;
 }
 
-p:hover .spanPublic{
+p:hover .spanPublic,
+.paragraph:hover .spanPublic{
     display: block;
 }
 
@@ -180,6 +183,7 @@ p:hover .spanPublic{
     gap: 1rem;
 }
 
+.userInfoFooter .paragraph,
 .userInfoFooter p{
     width: 100%;
     font-size: 18px;
@@ -188,6 +192,10 @@ p:hover .spanPublic{
     display: flex;
     flex-direction: row;
     gap: 5px;
+}
+
+.link{
+    color: var(--lightGrey);
 }
 
 .divShowSimplified{
@@ -231,7 +239,7 @@ p:hover .spanPublic{
     height: 30px;
 }
 
-p .divShowSimplified:hover .divSimplifiedData{
+.paragraph .divShowSimplified:hover .divSimplifiedData{
     display: flex;
     flex-direction: column;
     gap: 5px;

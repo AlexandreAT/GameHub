@@ -101,6 +101,7 @@
     animation-name: showText;
     white-space: nowrap;
     gap: 5px;
+    transition: all 0.3s ease;
 }
 
 .sideDiv .sideContent .divData{
@@ -120,7 +121,6 @@
 }
 
 .sideContent .divData p{
-    color: var(--lightGrey);
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
 }
@@ -171,6 +171,27 @@
 
 .sideDivContainer .sideFooter .sideIcon:hover{
     fill: var(--turquoise);
+}
+
+.sideContent .divFollowing button{
+    border-right: 3px solid var(--grey);
+    border-top: 3px solid var(--grey);
+    background-color: transparent;
+    margin: 0px 2px;
+    width: 10px;
+    height: 10px;
+    rotate: 45deg;
+    transition: all 0.3s ease;
+}
+
+.sideContent .divFollowing .paragraph{
+    color: var(--grey);
+}
+
+.sideContent .divFollowing .buttonActivated{
+    rotate: 135deg;
+    border-right-color: var(--turquoise);
+    border-top-color: var(--turquoise);
 }
 
 .buttonMakePost{

@@ -48,8 +48,9 @@ function Profile() {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [biography, setBiography] = useState<string | undefined>(undefined);
-  const [simplifiedUsers, setSimplifiedUsers] = useState<SimplifiedUser[] | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
+  const [simplifiedFollowers, setSimplifiedFollowers] = useState<SimplifiedUser[] | undefined>(undefined);
+  
 
   const navigate = useNavigate();
 
@@ -169,15 +170,19 @@ function Profile() {
 
   }
 
-  const getFollowersOrFollowing = async (url: string, data: any) => {
+  const getFollowersOrFollowing = async (url: string, data: any, opt: string) => {
     try {
-      //Erro aqui
       const response = await axios.post(url, qs.stringify(data), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
-      setSimplifiedUsers(response.data);
+      if(opt === "following"){
+        setSimplifiedFollowing(response.data);
+      }
+      else if(opt === "followers"){
+        setSimplifiedFollowers(response.data);
+      }
     } catch (error) {
       console.clear();
       console.error(error);
@@ -185,14 +190,17 @@ function Profile() {
   }
 
   const getUsers = async (opt: string) => {
-
-    await setSimplifiedUsers(undefined);
-
+    if(opt === "following"){
+      setSimplifiedFollowing(undefined);
+    }
+    else if(opt === "followers"){
+      setSimplifiedFollowers(undefined);
+    }
     try {
       await getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
         opt: opt,
         userId: user.id
-      });
+      }, opt);
     } catch (error) {
       console.error(error);
     }
@@ -260,34 +268,34 @@ function Profile() {
             </div>
             <div className={classes.userInfoFooter}>
               <div className={classes.footerDiv}>
-                <p><span className={classes.spanPublic}>(info publica)</span>Seguindo: {!user.following ? (
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span><Link to={`/listFollowersOrFollowings/${user.id}/${"following"}`} className={classes.link}>Seguindo: </Link>{!user.following || user.following.length <= 0 ? (
                   <span className={classes.noRegistry}>Não segue ninguém</span>
                 ) :
                   <div className={classes.divShowSimplified}>
-                    <span className={classes.spanData} onMouseOver={() => getUsers("following")} onMouseOut={() => setSimplifiedUsers(undefined)}>{user.following.length}</span>
-                    {simplifiedUsers !== undefined && (
+                    <span className={classes.spanData} onMouseOver={() => getUsers("following")}>{user.following.length}</span>
+                    {simplifiedFollowing !== undefined && (
                       <div className={classes.divSimplifiedData}>
-                        {simplifiedUsers && simplifiedUsers.map((user: SimplifiedUser) => (
-                          <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                        {simplifiedFollowing && simplifiedFollowing.map((user: SimplifiedUser) => (
+                          <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
                         ))}
                       </div>
                     )}
                   </div>
-                }</p>
-                <p><span className={classes.spanPublic}>(info privada)</span>Seguidores: {!user.followers ? (
+                }</div>
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info privada)</span><Link to={`/listFollowersOrFollowings/${user.id}/${"followers"}`} className={classes.link}>Seguidores: </Link>{!user.followers || user.followers.length <= 0 ? (
                   <span className={classes.noRegistry}>Sem seguidores</span>
                 ) :
-                  <div className={classes.divShowSimplified} >
+                  <div className={classes.divShowSimplified}>
                     <span className={classes.spanData} onMouseOver={() => getUsers("followers")}>{user.followers.length}</span>
-                    {simplifiedUsers !== undefined && (
+                    {simplifiedFollowers !== undefined && (
                       <div className={classes.divSimplifiedData}>
-                        {simplifiedUsers && simplifiedUsers.map((user: SimplifiedUser) => (
+                        {simplifiedFollowers && simplifiedFollowers.map((user: SimplifiedUser) => (
                           <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
                         ))}
                       </div>
                     )}
                   </div>
-                }</p>
+                }</div>
                 <p><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.UserCommunities ? (
                   <span className={classes.noRegistry}>Não faz parte de comunidades</span>
                 ) :

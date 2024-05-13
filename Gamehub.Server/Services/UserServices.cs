@@ -113,34 +113,48 @@ namespace Gamehub.Server.Services
             if(opt == "following")
             {
                 List<SimplifiedUser> users = new List<SimplifiedUser>();
-                foreach(string followingId in user.Following)
+                if(user.Following != null)
                 {
-                    User currentUser = await GetAsync(followingId);
-                    SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                    foreach (string followingId in user.Following)
                     {
-                        UserId = followingId,
-                        NickName = currentUser.Nickname,
-                        UserImageSrc = currentUser.ImageSrc
-                    };
-                    users.Add(newSimplifiedUser);
+                        User currentUser = await GetAsync(followingId);
+                        SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                        {
+                            UserId = followingId,
+                            NickName = currentUser.Nickname,
+                            UserImageSrc = currentUser.ImageSrc
+                        };
+                        users.Add(newSimplifiedUser);
+                    }
+                    return users;
                 }
-                return users;
+                else
+                {
+                    throw new Exception("Usuário não segue ninguem");
+                }
             }
             else if(opt == "followers")
             {
                 List<SimplifiedUser> users = new List<SimplifiedUser>();
-                foreach (string followersId in user.Followers)
+                if(user.Followers != null)
                 {
-                    User currentUser = await GetAsync(followersId);
-                    SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                    foreach (string followersId in user.Followers)
                     {
-                        UserId = followersId,
-                        NickName = currentUser.Nickname,
-                        UserImageSrc = currentUser.ImageSrc
-                    };
-                    users.Add(newSimplifiedUser);
+                        User currentUser = await GetAsync(followersId);
+                        SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                        {
+                            UserId = followersId,
+                            NickName = currentUser.Nickname,
+                            UserImageSrc = currentUser.ImageSrc
+                        };
+                        users.Add(newSimplifiedUser);
+                    }
+                    return users;
                 }
-                return users;
+                else
+                {
+                    throw new Exception("Usuário não tem seguidores");
+                }
             }
             else
             {
