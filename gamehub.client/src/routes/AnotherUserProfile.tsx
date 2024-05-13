@@ -124,8 +124,11 @@ const AnotherUserProfile = () => {
 
   const getFollowersOrFollowing = async (url: string, data: any) => {
     try{
-      //Erro aqui
-      const response = await axios.post(url, qs.stringify(data));
+      const response = await axios.post(url, qs.stringify(data), {
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
       setSimplifiedUsers(response.data);
     } catch(error){
       console.clear();
@@ -137,7 +140,7 @@ const AnotherUserProfile = () => {
     try{
       getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
         opt: opt,
-        userId: user.id
+        userId: anotherUser.id
       });
     }
     catch(error){
@@ -191,11 +194,11 @@ const AnotherUserProfile = () => {
           </div>
           <div className={classes.anotherUserInfoFooter}>
             <div className={classes.footerDiv}>
-              <p>Seguindo: {!anotherUser.following ? (
+              <div className={classes.paragraph}><Link to={`/listFollowersOrFollowings/${anotherUser.id}/${"following"}`} className={classes.link}>Seguindo: </Link>{!anotherUser.following || anotherUser.following.length <= 0 ? (
                 <span className={classes.noRegistry}>Não segue ninguém</span>
               ) :
                 <div className={classes.divShowSimplified}>
-                  <span className={classes.spanData} onMouseOver={() => getUsers("following")} onMouseOut={() => setSimplifiedUsers(undefined)}>{anotherUser.following.length}</span>
+                  <span className={classes.spanData} onMouseOver={() => getUsers("following")}>{anotherUser.following.length}</span>
                   <div className={classes.divSimplifiedData}>
                     {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
                       mapUser.userId === user.id ? (
@@ -206,7 +209,7 @@ const AnotherUserProfile = () => {
                     ))}
                   </div>
                 </div>
-              }</p>
+              }</div>
               <p>Comunidades em que faz parte: {!anotherUser.UserCommunities ? (
                 <span className={classes.noRegistry}>Não faz parte de comunidades</span>
               ) :

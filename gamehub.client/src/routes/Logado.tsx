@@ -29,7 +29,7 @@ interface User {
   following: SimplifiedUser[];
 }
 
-interface SimplifiedCommunity{
+interface SimplifiedCommunity {
   id: string;
   name: string;
   creatorId: string;
@@ -72,6 +72,8 @@ const Logado = () => {
   const [updatedPosts, setUpdatedPosts] = useState(false);
   const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
   const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
+  const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
+  const [showFollowing, setShowFollowing] = useState(false);
 
   const navigate = useNavigate();
 
@@ -191,6 +193,29 @@ const Logado = () => {
     checksFeedback();
   }, [posts])
 
+  useEffect(() => {
+    const getFollowing = async () => {
+      const opt = "following";
+      if (user) {
+        try {
+          const response = await axios.post("/Users/getFollowersOrFollowing", qs.stringify({
+            opt: opt,
+            userId: user.id
+          }), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          });
+          setSimplifiedFollowing(response.data);
+        } catch (error) {
+          console.clear();
+          console.error(error);
+        }
+      }
+    }
+    getFollowing();
+  }, [user])
+
   if (!user) {
     return <h1 className='loading'>Carregando...</h1>
   }
@@ -293,6 +318,10 @@ const Logado = () => {
     }
   }
 
+  const showUsers = () => {
+    setShowFollowing(!showFollowing);
+  }
+
   return (
     <div className={classes.divMain}>
 
@@ -303,7 +332,7 @@ const Logado = () => {
         <div className={classes.sideDiv}>
           <div className={classes.sideDivContainer}>
             <div className={classes.sideHeader}>
-              <FaPeopleGroup className={classes.sideIcon}/>
+              <FaPeopleGroup className={classes.sideIcon} />
               <label htmlFor="communities">Comunidades</label>
             </div>
             <div className={classes.sideContent}>
@@ -314,14 +343,14 @@ const Logado = () => {
                     <p>{community.name}</p>
                   </div>
                 ))
-              ): (
+              ) : (
                 <p className={classes.noRegistry}>Sem comunidades</p>
               )}
             </div>
           </div>
           <div className={classes.sideDivContainer}>
             <div className={classes.sideHeader}>
-              <TiGroup className={classes.sideIcon}/>
+              <TiGroup className={classes.sideIcon} />
               <label htmlFor="communitiesCreated">Comunidades criadas</label>
             </div>
             <div className={classes.sideContent}>
@@ -332,29 +361,32 @@ const Logado = () => {
                     <p>{community.name}</p>
                   </div>
                 ))
-              ): (
+              ) : (
                 <p className={classes.noRegistry}>Sem comunidades</p>
               )}
             </div>
             <div className={classes.sideFooter}>
-              <GoPlusCircle className={classes.sideIcon}/>
+              <GoPlusCircle className={classes.sideIcon} />
             </div>
           </div>
           <div className={classes.sideDivContainer}>
             <div className={classes.sideHeader}>
-              <FaRunning className={classes.sideIcon}/>
-              <label htmlFor="following">Pessoas que você segue</label>
+              <FaRunning className={classes.sideIcon} />
+              <Link to={`/listFollowersOrFollowings/${user.id}/${"following"}`}><label htmlFor='following'>Pessoas que você segue</label></Link>
             </div>
             <div className={classes.sideContent}>
-              {user.following ? (
-                user.following.map((following: SimplifiedUser) => (
-                  <Link to={`/anotherProfile/${following.userId}`}><div key={following.userId} className={classes.divData}>
-                    <img src={following.userImageSrc} alt={following.nickName} />
-                    <p>{following.nickName}</p>
-                  </div></Link>
-                ))
-              ): (
-                <p className={classes.noRegistry}>Sem comunidades</p>
+              {simplifiedFollowing && simplifiedFollowing.length > 0 ? (
+                <div className={classes.divFollowing}>
+                  <p className={classes.paragraph}>Usuários <button className={`${showFollowing === true && classes.buttonActivated}`} onClick={showUsers}></button></p>
+                  {showFollowing === true && simplifiedFollowing.map((following: SimplifiedUser) => (
+                    <Link key={following.userId} to={`/anotherProfile/${following.userId}`}><div className={classes.divData}>
+                      <img src={following.userImageSrc} alt={following.nickName} />
+                      <p>{following.nickName}</p>
+                    </div></Link>
+                  ))}
+                </div>
+              ) : (
+                <p className={classes.noRegistry}>Não segue ninguém</p>
               )}
             </div>
           </div>

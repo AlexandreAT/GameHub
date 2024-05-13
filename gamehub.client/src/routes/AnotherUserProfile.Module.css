@@ -154,6 +154,7 @@
     gap: 1rem;
 }
 
+.anotherUserInfoFooter .paragraph,
 .anotherUserInfoFooter p{
     width: 100%;
     font-size: 18px;
@@ -164,9 +165,13 @@
     gap: 5px;
 }
 
+.link{
+    color: var(--lightGrey);
+}
+
 .divShowSimplified{
     position: relative;
-    cursor: default;
+    cursor: pointer;
 }
 
 .divSimplifiedData{
@@ -196,11 +201,12 @@
     height: 30px;
 }
 
-p .divShowSimplified:hover .divSimplifiedData{
+.paragraph .divShowSimplified:hover .divSimplifiedData{
     display: flex;
     flex-direction: column;
     gap: 5px;
-    top: 15px;
+    top: -2px;
+    left: -2px;
 }
 
 .divBiography{

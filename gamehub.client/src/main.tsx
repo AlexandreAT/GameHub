@@ -15,6 +15,7 @@ import Logado from './routes/Logado.tsx'
 import AnotherUserProfile from './routes/AnotherUserProfile.tsx'
 import ErrorPage from './routes/ErrorPage.tsx'
 import Profile from './routes/Profile.tsx'
+import ListFollowersOrFollowing from './routes/ListFollowersOrFollowing.tsx'
 
 
 const router = createBrowserRouter([
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "anotherProfile/:id",
         element: <AnotherUserProfile/>,
+      },
+      {
+        path: "listFollowersOrFollowings/:id/:opt",
+        element: <ListFollowersOrFollowing />
       },
       {
         path: "*",
