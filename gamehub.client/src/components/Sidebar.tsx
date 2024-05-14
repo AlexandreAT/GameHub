@@ -70,7 +70,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
     return (
         <>
             <div className={classes.sideDiv}>
-                <div className="sideDivContainer">
+                <div className={classes.sideDivContainer}>
                     <div className={classes.sideHeader}>
                         <FaPeopleGroup className={classes.sideIcon} />
                         <label htmlFor="communities">Comunidades</label>
