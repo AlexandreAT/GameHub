@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar'
 import Cookies from 'js-cookie';
 import * as qs from 'qs';
 
+import { FaSearch } from "react-icons/fa";
+
 import classes from "./ListFollowersOrFollowing.module.css";
 
 interface Prop {
@@ -128,44 +130,85 @@ const ListFollowersOrFollowing = () => {
             <div className='navbar'>{<Navbar />}</div>
 
             <div className={classes.divCenter}>
+                <div className={classes.searchBar}><FaSearch className={classes.icon} /><input type='text' name="search" id="search" placeholder='Procurar usuário...' /></div>
                 {!anotherUser && (
-                    <div className={classes.paragraph}>
-                        <h1>{user.nickname}</h1>
-                        <span className={classes.spanPublic}>(info publica)</span>Seguindo: {!user.following || user.following.length <= 0 ? (
-                            <span className={classes.noRegistry}>Não segue ninguém</span>
-                        ) :
-                            <div className={classes.divShowSimplified}>
-                                <span className={classes.spanData}>{user.following.length}</span>
-                                {simplifiedUsers !== undefined && (
-                                    <div className={classes.divSimplifiedData}>
-                                        {simplifiedUsers && simplifiedUsers.map((user: SimplifiedUser) => (
-                                            <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
-                                        ))}
+                    <div className={classes.content}>
+                        <div className={classes.contentHearder}>
+                            {opt === "following" ? (
+                                <>
+                                    <h3>Usuários que você segue</h3>
+                                    <p>Total: {user.following && user.following.length > 0 ? user.following.length : (0)}</p>
+                                </>
+                            ) : (
+                                <>
+                                    <h3>Usuário que te seguem</h3>
+                                    <p>Total: {user.followers && user.followers.length > 0 ? user.followers.length : (0)}</p>
+                                </>
+                            )}
+                        </div>
+                        <div className={classes.mainContent}>
+                            {opt === "following" ? (
+                                !user.following || user.following.length <= 0 ? (
+                                    <span className={classes.noRegistry}>Não segue ninguém</span>
+                                ) :
+                                    <div className={classes.usersDiv}>
+                                        {simplifiedUsers !== undefined && (
+                                            simplifiedUsers.map((user: SimplifiedUser) => (
+                                                <Link to={`/anotherProfile/${user.userId}`} key={user.userId} className={classes.userData}>
+                                                    <img src={user.userImageSrc} />
+                                                    <p>{user.nickName}</p>
+                                                </Link>
+                                            ))
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        }</div>
+                            ) : (
+                                !user.followers || user.followers.length <= 0 ? (
+                                    <span className={classes.noRegistry}>Não tem seguidores</span>
+                                ) :
+                                    <div className={classes.usersDiv}>
+                                        {simplifiedUsers !== undefined && (
+                                            simplifiedUsers.map((user: SimplifiedUser) => (
+                                                <Link to={`/anotherProfile/${user.userId}`} key={user.userId} className={classes.userData}>
+                                                    <img src={user.userImageSrc} />
+                                                    <p>{user.nickName}</p>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>
+                            )}
+                        </div>
+                    </div>
                 )}
 
                 {anotherUser && (
-                    <div className={classes.paragraph}>
-                        <h1>{anotherUser.nickname}</h1>
-                        Seguindo: {!anotherUser.following || anotherUser.following.length <= 0 ? (
+                    <div className={classes.content}>
+                        <div className={classes.contentHearder}>
+                            <h3>Usuários que {anotherUser.nickname} segue</h3>
+                            <p>Total: {anotherUser.following && anotherUser.following.length > 0 ? anotherUser.following.length : (0)}</p>
+                        </div>
+                        {!anotherUser.following || anotherUser.following.length <= 0 ? (
                             <span className={classes.noRegistry}>Não segue ninguém</span>
                         ) :
-                            <div className={classes.divShowSimplified}>
-                                <span className={classes.spanData}>{anotherUser.following.length}</span>
-                                <div className={classes.divSimplifiedData}>
-                                    {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
+                            <div className={classes.usersDiv}>
+                                {simplifiedUsers !== undefined && (
+                                    simplifiedUsers.map((mapUser: SimplifiedUser) => (
                                         mapUser.userId === user.id ? (
-                                            <Link to={"/profile"}><p key={mapUser.userId} className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
+                                            <Link to={"/profile"} key={mapUser.userId} className={classes.userData}>
+                                                <img src={mapUser.userImageSrc} /> 
+                                                <p>{mapUser.nickName}</p> 
+                                                <span className={classes.youSpan}>(você)</span>
+                                            </Link>
                                         ) : (
-                                            <p key={mapUser.userId} className={classes.spanData} onClick={(e) => navigateAnotherUser(mapUser.userId)}><img src={mapUser.userImageSrc} /> {mapUser.nickName}</p>
+                                            <Link to={`/anotherProfile/${mapUser.userId}`} key={mapUser.userId} className={classes.userData}>
+                                                <img src={mapUser.userImageSrc} /> 
+                                                <p>{mapUser.nickName}</p>
+                                            </Link>
                                         )
-                                    ))}
-                                </div>
+                                    ))
+                                )}
                             </div>
-                        }</div>
+                        }
+                    </div>
                 )}
             </div>
         </div>

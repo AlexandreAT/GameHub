@@ -1,4 +1,4 @@
-import { Navigate, useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import { axios } from '../axios-config';
 import { FaRegComment } from "react-icons/fa";
@@ -6,10 +6,6 @@ import { SlDislike, SlLike } from "react-icons/sl";
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { TiGroup } from "react-icons/ti";
-import { FaRunning } from "react-icons/fa";
-import { GoPlusCircle } from "react-icons/go";
 
 import Navbar from '../components/Navbar'
 
@@ -19,6 +15,7 @@ import Cookies from 'js-cookie';
 import classes from "./Logado.module.css";
 import MakePostForm from '../components/MakePostForm';
 import CommentsForm from '../components/CommentsForm';
+import Sidebar from '../components/Sidebar';
 
 interface User {
   id: string;
@@ -72,8 +69,6 @@ const Logado = () => {
   const [updatedPosts, setUpdatedPosts] = useState(false);
   const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
   const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
-  const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
-  const [showFollowing, setShowFollowing] = useState(false);
 
   const navigate = useNavigate();
 
@@ -193,29 +188,6 @@ const Logado = () => {
     checksFeedback();
   }, [posts])
 
-  useEffect(() => {
-    const getFollowing = async () => {
-      const opt = "following";
-      if (user) {
-        try {
-          const response = await axios.post("/Users/getFollowersOrFollowing", qs.stringify({
-            opt: opt,
-            userId: user.id
-          }), {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            }
-          });
-          setSimplifiedFollowing(response.data);
-        } catch (error) {
-          console.clear();
-          console.error(error);
-        }
-      }
-    }
-    getFollowing();
-  }, [user])
-
   if (!user) {
     return <h1 className='loading'>Carregando...</h1>
   }
@@ -318,10 +290,6 @@ const Logado = () => {
     }
   }
 
-  const showUsers = () => {
-    setShowFollowing(!showFollowing);
-  }
-
   return (
     <div className={classes.divMain}>
 
@@ -329,68 +297,7 @@ const Logado = () => {
 
       <div className={classes.divCenter}>
 
-        <div className={classes.sideDiv}>
-          <div className={classes.sideDivContainer}>
-            <div className={classes.sideHeader}>
-              <FaPeopleGroup className={classes.sideIcon} />
-              <label htmlFor="communities">Comunidades</label>
-            </div>
-            <div className={classes.sideContent}>
-              {user.userCommunities ? (
-                user.userCommunities.map((community: SimplifiedCommunity) => (
-                  <div key={community.id} className={classes.divData}>
-                    <img src={community.iconeImageSrc} alt={community.name} />
-                    <p>{community.name}</p>
-                  </div>
-                ))
-              ) : (
-                <p className={classes.noRegistry}>Sem comunidades</p>
-              )}
-            </div>
-          </div>
-          <div className={classes.sideDivContainer}>
-            <div className={classes.sideHeader}>
-              <TiGroup className={classes.sideIcon} />
-              <label htmlFor="communitiesCreated">Comunidades criadas</label>
-            </div>
-            <div className={classes.sideContent}>
-              {user.userCreatedCommunities ? (
-                user.userCreatedCommunities.map((community: SimplifiedCommunity) => (
-                  <div key={community.id} className={classes.divData}>
-                    <img src={community.iconeImageSrc} alt={community.name} />
-                    <p>{community.name}</p>
-                  </div>
-                ))
-              ) : (
-                <p className={classes.noRegistry}>Sem comunidades</p>
-              )}
-            </div>
-            <div className={classes.sideFooter}>
-              <GoPlusCircle className={classes.sideIcon} />
-            </div>
-          </div>
-          <div className={classes.sideDivContainer}>
-            <div className={classes.sideHeader}>
-              <FaRunning className={classes.sideIcon} />
-              <Link to={`/listFollowersOrFollowings/${user.id}/${"following"}`}><label htmlFor='following'>Pessoas que você segue</label></Link>
-            </div>
-            <div className={classes.sideContent}>
-              {simplifiedFollowing && simplifiedFollowing.length > 0 ? (
-                <div className={classes.divFollowing}>
-                  <p className={classes.paragraph}>Usuários <button className={`${showFollowing === true && classes.buttonActivated}`} onClick={showUsers}></button></p>
-                  {showFollowing === true && simplifiedFollowing.map((following: SimplifiedUser) => (
-                    <Link key={following.userId} to={`/anotherProfile/${following.userId}`}><div className={classes.divData}>
-                      <img src={following.userImageSrc} alt={following.nickName} />
-                      <p>{following.nickName}</p>
-                    </div></Link>
-                  ))}
-                </div>
-              ) : (
-                <p className={classes.noRegistry}>Não segue ninguém</p>
-              )}
-            </div>
-          </div>
-        </div>
+        {<Sidebar user={user}/>}
 
         <button className={classes.buttonMakePost} onClick={handleShowForm}>
           {showForm ? (

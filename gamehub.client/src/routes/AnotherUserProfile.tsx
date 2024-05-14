@@ -202,7 +202,7 @@ const AnotherUserProfile = () => {
                   <div className={classes.divSimplifiedData}>
                     {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
                       mapUser.userId === user.id ? (
-                        <Link to={"/profile"}><p key={mapUser.userId} className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
+                        <Link to={"/profile"} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
                       ): (
                         <p key={mapUser.userId} className={classes.spanData} onClick={(e) => navigateAnotherUser(mapUser.userId)}><img src={mapUser.userImageSrc} /> {mapUser.nickName}</p>
                       )

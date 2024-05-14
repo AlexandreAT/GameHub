@@ -276,7 +276,10 @@ function Profile() {
                     {simplifiedFollowing !== undefined && (
                       <div className={classes.divSimplifiedData}>
                         {simplifiedFollowing && simplifiedFollowing.map((user: SimplifiedUser) => (
-                          <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                          <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}>
+                            <img src={user.userImageSrc} /> 
+                            {user.nickName}
+                          </p></Link>
                         ))}
                       </div>
                     )}
@@ -290,7 +293,10 @@ function Profile() {
                     {simplifiedFollowers !== undefined && (
                       <div className={classes.divSimplifiedData}>
                         {simplifiedFollowers && simplifiedFollowers.map((user: SimplifiedUser) => (
-                          <Link to={`/anotherProfile/${user.userId}`}><p key={user.userId} className={classes.spanData}><img src={user.userImageSrc} /> {user.nickName}</p></Link>
+                          <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}>
+                            <img src={user.userImageSrc} /> 
+                            {user.nickName}
+                          </p></Link>
                         ))}
                       </div>
                     )}

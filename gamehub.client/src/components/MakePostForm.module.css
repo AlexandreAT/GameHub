@@ -72,6 +72,26 @@
     color: var(--mediumgrey);
 }
 
+.formPost .imageLabel{
+    color: var(--lightGrey);
+    cursor: pointer;
+}
+
+.formPost .imageLabel span{
+    color: var(--lightGrey);
+    font-weight: bold;
+    text-decoration: underline;
+    transition: all 0.3s ease;
+}
+
+.formPost .imageLabel:hover span{
+    color: var(--turquoise);
+}
+
+.formPost div input[type="file"]{
+    display: none;
+}
+
 .formPost textarea{
     padding-top: 5px;
     outline: none;

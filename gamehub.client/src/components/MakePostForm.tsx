@@ -140,7 +140,7 @@ const MakePostForm = ({ user }: { user: User | null }) => {
                   <textarea name="content" placeholder='Digite o conteúdo do post...' onChange={(e) => setContent(e.target.value)} value={content}></textarea>
               </div>
               <div>
-                <label htmlFor='file'>Caso queira adicionar uma imagem, <span>clique aqui</span></label>
+                <label htmlFor='file' className={classes.imageLabel}>Caso queira adicionar uma imagem, <span>clique aqui</span></label>
                 <input type='file' name='file' id='file' onChange={handleFile} />
                 <div className={classes.divImg}>
                   {imagePreview && (
