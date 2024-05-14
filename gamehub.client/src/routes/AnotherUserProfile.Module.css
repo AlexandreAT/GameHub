@@ -197,8 +197,13 @@
 }
 
 .divSimplifiedData p img{
-    width: 30px;
-    height: 30px;
+    border-radius: 50%;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+    object-fit: cover;
+    border: 2px solid var(--black);
 }
 
 .paragraph .divShowSimplified:hover .divSimplifiedData{
