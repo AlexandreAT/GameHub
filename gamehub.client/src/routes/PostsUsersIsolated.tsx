@@ -1,12 +1,12 @@
-import { FormEvent, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import Cookies from 'js-cookie';
+import classes from './PostsUsersIsolated.module.css';
+
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import Cookies from 'js-cookie';
-import * as qs from 'qs';
-
-import classes from './PostsUsersIsolated.module.css';
 import ListUsersPostsComponnent from '../components/ListUsersPostsComponnent';
 
 interface User {

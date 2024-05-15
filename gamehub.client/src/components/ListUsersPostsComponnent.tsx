@@ -1,7 +1,6 @@
-import { FormEvent, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 import * as qs from 'qs';
 
 import { FaRegComment } from "react-icons/fa";
@@ -13,16 +12,9 @@ import CommentsForm from './CommentsForm';
 
 interface Props {
     user: User;
-    anotherUser?: AnotherUser;
 }
 
 interface User {
-    id: string;
-    nickname: string;
-    imageSrc: string;
-}
-
-interface AnotherUser {
     id: string;
     nickname: string;
     imageSrc: string;
@@ -58,7 +50,6 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
     const [showFormComment, setShowFormComment] = useState<{ id: string; show: boolean }[]>([]);
     const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
-    const [updatedPosts, setUpdatedPosts] = useState(false);
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
 
@@ -324,7 +315,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
                     </div>
                 </div>
             ))): (
-                <h1>Carregando posts dos usuários</h1>
+                <h1>Carregando posts dos usuários...</h1>
             )}
         </div>
     )
