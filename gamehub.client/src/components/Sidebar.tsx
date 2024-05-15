@@ -131,7 +131,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
                     </div>
                     {simplifiedFollowing && simplifiedFollowing.length > 0 && (
                         <div className={classes.sideFooter}>
-                            <Link to={"/usersPosts"} className={classes.link}>Posts dos usuários...</Link>
+                            <Link to={"/usersPosts"} className={classes.link}>Posts dos usuários</Link>
                         </div>
                     )}
                 </div>
