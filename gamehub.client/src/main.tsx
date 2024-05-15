@@ -16,6 +16,7 @@ import AnotherUserProfile from './routes/AnotherUserProfile.tsx'
 import ErrorPage from './routes/ErrorPage.tsx'
 import Profile from './routes/Profile.tsx'
 import ListFollowersOrFollowing from './routes/ListFollowersOrFollowing.tsx'
+import PostsUsersIsolated from './routes/PostsUsersIsolated.tsx'
 
 
 const router = createBrowserRouter([
@@ -54,7 +55,11 @@ const router = createBrowserRouter([
       },
       {
         path: "listFollowersOrFollowings/:id/:opt",
-        element: <ListFollowersOrFollowing />
+        element: <ListFollowersOrFollowing />,
+      },
+      {
+        path: "usersPosts/",
+        element: <PostsUsersIsolated />,
       },
       {
         path: "*",

@@ -137,5 +137,19 @@ namespace Gamehub.Server.Controllers
         {
             return await _postServices.GetDislikeAsync(postId);
         }
+
+        [HttpGet("GetListUsersPosts")]
+        public async Task<List<Post>> GetUsersIsolatedPosts(string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync("following", user);
+            List<Post> posts = new List<Post>();
+            foreach (SimplifiedUser following in simplifiedUsers)
+            {
+                List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
+                posts = posts.Concat(followingPosts).ToList();
+            }
+            return posts.OrderByDescending(x => x.Date).ToList();
+        }
     }
 }

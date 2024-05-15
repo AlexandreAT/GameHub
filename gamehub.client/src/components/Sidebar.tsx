@@ -129,6 +129,11 @@ const Sidebar = ({ user }: { user: User | null }) => {
                             <p className={classes.noRegistry}>Não segue ninguém</p>
                         )}
                     </div>
+                    {simplifiedFollowing && simplifiedFollowing.length > 0 && (
+                        <div className={classes.sideFooter}>
+                            <Link to={"/usersPosts"} className={classes.link}>Posts dos usuários...</Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
