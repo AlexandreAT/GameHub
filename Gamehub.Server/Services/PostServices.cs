@@ -33,8 +33,8 @@ namespace Gamehub.Server.Services
 
         public async Task<List<Post>> GetUserPosts(string userId)
         {
-            List<Post> posts = await GetAsync();
-            return posts.FindAll(x => x.IdAuthor == userId);
+            var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
         }
 
         public async Task UpdateAsync(string id, Post post) => await _postCollection.ReplaceOneAsync(x => x.Id == id, post);

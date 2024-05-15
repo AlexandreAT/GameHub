@@ -42,7 +42,8 @@
 
 .sideDiv:hover label,
 .sideDiv:hover .sideContent,
-.sideDiv:hover .sideFooter .sideIcon{
+.sideDiv:hover .sideFooter .sideIcon,
+.sideDiv:hover .sideFooter .link{
     display: inline-block;
 }
 
@@ -117,7 +118,8 @@
 
 .sideDiv div label,
 .sideDiv div .sideIcon,
-.sideDivContainer .sideFooter .sideIcon{
+.sideDivContainer .sideFooter .sideIcon,
+.sideDivContainer .sideFooter .link{
     color: var(--lightGrey);
     fill: var(--lightGrey);
     font-size: 18px;
@@ -154,6 +156,22 @@
     font-size: 25px;
 }
 
+.sideDivContainer .sideFooter .link{
+    overflow: hidden;
+    cursor: pointer;
+    display: none;
+    white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    animation-duration: 1s;
+    animation-name: showText;
+    font-size: 16px;
+}
+
+.sideDivContainer .sideFooter .link:hover {
+    border-bottom-color: var(--turquoise);
+    color: var(--whiteSmoke);
+}
+
 .sideDivContainer .sideFooter .sideIcon:hover{
     fill: var(--turquoise);
 }
@@ -171,6 +189,8 @@
 
 .sideContent .divFollowing .paragraph{
     color: var(--grey);
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .sideContent .divFollowing .buttonActivated{
