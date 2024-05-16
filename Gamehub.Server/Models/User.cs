@@ -53,10 +53,10 @@ namespace Gamehub.Server.Models
         public List<string>? Followers { get; set; } = null;
 
         [BsonElement("Comunidades")]
-        public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;
+        public List<string>? UserCommunities { get; set; } = null;
 
         [BsonElement("Comunidades criadas")]
-        public List<SimplifiedCommunity>? UserCreatedCommunities { get; set; } = null;
+        public List<string>? UserCreatedCommunities { get; set; } = null;
 
         [BsonElement("Biografia")]
         public string? Biography { get; set; } = null;

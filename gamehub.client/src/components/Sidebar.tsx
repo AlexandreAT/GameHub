@@ -8,6 +8,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { TiGroup } from "react-icons/ti";
 import { FaRunning } from "react-icons/fa";
 import { GoPlusCircle } from "react-icons/go";
+import RegisterCommunity from './RegisterCommunity';
 
 interface User {
     id: string;
@@ -15,7 +16,7 @@ interface User {
     imageSrc: string;
     userCommunities: SimplifiedCommunity[];
     userCreatedCommunities: SimplifiedCommunity[];
-    following: SimplifiedUser[];
+    following: string[];
 }
 
 interface SimplifiedCommunity {
@@ -34,30 +35,63 @@ interface SimplifiedUser {
 const Sidebar = ({ user }: { user: User | null }) => {
 
     const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
+    const [simplifiedCommunity, setSimplifiedCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
+    const [showFormCommunity, setShowFormCommunity] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
 
-    useEffect(() => {
-        const getFollowing = async () => {
-            const opt = "following";
-            if (user) {
-                try {
-                    const response = await axios.post("/Users/getFollowersOrFollowing", qs.stringify({
-                        opt: opt,
-                        userId: user.id
-                    }), {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    });
-                    setSimplifiedFollowing(response.data);
-                } catch (error) {
-                    console.clear();
-                    console.error(error);
-                }
+    const getFollowing = async () => {
+        const opt = "following";
+        if (user) {
+            try {
+                const response = await axios.post("/Users/getFollowersOrFollowing", qs.stringify({
+                    opt: opt,
+                    userId: user.id
+                }), {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                setSimplifiedFollowing(response.data);
+            } catch (error) {
+                console.clear();
+                console.error(error);
             }
         }
+    }
+
+    const getCreatedCommunity = async () => {
+        const opt = "created";
+        if (user) {
+            try {
+                const response = await axios.post("/Users/getFollowingCommunityOrCreatedCommunity", qs.stringify({
+                    opt: opt,
+                    userId: user.id
+                }), {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                setSimplifiedCommunity(response.data);
+            } catch (error) {
+                console.clear();
+                console.error(error);
+            }
+        }
+    }
+
+    useEffect(() => {
+
         getFollowing();
-    }, [user])
+        getCreatedCommunity();
+
+    }, [user]);
+
+    // useEffect(() => {
+        
+    //     getFollowing();
+    //     getCreatedCommunity();
+
+    // }, [simplifiedCommunity, simplifiedFollowing])
 
     if (!user) {
         return <h1 className='loading'>Carregando...</h1>
@@ -106,7 +140,8 @@ const Sidebar = ({ user }: { user: User | null }) => {
                         )}
                     </div>
                     <div className={classes.sideFooter}>
-                        <GoPlusCircle className={classes.sideIcon} />
+                        <GoPlusCircle className={classes.sideIcon} onClick={() => setShowFormCommunity(!showFormCommunity)} />
+                        {showFormCommunity && (<div className={classes.formCommunity}><RegisterCommunity user={user} /></div>)}
                     </div>
                 </div>
                 <div className={classes.sideDivContainer}>

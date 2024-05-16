@@ -28,10 +28,10 @@ namespace Gamehub.Server.Models
         public List<string>? Followers { get; set; } = null;
 
         [JsonIgnore]
-        public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;
+        public List<string>? UserCommunities { get; set; } = null;
 
         [JsonIgnore]
-        public List<SimplifiedCommunity>? UserCreatedCommunities { get; set; } = null;
+        public List<string>? UserCreatedCommunities { get; set; } = null;
 
         [JsonIgnore]
         public string? Biography { get; set; } = null;

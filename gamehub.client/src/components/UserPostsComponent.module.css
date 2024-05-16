@@ -4,7 +4,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 85%;
+    width: 100%;
     gap: 1rem;
 }
 
@@ -13,7 +13,7 @@
     flex-direction: column;
     justify-content: center;
     border-bottom: 2px solid var(--mediumgrey);
-    width: 100%;
+    width: 95%;
     padding: 1rem 10px 1rem 10px;
     gap: 15px;
     border-top-left-radius: 10px;

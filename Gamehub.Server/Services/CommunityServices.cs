@@ -31,6 +31,73 @@ namespace Gamehub.Server.Services
             return community;
         }
 
+        public async Task<List<SimplifiedCommunity>> GetSimplifiedCommunity(string opt, User user)
+        {
+            if (opt == "following")
+            {
+                List<SimplifiedCommunity> communities = new List<SimplifiedCommunity>();
+                if (user.UserCommunities != null || user.UserCreatedCommunities.Count > 0)
+                {
+                    foreach (string communityId in user.UserCommunities)
+                    {
+                        Community currentCommunity = await GetAsync(communityId);
+                        SimplifiedCommunity newSimplifiedCommunity = new SimplifiedCommunity
+                        {
+                            Id = communityId,
+                            CreatorId = currentCommunity.Creator,
+                            CreatorImageSrc = currentCommunity.CreatorImageSrc,
+                            Name = currentCommunity.Name,
+                            IconeImageSrc = currentCommunity.iconeImageSrc,
+                            BackgroundImageSrc = currentCommunity.backgroundImageSrc
+                        };
+                        communities.Add(newSimplifiedCommunity);
+                    }
+                    return communities;
+                }
+                else
+                {
+                    throw new Exception("Usuário não faz parte de comunidades");
+                }
+            }
+            else if (opt == "created")
+            {
+                List<SimplifiedCommunity> communities = new List<SimplifiedCommunity>();
+                if (user.UserCreatedCommunities != null)
+                {
+                    if (user.UserCreatedCommunities.Count > 0)
+                    {
+                        foreach (string communityId in user.UserCreatedCommunities)
+                        {
+                            Community currentCommunity = await GetAsync(communityId);
+                            SimplifiedCommunity newSimplifiedCommunity = new SimplifiedCommunity
+                            {
+                                Id = communityId,
+                                CreatorId = currentCommunity.Creator,
+                                CreatorImageSrc = currentCommunity.CreatorImageSrc,
+                                Name = currentCommunity.Name,
+                                IconeImageSrc = currentCommunity.iconeImageSrc,
+                                BackgroundImageSrc = currentCommunity.backgroundImageSrc
+                            };
+                            communities.Add(newSimplifiedCommunity);
+                        }
+                        return communities;
+                    }
+                    else
+                    {
+                        throw new Exception("Usuário não criou uma comunidade");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Usuário não criou uma comunidade");
+                }
+            }
+            else
+            {
+                throw new Exception("Erro ao verificar a opção passada!");
+            }
+        }
+
         public async Task UpdateAsync(string id, Community community) => await _communityCollection.ReplaceOneAsync(x => x.Id == id, community);
 
         public async Task UpdateUserInCommunitiesAsync(User user)
@@ -39,12 +106,6 @@ namespace Gamehub.Server.Services
 
             foreach(Community community in allCommunities)
             {
-                if(community.Creator.UserId == user.Id)
-                {
-                    community.Creator.NickName = user.Nickname;
-                    community.Creator.UserImageSrc = user.ImageSrc;
-                    await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
-                }
                 if (community.Post != null)
                 {
                     for (int i = 0; i < community.Post.Count; i++)

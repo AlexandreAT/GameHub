@@ -270,6 +270,14 @@ namespace Gamehub.Server.Controllers
             return simplifiedUsers;
         }
 
+        [HttpPost("getFollowingCommunityOrCreatedCommunity")]
+        public async Task<List<SimplifiedCommunity>> getFollowingCommunityOrCreatedCommunity([FromForm] string opt, [FromForm] string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity(opt, user);
+            return simplifiedCommunities;
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]

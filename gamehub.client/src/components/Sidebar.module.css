@@ -43,7 +43,8 @@
 .sideDiv:hover label,
 .sideDiv:hover .sideContent,
 .sideDiv:hover .sideFooter .sideIcon,
-.sideDiv:hover .sideFooter .link{
+.sideDiv:hover .sideFooter .link,
+.sideDiv:hover .sideFooter .formCommunity{
     display: inline-block;
 }
 
@@ -154,6 +155,13 @@
     animation-duration: 1s;
     animation-name: showText;
     font-size: 25px;
+}
+
+.sideDivContainer .sideFooter .formCommunity{
+    overflow: hidden;
+    display: none;
+    animation-duration: 1s;
+    animation-name: showText;
 }
 
 .sideDivContainer .sideFooter .link{
