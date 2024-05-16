@@ -15,7 +15,7 @@ namespace Gamehub.Server.Models
         public string? Biography { get; set; } = null;
         public string? City { get; set; } = null;
         public string? State { get; set; } = null;
-        public List<SimplifiedCommunity>? UserCommunities { get; set; } = null;
-        public List<SimplifiedCommunity>? UserCreatedCommunities { get; set; } = null;
+        public List<string>? UserCommunities { get; set; } = null;
+        public List<string>? UserCreatedCommunities { get; set; } = null;
     }
 }

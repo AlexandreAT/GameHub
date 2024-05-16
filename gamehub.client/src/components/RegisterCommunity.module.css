@@ -1,0 +1,31 @@
+.formControl{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.formControl input{
+    background-color: transparent;
+    border-radius: 10px;
+    border: 2px solid var(--grey);
+    color: var(--whiteSmoke);
+    padding: 10px 5px;
+    transition: all 0.3s ease;
+}
+
+.formControl input::placeholder{
+    font-size: 10px;
+}
+
+.formControl input:focus{
+    border: 2px solid var(--turquoise);
+    color: var(--turquoise);
+}
+
+.formControl button{
+    border: 2px solid var(--grey);
+    border-radius: 10px;
+    font-size: 15px;
+    color: var(--grey);
+}

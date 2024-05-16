@@ -292,7 +292,7 @@ const Cadastro = () => {
               {formSubmitted && (<p className='errorMessage'>{formError.lastName}</p>)}
             </div>
           </div>
-          <div>
+          <div className={classes.inputNickname}>
             <label htmlFor="nickname">Apelido (nickname) <span className={classes.required}>*</span></label>
             <input type="text" name='nickname' placeholder='Digite seu nickname...' onChange={handleNicknameChange} value={nickname} onBlur={validateForm} />
             {formSubmitted && (<p className='errorMessage'>{formError.nickname}</p>)}

@@ -233,6 +233,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
 
     return (
         <div className={classes.containerPosts}>
+            <h3 className={classes.pageTitle}>Posts dos usuários que você segue</h3>
             {posts.length > 0 ? (posts.map((post: Post) => (
                 <div key={post.id} className={classes.divPost}>
                     <div className={classes.postHeader}>

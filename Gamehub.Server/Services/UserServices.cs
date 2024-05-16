@@ -43,19 +43,19 @@ namespace Gamehub.Server.Services
 
         public async Task RemoveAsync(string id) => await _userCollection.DeleteOneAsync(x => x.Id == id);
 
-        public async Task AddCreatedCommunities(SimplifiedCommunity community, User user)
+        public async Task AddCreatedCommunities(string communityId, User user)
         {
-            if (community != null)
+            if (communityId != null)
             {
                 if(user.UserCreatedCommunities == null)
                 {
-                    user.UserCreatedCommunities = new List<SimplifiedCommunity>();
+                    user.UserCreatedCommunities = new List<string>();
                 }
-                user.UserCreatedCommunities.Add(community);
+                user.UserCreatedCommunities.Add(communityId);
             }
             else
             {
-                throw new Exception("É necessário um objeto Community correto para adicionar na lista!");
+                throw new Exception("É necessário um id de comunidade correto para adicionar na lista!");
             }
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }

@@ -7,11 +7,11 @@
 .divUser{
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    width: 70%;
+    width: 65%;
     height: 100%;
     margin-top: 95px;
+    position: relative;
 }
 
 .divUser .divUserInfo button{

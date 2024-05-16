@@ -22,33 +22,24 @@ namespace Gamehub.Server.Controllers
         [HttpGet]
         public async Task<List<Community>> GetCommunities() => await _communityServices.GetAsync();
 
+        [HttpGet("community/{id}")]
+        public async Task<Community> GetCommunity(string Id) => await _communityServices.GetAsync(Id);
+
         [HttpPost]
-        public async Task<Community> PostCommunity(string creatorId, Community community)
+        public async Task<Community> PostCommunity(Community community)
         {
-            User creatorUser = await _userServices.GetAsync(creatorId);
-            SimplifiedUser creator = new SimplifiedUser
-            {
-                UserId = creatorUser.Id,
-                NickName = creatorUser.Nickname,
-                UserImageSrc = creatorUser.ImageSrc,
-            };
-            community.Creator = creator;
+            User creatorUser = await _userServices.GetAsync(community.Creator);
+            community.CreatorImageSrc = creatorUser.ImageSrc;
             Community newCommunity = await _communityServices.CreateAsync(community);
-            SimplifiedCommunity simplifiedCommunity = new SimplifiedCommunity
-            {
-                Id = newCommunity.Id,
-                Name = newCommunity.Name,
-                CreatorId = newCommunity.Creator.NickName,
-                IconeImageSrc = newCommunity.iconeImageSrc
-            };
-            await _userServices.AddCreatedCommunities(simplifiedCommunity, creatorUser);
+            
+            await _userServices.AddCreatedCommunities(newCommunity.Id, creatorUser);
             return community;
         }
 
         [HttpPut("{id}")]
         public async Task UpdateCommunity(string id, Community community)
         {
-            User creatorUser = await _userServices.GetAsync(community.Creator.UserId);
+            User creatorUser = await _userServices.GetAsync(community.Creator);
             if (id != community.Id)
             {
                 throw new Exception("Erro ao encontrar o id da comunidade");

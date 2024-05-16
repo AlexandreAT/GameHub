@@ -17,7 +17,7 @@ interface User {
   imageSrc: string;
   userCommunities: SimplifiedCommunity[];
   userCreatedCommunities: SimplifiedCommunity[];
-  following: SimplifiedUser[];
+  following: string[];
 }
 
 interface SimplifiedCommunity {
@@ -77,7 +77,7 @@ const Logado = () => {
 
       <div className={classes.divCenter}>
 
-        {<Sidebar user={user}/>}
+        <Sidebar user={user}/>
 
         <button className={classes.buttonMakePost} onClick={handleShowForm}>
           {showForm ? (

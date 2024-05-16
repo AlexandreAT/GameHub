@@ -8,11 +8,14 @@ import * as qs from 'qs';
 import classes from "./Profile.module.css";
 import UserPostsComponent from '../components/UserPostsComponent';
 import UpdateUserComponnent from '../components/UpdateUserComponnent';
+import Sidebar from '../components/Sidebar';
+import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 
 interface SimplifiedCommunity {
   id: string;
   name: string;
   creatorId: string;
+  iconeImageSrc: string;
 }
 
 interface SimplifiedUser {
@@ -33,8 +36,8 @@ interface User {
   imageSrc: string;
   following: string[];
   followers: string[];
-  UserCommunities: SimplifiedCommunity[];
-  UserCreatedCommunities: SimplifiedCommunity[];
+  userCommunities: SimplifiedCommunity[];
+  userCreatedCommunities: SimplifiedCommunity[];
   biography: string;
   city: string;
   state: string;
@@ -206,11 +209,18 @@ function Profile() {
     }
   }
 
+  function formatCPF(cpf: string): string {
+    return cpf.replace(/\D/g, '').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+
   return (
     <div className={classes.divProfileMain}>
       <div className='navbar'>{<Navbar />}</div>
       {!showEditForm ? (
         <div className={classes.divUser}>
+
+          <Sidebar user={user}/>
+
           <div className={classes.divUserInfo}>
             <div className={classes.userInfoContent}>
               <div className={classes.userImg}>
@@ -238,9 +248,9 @@ function Profile() {
                     <p><span className={classes.spanPublic}>(info publica)</span>Sobrenome: <span className={classes.spanData}>{user.surname}</span></p>
                   </div>
                   <div>
-                    <p><span className={classes.spanPublic}>(info privada)</span>CPF: <span className={classes.spanData}>{user.cpf}</span></p>
+                    <p><span className={classes.spanPublic}>(info privada)</span>CPF: <span className={classes.spanData}>{formatCPF(user.cpf)}</span></p>
                     <p><span className={classes.spanPublic}>(info privada)</span>Telefone: {user.phone ? (
-                      <span className={classes.spanData}>{user.phone}</span>
+                      <span className={classes.spanData}>{insertMaskInPhone(user.phone)}</span>
                     ) : (
                       <span className={classes.noRegistry}>Sem telefone</span>
                     )}</p>
@@ -302,17 +312,17 @@ function Profile() {
                     )}
                   </div>
                 }</div>
-                <p><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.UserCommunities ? (
+                <p><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.userCommunities ? (
                   <span className={classes.noRegistry}>Não faz parte de comunidades</span>
                 ) :
-                  user.UserCommunities.map((community: SimplifiedCommunity) => (
+                  user.userCommunities.map((community: SimplifiedCommunity) => (
                     <p key={community.id} className={classes.spanData}>{community.name}</p>
                   ))
                 }</p>
-                <p><span className={classes.spanPublic}>(info publica)</span>Comunidades criadas: {!user.UserCreatedCommunities ? (
+                <p><span className={classes.spanPublic}>(info publica)</span>Comunidades criadas: {!user.userCreatedCommunities ? (
                   <span className={classes.noRegistry}>Sem comunidades criadas</span>
                 ) :
-                  user.UserCreatedCommunities.map((community: SimplifiedCommunity) => (
+                  user.userCreatedCommunities.map((community: SimplifiedCommunity) => (
                     <p key={community.id} className={classes.spanData}>{community.name}</p>
                   ))
                 }</p>

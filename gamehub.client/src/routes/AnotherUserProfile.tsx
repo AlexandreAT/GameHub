@@ -7,6 +7,7 @@ import * as qs from 'qs';
 
 import classes from './AnotherUserProfile.module.css'
 import UserPostsComponent from '../components/UserPostsComponent';
+import Sidebar from '../components/Sidebar';
 
 interface SimplifiedCommunity {
   id: string;
@@ -39,6 +40,22 @@ interface User {
   id: string;
   nickname: string;
   imageSrc: string;
+  userCommunities: SimplifiedCommunity[];
+  userCreatedCommunities: SimplifiedCommunity[];
+  following: string[];
+}
+
+interface SimplifiedCommunity {
+  id: string;
+  name: string;
+  creatorId: string;
+  iconeImageSrc: string;
+}
+
+interface SimplifiedUser {
+  userId: string;
+  nickName: string;
+  userImageSrc: string;
 }
 
 const AnotherUserProfile = () => {
@@ -152,6 +169,9 @@ const AnotherUserProfile = () => {
     <div className={classes.divProfileMain}>
       <div className='navbar'>{<Navbar />}</div>
       <div className={classes.divUser}>
+
+        <Sidebar user={user} />
+
         <div className={classes.divUserInfo}>
           <div className={classes.userInfoContent}>
             <div className={classes.userImg}>

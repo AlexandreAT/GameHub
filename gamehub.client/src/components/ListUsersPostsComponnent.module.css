@@ -8,6 +8,15 @@
     gap: 1rem;
 }
 
+.containerPosts .pageTitle{
+    font-family: 'DO Futuristic', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px var(--turquoise);
+}
+
 .divPost{
     display: flex;
     flex-direction: column;
@@ -81,6 +90,23 @@
 .postHeader .author{
     font-weight: bold;
     font-size: 22px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.author::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 2px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+  
+.author:hover::after{
+    width: 100%;
 }
 
 .postContent{
