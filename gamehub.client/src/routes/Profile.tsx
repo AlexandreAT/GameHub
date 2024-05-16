@@ -354,15 +354,25 @@ function Profile() {
                   </div>
                 }</div>
 
-                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.userCommunities ? (
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span><Link to={`/listCommunities/${user.id}/${"following"}`} className={classes.link}>Comunidades em que faz parte: </Link>{!user.userCommunities ? (
                   <span className={classes.noRegistry}>Não faz parte de comunidades</span>
                 ) :
-                  user.userCommunities.map((community: string) => (
-                    <p key={community} className={classes.spanData}>{community}</p>
-                  ))
+                  <div className={classes.divShowSimplified}>
+                    <span className={classes.spanData} onMouseOver={() => getCommunity("following")}>{user.userCommunities.length}</span>
+                    {simplifiedFollowingCommunity !== undefined && (
+                      <div className={classes.divSimplifiedData}>
+                        {simplifiedFollowingCommunity && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
+                          <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                            <img src={community.iconeImageSrc} />
+                            {community.name}
+                          </p></Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 }</div>
 
-                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span>Comunidades criadas: {!user.userCreatedCommunities || user.userCreatedCommunities.length <= 0 ? (
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span><Link to={`/listCommunities/${user.id}/${"created"}`} className={classes.link}>Comunidades criadas: </Link>{!user.userCreatedCommunities || user.userCreatedCommunities.length <= 0 ? (
                   <span className={classes.noRegistry}>Sem comunidades criadas</span>
                 ) :
                   <div className={classes.divShowSimplified}>

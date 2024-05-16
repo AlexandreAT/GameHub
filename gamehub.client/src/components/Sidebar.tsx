@@ -36,8 +36,10 @@ const Sidebar = ({ user }: { user: User | null }) => {
 
     const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
     const [simplifiedCommunity, setSimplifiedCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
+    const [simplifiedFollowingCommunity, setSimplifiedFollowingCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
     const [showFormCommunity, setShowFormCommunity] = useState(false);
     const [showCommunity, setShowCommunity] = useState(false);
+    const [showFollowingCommunity, setShowFollowingCommunity] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
 
     const getFollowing = async () => {
@@ -80,10 +82,31 @@ const Sidebar = ({ user }: { user: User | null }) => {
         }
     }
 
+    const getFollowingCommunity = async () => {
+        const opt = "following";
+        if (user) {
+            try {
+                const response = await axios.post("/Users/getFollowingCommunityOrCreatedCommunity", qs.stringify({
+                    opt: opt,
+                    userId: user.id
+                }), {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                setSimplifiedFollowingCommunity(response.data);
+            } catch (error) {
+                console.clear();
+                console.error(error);
+            }
+        }
+    }
+
     useEffect(() => {
 
         getFollowing();
         getCreatedCommunity();
+        getFollowingCommunity();
 
     }, [user]);
 
@@ -99,6 +122,10 @@ const Sidebar = ({ user }: { user: User | null }) => {
         setShowCommunity(!showCommunity);
     }
 
+    const showFollowingCommunities = () => {
+        setShowFollowingCommunity(!showFollowingCommunity);
+    }
+
     return (
         <>
             <div className={classes.sideDiv}>
@@ -108,15 +135,19 @@ const Sidebar = ({ user }: { user: User | null }) => {
                         <Link to={`/listCommunities/${user.id}/${"following"}`}><label htmlFor='communitiesCreated'>Comunidades seguidas</label></Link>
                     </div>
                     <div className={classes.sideContent}>
-                        {user.userCommunities ? (
-                            user.userCommunities.map((community: string) => (
-                                <div key={community} className={classes.divData}>
-                                    {/* <img src={community.iconeImageSrc} alt={community.name} /> */}
-                                    <p>{community}</p>
-                                </div>
-                            ))
+
+                        {simplifiedFollowingCommunity && simplifiedFollowingCommunity.length > 0 ? (
+                            <div className={classes.divCommunities}>
+                                <p className={classes.paragraph}>Comunidades <button className={`${showFollowingCommunity === true && classes.buttonActivated}`} onClick={showFollowingCommunities}></button></p>
+                                {showFollowingCommunity === true && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
+                                    <Link key={community.id} to={`/anotherProfile/${community.creatorId}`}><div className={classes.divData}>
+                                        <img src={community.iconeImageSrc} alt={community.name} />
+                                        <p>{community.name}</p>
+                                    </div></Link>
+                                ))}
+                            </div>
                         ) : (
-                            <p className={classes.noRegistry}>Sem comunidades</p>
+                            <p className={classes.noRegistry}>Não segue nenhuma comunidade</p>
                         )}
                     </div>
                 </div>

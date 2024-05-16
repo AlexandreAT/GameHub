@@ -28,12 +28,6 @@ interface AnotherUser {
     userCreatedCommunities: string[];
 }
 
-interface SimplifiedUser {
-    userId: string;
-    nickName: string;
-    userImageSrc: string;
-}
-
 interface SimplifiedCommunity {
     id: string;
     name: string;
@@ -155,14 +149,87 @@ const ListCommunities = () => {
                                 </>
                             )}
                         </div>
+                        <div className={classes.mainContent}>
+                            {opt === "following" ? (
+                                !user.userCommunities || user.userCommunities.length <= 0 ? (
+                                    <span className={classes.noRegistry}>Não segue nenhuma comunidade</span>
+                                ) :
+                                    (<div className={classes.communityDiv}>
+                                        {filteredCommunities !== undefined && (
+                                            filteredCommunities.map((community: SimplifiedCommunity) => (
+                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                    <img src={community.iconeImageSrc} />
+                                                    <p>{community.name}</p>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>)
+                            ) : (
+                                !user.followers || user.followers.length <= 0 ? (
+                                    <span className={classes.noRegistry}>Não criou nenhuma comunidade</span>
+                                ) :
+                                    (<div className={classes.communityDiv}>
+                                        {filteredCommunities !== undefined && (
+                                            filteredCommunities.map((community: SimplifiedCommunity) => (
+                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                    <img src={community.iconeImageSrc} />
+                                                    <p>{community.name}</p>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>)
+                            )}
+                        </div>
                     </div>
                 )}
 
                 {anotherUser && (
                     <div className={classes.content}>
                         <div className={classes.contentHearder}>
-                            <h3>Comunidades que {anotherUser.nickname} segue</h3>
-                            <p>Total: {anotherUser.userCommunities && anotherUser.userCommunities.length > 0 ? anotherUser.userCommunities.length : (0)}</p>
+                            {opt === "following" ? (
+                                <>
+                                    <h3>Comunidades que {anotherUser.nickname} segue</h3>
+                                    <p>Total: {anotherUser.userCommunities && anotherUser.userCommunities.length > 0 ? anotherUser.userCommunities.length : (0)}</p>
+                                </>
+                            ) : (
+                                <>
+                                    <h3>Comunidades que {anotherUser.nickname} criou</h3>
+                                    <p>Total: {anotherUser.userCreatedCommunities && anotherUser.userCreatedCommunities.length > 0 ? anotherUser.userCreatedCommunities.length : (0)}</p>
+                                </>
+                            )}
+                        </div>
+                        <div className={classes.mainContent}>
+                            {opt === "following" ? (
+                                !anotherUser.userCommunities || anotherUser.userCommunities.length <= 0 ? (
+                                    <span className={classes.noRegistry}>Não segue nenhuma comunidade</span>
+                                ) : (
+                                    <div className={classes.communityDiv}>
+                                        {filteredCommunities !== undefined && (
+                                            filteredCommunities.map((community: SimplifiedCommunity) => (
+                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                    <img src={community.iconeImageSrc} />
+                                                    <p>{community.name}</p>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>
+                                )
+                            ) : (
+                                !anotherUser.userCreatedCommunities || anotherUser.userCreatedCommunities.length <= 0 ? (
+                                    <span className={classes.noRegistry}>Não criou nenhuma comunidade</span>
+                                ) : (
+                                    <div className={classes.communityDiv}>
+                                        {filteredCommunities !== undefined && (
+                                            filteredCommunities.map((community: SimplifiedCommunity) => (
+                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                    <img src={community.iconeImageSrc} />
+                                                    <p>{community.name}</p>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>
+                                )
+                            )}
                         </div>
                     </div>
                 )}
