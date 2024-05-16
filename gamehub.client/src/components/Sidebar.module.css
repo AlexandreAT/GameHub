@@ -184,7 +184,8 @@
     fill: var(--turquoise);
 }
 
-.sideContent .divFollowing button{
+.sideContent .divFollowing button,
+.sideContent .divCommunities button{
     border-right: 3px solid var(--grey);
     border-top: 3px solid var(--grey);
     background-color: transparent;
@@ -195,13 +196,15 @@
     transition: all 0.3s ease;
 }
 
-.sideContent .divFollowing .paragraph{
+.sideContent .divFollowing .paragraph,
+.sideContent .divCommunities .paragraph{
     color: var(--grey);
     font-size: 15px;
     font-weight: bold;
 }
 
-.sideContent .divFollowing .buttonActivated{
+.sideContent .divFollowing .buttonActivated,
+.sideContent .divCommunities .buttonActivated{
     rotate: 135deg;
     border-right-color: var(--turquoise);
     border-top-color: var(--turquoise);

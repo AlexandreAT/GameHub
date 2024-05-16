@@ -9,12 +9,6 @@ import classes from './AnotherUserProfile.module.css'
 import UserPostsComponent from '../components/UserPostsComponent';
 import Sidebar from '../components/Sidebar';
 
-interface SimplifiedCommunity {
-  id: string;
-  name: string;
-  creatorId: string;
-}
-
 interface AnotherUser {
   id: string;
   name: string;
@@ -26,8 +20,8 @@ interface AnotherUser {
   biography: string;
   city: string;
   state: string;
-  UserCommunities: SimplifiedCommunity[];
-  UserCreatedCommunities: SimplifiedCommunity[];
+  userCommunities: string[];
+  userCreatedCommunities: string[];
 }
 
 interface SimplifiedUser {
@@ -40,8 +34,8 @@ interface User {
   id: string;
   nickname: string;
   imageSrc: string;
-  userCommunities: SimplifiedCommunity[];
-  userCreatedCommunities: SimplifiedCommunity[];
+  userCommunities: string[];
+  userCreatedCommunities: string[];
   following: string[];
 }
 
@@ -63,7 +57,9 @@ const AnotherUserProfile = () => {
   const { id } = useParams();
   const [anotherUser, setAnotherUser] = useState<AnotherUser>();
   const [user, setUser] = useState<User | null>(null);
-  const [simplifiedUsers,setSimplifiedUsers] = useState<SimplifiedUser[] | undefined>(undefined);
+  const [simplifiedUsers, setSimplifiedUsers] = useState<SimplifiedUser[] | undefined>(undefined);
+  const [simplifiedCommunity, setSimplifiedCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
+  const [simplifiedFollowingCommunity, setSimplifiedFollowingCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -140,28 +136,67 @@ const AnotherUserProfile = () => {
   }
 
   const getFollowersOrFollowing = async (url: string, data: any) => {
-    try{
+    try {
       const response = await axios.post(url, qs.stringify(data), {
-      headers: {
+        headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
       setSimplifiedUsers(response.data);
-    } catch(error){
+    } catch (error) {
       console.clear();
       console.error(error);
     }
   }
 
   const getUsers = (opt: string) => {
-    try{
+    try {
       getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
         opt: opt,
         userId: anotherUser.id
       });
     }
-    catch(error){
+    catch (error) {
       console.error(error);
+    }
+  }
+
+  const getCreatedOrFollowingCommunities = async (url: string, data: any, opt: string) => {
+    try {
+      const response = await axios.post(url, qs.stringify(data), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      if (opt === "following") {
+        setSimplifiedFollowingCommunity(response.data);
+      }
+      else if (opt === "created") {
+        setSimplifiedCommunity(response.data);
+      }
+    } catch (error) {
+      console.clear();
+      console.error(error);
+    }
+  }
+
+  const getCommunity = async (opt: string) => {
+    if (opt === "following") {
+      setSimplifiedFollowingCommunity(undefined);
+    }
+    else if (opt === "created") {
+      setSimplifiedCommunity(undefined);
+    }
+    if (user) {
+      try {
+        await getCreatedOrFollowingCommunities("/Users/getFollowingCommunityOrCreatedCommunity", {
+          opt: opt,
+          userId: anotherUser.id
+        }, opt);
+      } catch (error) {
+        console.clear();
+        console.error(error);
+      }
     }
   }
 
@@ -223,30 +258,43 @@ const AnotherUserProfile = () => {
                     {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
                       mapUser.userId === user.id ? (
                         <Link to={"/profile"} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
-                      ): (
+                      ) : (
                         <p key={mapUser.userId} className={classes.spanData} onClick={(e) => navigateAnotherUser(mapUser.userId)}><img src={mapUser.userImageSrc} /> {mapUser.nickName}</p>
                       )
                     ))}
                   </div>
                 </div>
               }</div>
-              <p>Comunidades em que faz parte: {!anotherUser.UserCommunities ? (
+
+              <div className={classes.paragraph}>Comunidades em que faz parte: {!anotherUser.userCommunities ? (
                 <span className={classes.noRegistry}>Não faz parte de comunidades</span>
               ) :
-                anotherUser.UserCommunities.map((community: SimplifiedCommunity) => (
-                  <p key={community.id} className={classes.spanData}>{community.name}</p>
+                anotherUser.userCommunities.map((community: string) => (
+                  <p key={community} className={classes.spanData}>{community}</p>
                 ))
-              }</p>
-              <p>Comunidades criadas: {!anotherUser.UserCreatedCommunities ? (
+              }</div>
+
+              <div className={classes.paragraph}>Comunidades criadas: {!anotherUser.userCreatedCommunities || anotherUser.userCreatedCommunities.length <= 0 ? (
                 <span className={classes.noRegistry}>Sem comunidades criadas</span>
               ) :
-                anotherUser.UserCreatedCommunities.map((community: SimplifiedCommunity) => (
-                  <p key={community.id} className={classes.spanData}>{community.name}</p>
-                ))
-              }</p>
+                <div className={classes.divShowSimplified}>
+                  <span className={classes.spanData} onMouseOver={() => getCommunity("created")}>{anotherUser.userCreatedCommunities.length}</span>
+                  {simplifiedCommunity !== undefined && (
+                    <div className={classes.divSimplifiedData}>
+                      {simplifiedCommunity && simplifiedCommunity.map((community: SimplifiedCommunity) => (
+                        <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                          <img src={community.iconeImageSrc} />
+                          {community.name}
+                        </p></Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              }</div>
+
             </div>
             <div className={classes.divBiography}>
-              <p>Biografia: <br/>{!anotherUser.biography ? (
+              <p>Biografia: <br />{!anotherUser.biography ? (
                 <span className={classes.noRegistry}>Sem biografia</span>
               ) :
                 <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: anotherUser.biography.replace(/\n/g, '<br/>') }}></span>

@@ -1,30 +1,22 @@
 import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import Navbar from '../components/Navbar'
+import { FaSearch } from "react-icons/fa";
 import Cookies from 'js-cookie';
 import * as qs from 'qs';
 
-import { FaSearch } from "react-icons/fa";
-
 import classes from "./ListFollowersOrFollowing.module.css";
+import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 
 interface User {
     id: string;
     nickname: string;
     imageSrc: string;
-    userCommunities: SimplifiedCommunity[];
-    userCreatedCommunities: SimplifiedCommunity[];
-    following: SimplifiedUser[];
-    followers: SimplifiedUser[];
-}
-
-interface SimplifiedCommunity {
-    id: string;
-    name: string;
-    creatorId: string;
-    iconeImageSrc: string;
+    userCommunities: string[];
+    userCreatedCommunities: string[];
+    following: string[];
+    followers: string[];
 }
 
 interface AnotherUser {

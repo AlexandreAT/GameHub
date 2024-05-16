@@ -36,8 +36,8 @@ interface User {
   imageSrc: string;
   following: string[];
   followers: string[];
-  userCommunities: SimplifiedCommunity[];
-  userCreatedCommunities: SimplifiedCommunity[];
+  userCommunities: string[];
+  userCreatedCommunities: string[];
   biography: string;
   city: string;
   state: string;
@@ -53,7 +53,9 @@ function Profile() {
   const [biography, setBiography] = useState<string | undefined>(undefined);
   const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
   const [simplifiedFollowers, setSimplifiedFollowers] = useState<SimplifiedUser[] | undefined>(undefined);
-  
+  const [simplifiedCommunity, setSimplifiedCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
+  const [simplifiedFollowingCommunity, setSimplifiedFollowingCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
+
 
   const navigate = useNavigate();
 
@@ -180,10 +182,10 @@ function Profile() {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
-      if(opt === "following"){
+      if (opt === "following") {
         setSimplifiedFollowing(response.data);
       }
-      else if(opt === "followers"){
+      else if (opt === "followers") {
         setSimplifiedFollowers(response.data);
       }
     } catch (error) {
@@ -193,10 +195,10 @@ function Profile() {
   }
 
   const getUsers = async (opt: string) => {
-    if(opt === "following"){
+    if (opt === "following") {
       setSimplifiedFollowing(undefined);
     }
-    else if(opt === "followers"){
+    else if (opt === "followers") {
       setSimplifiedFollowers(undefined);
     }
     try {
@@ -206,6 +208,45 @@ function Profile() {
       }, opt);
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  const getCreatedOrFollowingCommunities = async (url: string, data: any, opt: string) => {
+    try {
+      const response = await axios.post(url, qs.stringify(data), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      if (opt === "following") {
+        setSimplifiedFollowingCommunity(response.data);
+      }
+      else if (opt === "created") {
+        setSimplifiedCommunity(response.data);
+      }
+    } catch (error) {
+      console.clear();
+      console.error(error);
+    }
+  }
+
+  const getCommunity = async (opt: string) => {
+    if (opt === "following") {
+      setSimplifiedFollowingCommunity(undefined);
+    }
+    else if (opt === "created") {
+      setSimplifiedCommunity(undefined);
+    }
+    if (user) {
+      try {
+        await getCreatedOrFollowingCommunities("/Users/getFollowingCommunityOrCreatedCommunity", {
+          opt: opt,
+          userId: user.id
+        }, opt);
+      } catch (error) {
+        console.clear();
+        console.error(error);
+      }
     }
   }
 
@@ -219,7 +260,7 @@ function Profile() {
       {!showEditForm ? (
         <div className={classes.divUser}>
 
-          <Sidebar user={user}/>
+          <Sidebar user={user} />
 
           <div className={classes.divUserInfo}>
             <div className={classes.userInfoContent}>
@@ -287,7 +328,7 @@ function Profile() {
                       <div className={classes.divSimplifiedData}>
                         {simplifiedFollowing && simplifiedFollowing.map((user: SimplifiedUser) => (
                           <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}>
-                            <img src={user.userImageSrc} /> 
+                            <img src={user.userImageSrc} />
                             {user.nickName}
                           </p></Link>
                         ))}
@@ -304,7 +345,7 @@ function Profile() {
                       <div className={classes.divSimplifiedData}>
                         {simplifiedFollowers && simplifiedFollowers.map((user: SimplifiedUser) => (
                           <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}>
-                            <img src={user.userImageSrc} /> 
+                            <img src={user.userImageSrc} />
                             {user.nickName}
                           </p></Link>
                         ))}
@@ -312,20 +353,33 @@ function Profile() {
                     )}
                   </div>
                 }</div>
-                <p><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.userCommunities ? (
+
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span>Comunidades em que faz parte: {!user.userCommunities ? (
                   <span className={classes.noRegistry}>Não faz parte de comunidades</span>
                 ) :
-                  user.userCommunities.map((community: SimplifiedCommunity) => (
-                    <p key={community.id} className={classes.spanData}>{community.name}</p>
+                  user.userCommunities.map((community: string) => (
+                    <p key={community} className={classes.spanData}>{community}</p>
                   ))
-                }</p>
-                <p><span className={classes.spanPublic}>(info publica)</span>Comunidades criadas: {!user.userCreatedCommunities ? (
+                }</div>
+
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span>Comunidades criadas: {!user.userCreatedCommunities || user.userCreatedCommunities.length <= 0 ? (
                   <span className={classes.noRegistry}>Sem comunidades criadas</span>
                 ) :
-                  user.userCreatedCommunities.map((community: SimplifiedCommunity) => (
-                    <p key={community.id} className={classes.spanData}>{community.name}</p>
-                  ))
-                }</p>
+                  <div className={classes.divShowSimplified}>
+                    <span className={classes.spanData} onMouseOver={() => getCommunity("created")}>{user.userCreatedCommunities.length}</span>
+                    {simplifiedCommunity !== undefined && (
+                      <div className={classes.divSimplifiedData}>
+                        {simplifiedCommunity && simplifiedCommunity.map((community: SimplifiedCommunity) => (
+                          <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                            <img src={community.iconeImageSrc} />
+                            {community.name}
+                          </p></Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                }</div>
+
               </div>
               <div className={classes.divBiography}>
                 <p><span className={classes.spanPublic}>(info publica)</span>Biografia: {!user.biography ? (
