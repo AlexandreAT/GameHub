@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react'
+import { FormEvent, useState } from 'react'
 
 import classes from "./RegisterCommunity.module.css"
 import axios from 'axios';
@@ -13,7 +13,6 @@ interface User {
     imageSrc: string;
 }
 
-
 const RegisterCommunity = ({ user }: Props) => {
 
     const [name, setName] = useState('');
@@ -25,6 +24,7 @@ const RegisterCommunity = ({ user }: Props) => {
                 Creator: data.creator,
                 CreatorImageSrc: data.creatorImageSrc,
                 Name: data.name,
+                IconeImageSrc: data.iconeImageSrc,
             };
 
             const response = await axios.post(url, communityPascalCase, {
@@ -50,12 +50,14 @@ const RegisterCommunity = ({ user }: Props) => {
 
         const creator = user.id;
         const creatorImageSrc = user.imageSrc;
+        const iconeImageSrc = "https://cdn-icons-png.flaticon.com/512/326/326003.png";
 
         try {
             const response = await postData('/Community', {
                 creator,
                 creatorImageSrc,
                 name: name,
+                iconeImageSrc,
             })
 
             if (response.error) {
@@ -79,6 +81,7 @@ const RegisterCommunity = ({ user }: Props) => {
             } else {
                 console.log('Postado com sucesso!', response.data);
                 setName('');
+                window.location.reload();
             }
         } catch (error) {
             console.error('Erro ao postar:', error);

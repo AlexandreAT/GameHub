@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import classes from './Sidebar.module.css';
 import { Link } from 'react-router-dom';
 import { axios } from '../axios-config';
@@ -14,8 +14,8 @@ interface User {
     id: string;
     nickname: string;
     imageSrc: string;
-    userCommunities: SimplifiedCommunity[];
-    userCreatedCommunities: SimplifiedCommunity[];
+    userCommunities: string[];
+    userCreatedCommunities: string[];
     following: string[];
 }
 
@@ -37,6 +37,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
     const [simplifiedFollowing, setSimplifiedFollowing] = useState<SimplifiedUser[] | undefined>(undefined);
     const [simplifiedCommunity, setSimplifiedCommunity] = useState<SimplifiedCommunity[] | undefined>(undefined);
     const [showFormCommunity, setShowFormCommunity] = useState(false);
+    const [showCommunity, setShowCommunity] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
 
     const getFollowing = async () => {
@@ -86,13 +87,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
 
     }, [user]);
 
-    // useEffect(() => {
-        
-    //     getFollowing();
-    //     getCreatedCommunity();
-
-    // }, [simplifiedCommunity, simplifiedFollowing])
-
     if (!user) {
         return <h1 className='loading'>Carregando...</h1>
     }
@@ -101,20 +95,24 @@ const Sidebar = ({ user }: { user: User | null }) => {
         setShowFollowing(!showFollowing);
     }
 
+    const showCommunities = () => {
+        setShowCommunity(!showCommunity);
+    }
+
     return (
         <>
             <div className={classes.sideDiv}>
                 <div className={classes.sideDivContainer}>
                     <div className={classes.sideHeader}>
                         <FaPeopleGroup className={classes.sideIcon} />
-                        <label htmlFor="communities">Comunidades</label>
+                        <Link to={`/listCommunities/${user.id}/${"following"}`}><label htmlFor='communitiesCreated'>Comunidades seguidas</label></Link>
                     </div>
                     <div className={classes.sideContent}>
                         {user.userCommunities ? (
-                            user.userCommunities.map((community: SimplifiedCommunity) => (
-                                <div key={community.id} className={classes.divData}>
-                                    <img src={community.iconeImageSrc} alt={community.name} />
-                                    <p>{community.name}</p>
+                            user.userCommunities.map((community: string) => (
+                                <div key={community} className={classes.divData}>
+                                    {/* <img src={community.iconeImageSrc} alt={community.name} /> */}
+                                    <p>{community}</p>
                                 </div>
                             ))
                         ) : (
@@ -125,18 +123,21 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 <div className={classes.sideDivContainer}>
                     <div className={classes.sideHeader}>
                         <TiGroup className={classes.sideIcon} />
-                        <label htmlFor="communitiesCreated">Comunidades criadas</label>
+                        <Link to={`/listCommunities/${user.id}/${"created"}`}><label htmlFor='communitiesCreated'>Comunidades criadas</label></Link>
                     </div>
                     <div className={classes.sideContent}>
-                        {user.userCreatedCommunities ? (
-                            user.userCreatedCommunities.map((community: SimplifiedCommunity) => (
-                                <div key={community.id} className={classes.divData}>
-                                    <img src={community.iconeImageSrc} alt={community.name} />
-                                    <p>{community.name}</p>
-                                </div>
-                            ))
+                        {simplifiedCommunity && simplifiedCommunity.length > 0 ? (
+                            <div className={classes.divCommunities}>
+                                <p className={classes.paragraph}>Comunidades <button className={`${showCommunity === true && classes.buttonActivated}`} onClick={showCommunities}></button></p>
+                                {showCommunity === true && simplifiedCommunity.map((community: SimplifiedCommunity) => (
+                                    <Link key={community.id} to={`/anotherProfile/${community.creatorId}`}><div className={classes.divData}>
+                                        <img src={community.iconeImageSrc} alt={community.name} />
+                                        <p>{community.name}</p>
+                                    </div></Link>
+                                ))}
+                            </div>
                         ) : (
-                            <p className={classes.noRegistry}>Sem comunidades</p>
+                            <p className={classes.noRegistry}>Não criou nenhuma comunidade</p>
                         )}
                     </div>
                     <div className={classes.sideFooter}>

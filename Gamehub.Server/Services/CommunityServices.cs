@@ -36,23 +36,30 @@ namespace Gamehub.Server.Services
             if (opt == "following")
             {
                 List<SimplifiedCommunity> communities = new List<SimplifiedCommunity>();
-                if (user.UserCommunities != null || user.UserCreatedCommunities.Count > 0)
+                if (user.UserCommunities != null)
                 {
-                    foreach (string communityId in user.UserCommunities)
+                    if (user.UserCommunities.Count > 0)
                     {
-                        Community currentCommunity = await GetAsync(communityId);
-                        SimplifiedCommunity newSimplifiedCommunity = new SimplifiedCommunity
+                        foreach (string communityId in user.UserCommunities)
                         {
-                            Id = communityId,
-                            CreatorId = currentCommunity.Creator,
-                            CreatorImageSrc = currentCommunity.CreatorImageSrc,
-                            Name = currentCommunity.Name,
-                            IconeImageSrc = currentCommunity.iconeImageSrc,
-                            BackgroundImageSrc = currentCommunity.backgroundImageSrc
-                        };
-                        communities.Add(newSimplifiedCommunity);
+                            Community currentCommunity = await GetAsync(communityId);
+                            SimplifiedCommunity newSimplifiedCommunity = new SimplifiedCommunity
+                            {
+                                Id = communityId,
+                                CreatorId = currentCommunity.Creator,
+                                CreatorImageSrc = currentCommunity.CreatorImageSrc,
+                                Name = currentCommunity.Name,
+                                IconeImageSrc = currentCommunity.iconeImageSrc,
+                                BackgroundImageSrc = currentCommunity.backgroundImageSrc
+                            };
+                            communities.Add(newSimplifiedCommunity);
+                        }
+                        return communities;
                     }
-                    return communities;
+                    else
+                    {
+                        throw new Exception("Usuário não criou uma comunidade");
+                    }
                 }
                 else
                 {
