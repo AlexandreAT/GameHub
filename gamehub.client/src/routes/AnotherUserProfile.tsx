@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { axios } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -44,12 +44,6 @@ interface SimplifiedCommunity {
   name: string;
   creatorId: string;
   iconeImageSrc: string;
-}
-
-interface SimplifiedUser {
-  userId: string;
-  nickName: string;
-  userImageSrc: string;
 }
 
 const AnotherUserProfile = () => {
@@ -274,7 +268,7 @@ const AnotherUserProfile = () => {
                   {simplifiedFollowingCommunity !== undefined && (
                     <div className={classes.divSimplifiedData}>
                       {simplifiedFollowingCommunity && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
-                        <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                        <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
                           <img src={community.iconeImageSrc} />
                           {community.name}
                         </p></Link>
@@ -292,7 +286,7 @@ const AnotherUserProfile = () => {
                   {simplifiedCommunity !== undefined && (
                     <div className={classes.divSimplifiedData}>
                       {simplifiedCommunity && simplifiedCommunity.map((community: SimplifiedCommunity) => (
-                        <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                        <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
                           <img src={community.iconeImageSrc} />
                           {community.name}
                         </p></Link>

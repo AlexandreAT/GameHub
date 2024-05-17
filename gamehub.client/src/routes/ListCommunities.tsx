@@ -157,7 +157,7 @@ const ListCommunities = () => {
                                     (<div className={classes.communityDiv}>
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
-                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
                                                     <img src={community.iconeImageSrc} />
                                                     <p>{community.name}</p>
                                                 </Link>
@@ -171,7 +171,7 @@ const ListCommunities = () => {
                                     (<div className={classes.communityDiv}>
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
-                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
                                                     <img src={community.iconeImageSrc} />
                                                     <p>{community.name}</p>
                                                 </Link>
@@ -206,7 +206,7 @@ const ListCommunities = () => {
                                     <div className={classes.communityDiv}>
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
-                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
                                                     <img src={community.iconeImageSrc} />
                                                     <p>{community.name}</p>
                                                 </Link>
@@ -221,7 +221,7 @@ const ListCommunities = () => {
                                     <div className={classes.communityDiv}>
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
-                                                <Link to={`/anotherProfile/${community.creatorId}`} key={community.id} className={classes.communityData}>
+                                                <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
                                                     <img src={community.iconeImageSrc} />
                                                     <p>{community.name}</p>
                                                 </Link>

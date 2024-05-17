@@ -362,7 +362,7 @@ function Profile() {
                     {simplifiedFollowingCommunity !== undefined && (
                       <div className={classes.divSimplifiedData}>
                         {simplifiedFollowingCommunity && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
-                          <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                          <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
                             <img src={community.iconeImageSrc} />
                             {community.name}
                           </p></Link>
@@ -380,7 +380,7 @@ function Profile() {
                     {simplifiedCommunity !== undefined && (
                       <div className={classes.divSimplifiedData}>
                         {simplifiedCommunity && simplifiedCommunity.map((community: SimplifiedCommunity) => (
-                          <Link to={`/anotherProfile/${community.id}`} key={community.id}><p className={classes.spanData}>
+                          <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
                             <img src={community.iconeImageSrc} />
                             {community.name}
                           </p></Link>

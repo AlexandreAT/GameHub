@@ -1,0 +1,103 @@
+.divMain{
+    display: flex;
+    flex-direction: column;
+}
+
+.divCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-top: 95px;
+    gap: 2rem;
+}
+
+.divContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 65%;
+}
+
+.communityInfo{
+    width: 100%;
+    height: 100%;
+}
+
+.infoHeader{
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
+.infoHeader .headerInfo{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    bottom: -35%;
+    left: 15px;
+    width: 100%;
+}
+
+.infoHeader .headerInfo div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 20px;
+    bottom: 30px;
+}
+
+.defaultBakground{
+    position: absolute;
+    background-image: url(../image/background3.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.infoHeader .background{
+    border-radius: 15px;
+}
+
+.infoHeader div img{
+    border-radius: 50%;
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+    border: 10px solid var(--deepgray);
+}
+
+.infoHeader div h2{
+    margin: 10px 15px 10px 15px;
+    font-size: 35px;
+    text-shadow: 1px 1px 2px var(--turquoise);
+}
+
+.infoHeader .btnEdit{
+    background-color: var(--clearblack);
+    padding: 5px 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 5px;
+    border-bottom: 2px solid transparent;
+    border-left: 2px solid transparent;
+    right: 0;
+    position: absolute;
+    opacity: 0.8;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.infoHeader .btnEdit:hover{
+    opacity: 1;
+    border-color: var(--turquoise);
+}

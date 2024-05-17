@@ -105,9 +105,58 @@ namespace Gamehub.Server.Services
             }
         }
 
+        public async Task RemoveAsync(string id) => await _communityCollection.DeleteOneAsync(x => x.Id == id);
+
         public async Task UpdateAsync(string id, Community community) => await _communityCollection.ReplaceOneAsync(x => x.Id == id, community);
 
-        public async Task UpdateUserInCommunitiesAsync(User user)
+        public async Task<User> HandleFollowing(User user, Community community)
+        {
+            if (user != null)
+            {
+
+                if (community.Followers == null)
+                {
+                    community.Followers = new List<string>();
+                }
+
+                if (user.UserCommunities == null)
+                {
+                    user.UserCommunities = new List<string>();
+                }
+
+                var followingFound = community.Followers.FirstOrDefault(x => x == user.Id);
+                if (followingFound == null)
+                {
+                    community.Followers.Add(user.Id);
+                    await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
+
+                    user.UserCommunities.Add(community.Id);
+                    return user;
+                }
+                else
+                {
+                    var currentCommunityIndex = community.Followers.FindIndex(x => x == user.Id);
+                    if (currentCommunityIndex >= 0)
+                    {
+                        community.Followers.RemoveAt(currentCommunityIndex);
+                        await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
+                    }
+
+                    var currentUserIndex = user.UserCommunities.FindIndex(x => x == community.Id);
+                    if (currentUserIndex >= 0)
+                    {
+                        user.UserCommunities.RemoveAt(currentUserIndex);
+                    }
+                    return user;
+                }
+            }
+            else
+            {
+                throw new Exception("Usuário não encontrado!");
+            }
+        }
+
+        /*public async Task UpdateUserInCommunitiesAsync(User user)
         {
             List<Community> allCommunities = await GetAsync();
 
@@ -150,7 +199,7 @@ namespace Gamehub.Server.Services
 
                 await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
             }
-        }
+        }*/
 
     }
 }

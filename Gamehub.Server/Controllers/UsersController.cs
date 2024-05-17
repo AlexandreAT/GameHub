@@ -152,7 +152,7 @@ namespace Gamehub.Server.Controllers
             await _postServices.UpdateUserPosts(userFound);
             await _postServices.UpdateUserComments(userFound);
             //await _userServices.UpdateSimplifiedUser(userFound);
-            await _communityServices.UpdateUserInCommunitiesAsync(userFound);
+            //await _communityServices.UpdateUserInCommunitiesAsync(userFound);
         }
 
         [HttpDelete("{id}")]

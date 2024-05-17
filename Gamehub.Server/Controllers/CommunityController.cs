@@ -22,7 +22,7 @@ namespace Gamehub.Server.Controllers
         [HttpGet]
         public async Task<List<Community>> GetCommunities() => await _communityServices.GetAsync();
 
-        [HttpGet("community/{id}")]
+        [HttpGet("{id}")]
         public async Task<Community> GetCommunity(string Id) => await _communityServices.GetAsync(Id);
 
         [HttpPost]
@@ -46,9 +46,46 @@ namespace Gamehub.Server.Controllers
             }
             else
             {
-                await _userServices.UpdateAsync(creatorUser.Id, creatorUser);
                 await _communityServices.UpdateAsync(id, community);
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task DeleteCommunity(string id) => await _communityServices.RemoveAsync(id);
+
+        [HttpPost("upload-image")]
+        public async Task<ActionResult<User>> UploadImage([FromForm] string image, [FromForm] string id, [FromForm] string opt)
+        {
+            if(image == null || image.Length == 0)
+            {
+                return BadRequest("Imagem não pode ser nula ou vazia.");
+            }
+            Community community = await _communityServices.GetAsync(id);
+            
+            if(opt == "icone")
+            {
+                community.iconeImageSrc = image;
+            }
+            else if(opt == "background")
+            {
+                community.backgroundImageSrc = image;
+            }
+            else
+            {
+                throw new Exception("Opção inválida");
+            }
+            await _communityServices.UpdateAsync(id, community);
+            return Ok(community);
+        }
+
+        [HttpPost("followCommunity")]
+        public async Task FollowCommunity([FromForm] string userId, [FromForm] string communityId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            Community community = await _communityServices.GetAsync(communityId);
+
+            User newUser = await _communityServices.HandleFollowing(user, community);
+            await _userServices.UpdateAsync(newUser.Id, newUser);
         }
     }
 }
