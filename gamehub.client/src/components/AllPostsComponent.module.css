@@ -243,3 +243,50 @@
 {
     display: inline;
 }
+
+.communityLink p{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--grey);
+}
+
+.communityLink p span{
+    margin-left: 5px;
+    display: none;
+    opacity: 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.communityLink p span img{
+    border-radius: 50%;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+    object-fit: cover;
+    border: 2px solid var(--black);
+}
+
+.communityLink p:hover span{
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    border-bottom-color: var(--turquoise);
+    animation-duration: 1s;
+    animation-name: showText;
+}
+
+.communityLink{
+    width: 50%;
+}
+
+@keyframes showText {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 100%;
+    }
+}

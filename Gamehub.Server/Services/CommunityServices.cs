@@ -8,15 +8,16 @@ namespace Gamehub.Server.Services
     public class CommunityServices
     {
         private readonly IMongoCollection<Community> _communityCollection;
+        private readonly UserServices _userServices;
 
-        public CommunityServices(IOptions<CommunityDatabaseSettings> communityServices)
+        public CommunityServices(IOptions<CommunityDatabaseSettings> communityServices, UserServices userServices)
         {
 
             var mongoClient = new MongoClient(communityServices.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(communityServices.Value.DatabaseName);
 
             _communityCollection = mongoDatabase.GetCollection<Community>(communityServices.Value.CommunityCollectionName);
-
+            _userServices = userServices;
         }
 
         public async Task<List<Community>> GetAsync() => await _communityCollection.Find(x => true).ToListAsync();
@@ -47,7 +48,6 @@ namespace Gamehub.Server.Services
                             {
                                 Id = communityId,
                                 CreatorId = currentCommunity.Creator,
-                                CreatorImageSrc = currentCommunity.CreatorImageSrc,
                                 Name = currentCommunity.Name,
                                 IconeImageSrc = currentCommunity.iconeImageSrc,
                                 BackgroundImageSrc = currentCommunity.backgroundImageSrc
@@ -80,7 +80,6 @@ namespace Gamehub.Server.Services
                             {
                                 Id = communityId,
                                 CreatorId = currentCommunity.Creator,
-                                CreatorImageSrc = currentCommunity.CreatorImageSrc,
                                 Name = currentCommunity.Name,
                                 IconeImageSrc = currentCommunity.iconeImageSrc,
                                 BackgroundImageSrc = currentCommunity.backgroundImageSrc
@@ -153,6 +152,49 @@ namespace Gamehub.Server.Services
             else
             {
                 throw new Exception("Usuário não encontrado!");
+            }
+        }
+
+        public async Task AddPost(Post post, string communityId)
+        {
+            if (post != null)
+            {
+                Community community = await GetAsync(communityId);
+                if (community.Post == null)
+                {
+                    community.Post = new List<string>();
+                }
+
+                community.Post.Add(post.Id);
+                await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
+            }
+            else
+            {
+                throw new Exception("Post incorreto");
+            }
+        }
+
+        public async Task<List<SimplifiedUser>> GetSimplifiedUsersAsync(Community community)
+        {
+            List<SimplifiedUser> users = new List<SimplifiedUser>();
+            if (community.Followers != null)
+            {
+                foreach (string followerId in community.Followers)
+                {
+                    User currentUser = await _userServices.GetAsync(followerId);
+                    SimplifiedUser newSimplifiedUser = new SimplifiedUser
+                    {
+                        UserId = followerId,
+                        NickName = currentUser.Nickname,
+                        UserImageSrc = currentUser.ImageSrc
+                    };
+                    users.Add(newSimplifiedUser);
+                }
+                return users;
+            }
+            else
+            {
+                throw new Exception("Comunidade sem seguidores");
             }
         }
 

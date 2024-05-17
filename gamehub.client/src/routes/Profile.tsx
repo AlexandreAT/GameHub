@@ -354,7 +354,7 @@ function Profile() {
                   </div>
                 }</div>
 
-                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span><Link to={`/listCommunities/${user.id}/${"following"}`} className={classes.link}>Comunidades em que faz parte: </Link>{!user.userCommunities ? (
+                <div className={classes.paragraph}><span className={classes.spanPublic}>(info publica)</span><Link to={`/listCommunities/${user.id}/${"following"}`} className={classes.link}>Comunidades em que faz parte: </Link>{!user.userCommunities || user.userCommunities.length <= 0 ? (
                   <span className={classes.noRegistry}>Não faz parte de comunidades</span>
                 ) :
                   <div className={classes.divShowSimplified}>
