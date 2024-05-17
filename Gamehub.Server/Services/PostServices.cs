@@ -20,6 +20,12 @@ namespace Gamehub.Server.Services
 
         public async Task<List<Post>> GetAsync() => await _postCollection.Find(x => true).SortByDescending(x => x.Date).ToListAsync();
 
+        public async Task<List<Post>> GetCommunityPosts(string communityId)
+        {
+            var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
+        }
+
         public async Task<Post> GetAsync(string id) => await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task<Post> CreateAsync(Post post)

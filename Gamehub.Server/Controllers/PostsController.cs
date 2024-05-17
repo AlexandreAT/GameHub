@@ -13,15 +13,20 @@ namespace Gamehub.Server.Controllers
 
         private readonly PostServices _postServices;
         private readonly UserServices _userServices;
+        private readonly CommunityServices _communityServices;
 
-        public PostsController(PostServices postServices, UserServices userServices)
+        public PostsController(PostServices postServices, UserServices userServices, CommunityServices communityServices)
         {
             _postServices = postServices;
             _userServices = userServices;
+            _communityServices = communityServices;
         }
 
         [HttpGet]
         public async Task<List<Post>> GetPost() => await _postServices.GetAsync();
+
+        [HttpGet("communityPosts/{id}")]
+        public async Task<List<Post>> GetCommunityPosts(string communityId) => await _postServices.GetCommunityPosts(communityId);
 
         [HttpPost]
         public async Task<Post> PostPost(Post post)
@@ -39,6 +44,11 @@ namespace Gamehub.Server.Controllers
             }
 
             await _postServices.CreateAsync(post);
+
+            if (post.CommunityId != null)
+            {
+                await _communityServices.AddPost(post, post.CommunityId);
+            }
 
             return post;
         }

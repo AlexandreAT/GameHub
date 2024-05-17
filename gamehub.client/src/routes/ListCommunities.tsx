@@ -64,7 +64,7 @@ const ListCommunities = () => {
         };
 
         fetchUsers();
-    }, []);
+    }, [opt]);
 
     useEffect(() => {
         if (user) {
@@ -165,7 +165,7 @@ const ListCommunities = () => {
                                         )}
                                     </div>)
                             ) : (
-                                !user.followers || user.followers.length <= 0 ? (
+                                !user.userCreatedCommunities || user.userCreatedCommunities.length <= 0 ? (
                                     <span className={classes.noRegistry}>Não criou nenhuma comunidade</span>
                                 ) :
                                     (<div className={classes.communityDiv}>

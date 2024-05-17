@@ -31,7 +31,8 @@ interface Post {
     like: LikeDisLike[];
     dislike: LikeDisLike[];
     imageSrc: string;
-  }
+    communityId: string;
+}
 
 interface LikeDisLike {
     simplifiedUser: SimplifiedUser
@@ -44,6 +45,13 @@ interface SimplifiedUser {
     userImageSrc: string;
 }
 
+interface SimplifiedCommunity {
+    id: string;
+    name: string;
+    creatorId: string;
+    iconeImageSrc: string;
+}
+
 const ListUsersPostsComponnent = ({ user }: Props) => {
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -52,6 +60,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
+    const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
 
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
@@ -217,19 +226,34 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
     const handleShowImage = (id: string) => {
 
         setActiveImageButton(prevState => ({
-          ...prevState,
-          [id]: !prevState[id]
+            ...prevState,
+            [id]: !prevState[id]
         }));
-    
+
         const index = showImage.findIndex(item => item.id === id);
         if (index >= 0) {
-          const newShowImage = [...showImage];
-          newShowImage[index] = { id, show: !newShowImage[index].show };
-          setShowImage(newShowImage);
+            const newShowImage = [...showImage];
+            newShowImage[index] = { id, show: !newShowImage[index].show };
+            setShowImage(newShowImage);
         } else {
-          setShowImage([...showImage, { id, show: true }]);
+            setShowImage([...showImage, { id, show: true }]);
         }
-      }
+    }
+
+    const getCommunity = async (communityId: string) => {
+        setCommunity(null);
+        try {
+            const response = await axios.get<SimplifiedCommunity>(`/Community/getSimplifiedCommunity`, {
+                params: {
+                    communityId
+                }
+            });
+            setCommunity(response.data)
+        } catch (error) {
+            console.error('Error getting community:', error);
+            return null;
+        }
+    }
 
     return (
         <div className={classes.containerPosts}>
@@ -242,12 +266,15 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
                         ) : (
                             <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
                         )}
-                            <div className={classes.postHeader}>
-                                <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
-                                <span>-</span>
-                                <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
-                            </div>
+                        <div className={classes.postHeader}>
+                            <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
+                            <span>-</span>
+                            <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                        </div>
                     </div>
+                    {post.communityId && (
+                        <Link to={`/communityPage/${post.communityId}`} className={classes.communityLink}><p onMouseOver={() => getCommunity(post.communityId)}>Post de comunidade <span className={classes.community}><img src={community?.iconeImageSrc}></img> {community?.name}</span></p></Link>
+                    )}
                     <div className={classes.postContent}>
                         <h3 className={classes.title}>{post.title}</h3>
                         <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
@@ -315,7 +342,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
                         {showFormComment.some(item => item.id === post.id) && showFormComment.find(item => item.id === post.id)!.show && <CommentsForm postId={post.id} userId={user.id} />}
                     </div>
                 </div>
-            ))): (
+            ))) : (
                 <h1>Carregando posts dos usuários...</h1>
             )}
         </div>

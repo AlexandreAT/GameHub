@@ -3,12 +3,13 @@ import { axios } from '../axios-config';
 import { Link } from 'react-router-dom';
 import * as qs from 'qs';
 
+import classes from "./AllPostsComponent.module.css"
+
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
 
-import classes from "./AllPostsComponent.module.css"
 import CommentsForm from './CommentsForm';
 
 interface Props {
@@ -32,6 +33,7 @@ interface Post {
     like: LikeDisLike[];
     dislike: LikeDisLike[];
     imageSrc: string;
+    communityId: string;
 }
 
 interface LikeDisLike {
@@ -45,6 +47,13 @@ interface SimplifiedUser {
     userImageSrc: string;
 }
 
+interface SimplifiedCommunity {
+    id: string;
+    name: string;
+    creatorId: string;
+    iconeImageSrc: string;
+}
+
 const AllPostsComponent = ({ user }: Props) => {
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -54,6 +63,7 @@ const AllPostsComponent = ({ user }: Props) => {
     const [updatedPosts, setUpdatedPosts] = useState(false);
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
+    const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
 
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
@@ -244,6 +254,21 @@ const AllPostsComponent = ({ user }: Props) => {
         }
     }
 
+    const getCommunity = async (communityId: string) => {
+        setCommunity(null);
+        try {
+            const response = await axios.get<SimplifiedCommunity>(`/Community/getSimplifiedCommunity`, {
+                params: {
+                    communityId
+                }
+            });
+            setCommunity(response.data)
+        } catch(error){
+            console.error('Error getting community:', error);
+            return null;
+        }
+    }
+
     return (
         <>
             {!posts ? (
@@ -277,6 +302,9 @@ const AllPostsComponent = ({ user }: Props) => {
                                     </div>
                                 )}
                             </div>
+                            {post.communityId && (
+                                <Link to={`/communityPage/${post.communityId}`} className={classes.communityLink}><p onMouseOver={() => getCommunity(post.communityId)}>Post de comunidade <span className={classes.community}><img src={community?.iconeImageSrc}></img> {community?.name}</span></p></Link>
+                            )}
                             <div className={classes.postContent}>
                                 <h3 className={classes.title}>{post.title}</h3>
                                 <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>

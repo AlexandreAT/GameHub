@@ -29,7 +29,6 @@ namespace Gamehub.Server.Controllers
         public async Task<Community> PostCommunity(Community community)
         {
             User creatorUser = await _userServices.GetAsync(community.Creator);
-            community.CreatorImageSrc = creatorUser.ImageSrc;
             Community newCommunity = await _communityServices.CreateAsync(community);
             
             await _userServices.AddCreatedCommunities(newCommunity.Id, creatorUser);
@@ -86,6 +85,27 @@ namespace Gamehub.Server.Controllers
 
             User newUser = await _communityServices.HandleFollowing(user, community);
             await _userServices.UpdateAsync(newUser.Id, newUser);
+        }
+
+        [HttpPost("getFollowers")]
+        public async Task<List<SimplifiedUser>> GetFollowers([FromForm] string communityId)
+        {
+            Community community = await _communityServices.GetAsync(communityId);
+            List<SimplifiedUser> simplifiedUsers = await _communityServices.GetSimplifiedUsersAsync(community);
+            return simplifiedUsers;
+        }
+
+        [HttpGet("getSimplifiedCommunity")]
+        public async Task<SimplifiedCommunity> GetSimplifiedCommunity(string communityId)
+        {
+            Community community = await _communityServices.GetAsync(communityId);
+            return new SimplifiedCommunity
+            {
+                Id = communityId,
+                Name = community.Name,
+                CreatorId = community.Creator,
+                IconeImageSrc = community.iconeImageSrc
+            };
         }
     }
 }

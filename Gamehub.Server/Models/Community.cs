@@ -10,11 +10,8 @@ namespace Gamehub.Server.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
 
-        [BsonElement("Criador")]
+        [BsonElement("Criador Id")]
         public string? Creator { get; set; } = null;
-
-        [BsonElement("Imagem do criador")]
-        public string? CreatorImageSrc { get; set; } = null;
 
         [Required(ErrorMessage = "A comunidade precisa de um nome.")]
         [BsonElement("Nome da comunidade")]

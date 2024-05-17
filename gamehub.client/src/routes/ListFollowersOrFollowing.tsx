@@ -64,6 +64,7 @@ const ListFollowersOrFollowing = () => {
         fetchUsers();
     }, []);
 
+
     useEffect(() => {
         if (user) {
             getUsers();

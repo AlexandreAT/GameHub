@@ -70,6 +70,20 @@ namespace Gamehub.Server.Controllers
             return user;
         }
 
+        [HttpGet("getSimplifiedUser")]
+        public async Task<SimplifiedUser> GetSimplifiedUser(string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            SimplifiedUser newSimplifiedUser = new SimplifiedUser
+            {
+                UserId = userId,
+                NickName = user.Nickname,
+                UserImageSrc = user.ImageSrc
+            };
+
+            return newSimplifiedUser;
+        }
+
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {

@@ -135,6 +135,8 @@
 
 .communityData p{
     color: var(--lightGrey);
+    width: 100%;
+    word-wrap: break-word;
 }
 
 .noRegistry{

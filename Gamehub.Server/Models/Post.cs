@@ -46,5 +46,8 @@ namespace Gamehub.Server.Models
 
         [BsonElement("Imagem")]
         public string? ImageSrc { get; set; } = null;
+
+        [BsonElement("Comunidade")]
+        public string? CommunityId { get; set; } = null;
     }
 }
