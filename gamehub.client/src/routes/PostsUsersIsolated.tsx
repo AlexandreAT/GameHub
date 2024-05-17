@@ -13,23 +13,10 @@ interface User {
     id: string;
     nickname: string;
     imageSrc: string;
-    userCommunities: SimplifiedCommunity[];
-    userCreatedCommunities: SimplifiedCommunity[];
-    following: SimplifiedUser[];
-    followers: SimplifiedUser[];
-}
-
-interface SimplifiedCommunity {
-    id: string;
-    name: string;
-    creatorId: string;
-    iconeImageSrc: string;
-}
-
-interface SimplifiedUser {
-    userId: string;
-    nickName: string;
-    userImageSrc: string;
+    userCommunities: string[];
+    userCreatedCommunities: string[];
+    following: string[];
+    followers: string[];
 }
 
 const PostsUsersIsolated = () => {

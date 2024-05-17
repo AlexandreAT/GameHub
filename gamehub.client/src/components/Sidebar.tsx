@@ -140,7 +140,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
                             <div className={classes.divCommunities}>
                                 <p className={classes.paragraph}>Comunidades <button className={`${showFollowingCommunity === true && classes.buttonActivated}`} onClick={showFollowingCommunities}></button></p>
                                 {showFollowingCommunity === true && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
-                                    <Link key={community.id} to={`/anotherProfile/${community.creatorId}`}><div className={classes.divData}>
+                                    <Link key={community.id} to={`/communityPage/${community.id}`}><div className={classes.divData}>
                                         <img src={community.iconeImageSrc} alt={community.name} />
                                         <p>{community.name}</p>
                                     </div></Link>
@@ -161,7 +161,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
                             <div className={classes.divCommunities}>
                                 <p className={classes.paragraph}>Comunidades <button className={`${showCommunity === true && classes.buttonActivated}`} onClick={showCommunities}></button></p>
                                 {showCommunity === true && simplifiedCommunity.map((community: SimplifiedCommunity) => (
-                                    <Link key={community.id} to={`/anotherProfile/${community.creatorId}`}><div className={classes.divData}>
+                                    <Link key={community.id} to={`/communityPage/${community.id}`}><div className={classes.divData}>
                                         <img src={community.iconeImageSrc} alt={community.name} />
                                         <p>{community.name}</p>
                                     </div></Link>

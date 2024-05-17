@@ -33,7 +33,7 @@ namespace Gamehub.Server.Models
         public string? Description { get; set; } = null;
 
         [BsonElement("Posts")]
-        public List<Post>? Post { get; set; } = null;
+        public List<string>? Post { get; set; } = null;
 
         [BsonElement("Seguidores")]
         public List<string>? Followers { get; set; } = null;
