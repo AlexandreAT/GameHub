@@ -162,6 +162,24 @@ namespace Gamehub.Server.Services
             }
         }
 
+        public async Task DeleteCommunityId(string communityId)
+        {
+            List<User> users = await GetAsync();
+
+            foreach(User user in users)
+            {
+                if(user.UserCommunities != null)
+                {
+                    var communityToRemove = user.UserCommunities.FirstOrDefault(x => x == communityId);
+                    if (communityToRemove != null)
+                    {
+                        user.UserCommunities.Remove(communityToRemove);
+                        await UpdateAsync(user.Id, user);
+                    }
+                }
+            }
+        }
+
         /*public async Task UpdateSimplifiedUser(User currentUser)
         {
             List<User> allUsers = await GetAsync();

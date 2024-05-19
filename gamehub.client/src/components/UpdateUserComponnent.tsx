@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { axios } from '../axios-config';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 import * as qs from 'qs';

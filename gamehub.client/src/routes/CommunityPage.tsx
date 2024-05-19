@@ -11,6 +11,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import MakePostForm from '../components/MakePostForm';
 import CommunityPosts from '../components/CommunityPosts';
+import UpdateCommunity from '../components/UpdateCommunity';
 
 interface Community {
     id: string;
@@ -46,10 +47,6 @@ const CommunityPage = () => {
     const [community, setCommunity] = useState<Community | null>(null);
     const [creator, setCreator] = useState<SimplifiedUser | null>(null);
     const [simplifiedFollowers, setSimplifiedFollowers] = useState<SimplifiedUser[] | undefined>(undefined);
-    const [image, setImage] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [background, setBackground] = useState<File | null>(null);
-    const [backgroundImagePreview, setBackgroundImagePreview] = useState<string | null>(null);
     const [showEditForm, setShowEditForm] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const navigate = useNavigate();
@@ -118,80 +115,6 @@ const CommunityPage = () => {
     if (!community) {
         return <h1 className='loading'>Carregando comunidade...</h1>
     }
-
-    const handleImageChange = (event: any) => {
-        setImage(event.target.files[0]);
-        setImagePreview(URL.createObjectURL(event.target.files[0]));
-    };
-
-    const handleUploadImage = async () => {
-        if (!image) return;
-
-        const url = `https://api.imgbb.com/1/upload?key=b7374e73063a610d12c9922f0c360a20&name=${image.name}`;
-        const formData = new FormData();
-        formData.append('image', image);
-
-        try {
-            const responseJsonApi = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
-            const responseApi = await responseJsonApi.json();
-
-            formData.delete('image');
-            formData.append('image', responseApi.data.url);
-            formData.append('id', user.id);
-
-            // const response = await axios.post('/Users/upload-image', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
-
-            // Atualizar o estado do usuário com a nova imagem
-            // setUser({ ...user, imageSrc: response.data.imageSrc });
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const handleBackgroundChange = (event: any) => {
-        setBackground(event.target.files[0]);
-        setBackgroundImagePreview(URL.createObjectURL(event.target.files[0]));
-    };
-
-    const handleUploadBackground = async () => {
-        if (!background) return;
-
-        const url = `https://api.imgbb.com/1/upload?key=b7374e73063a610d12c9922f0c360a20&name=${background.name}`;
-        const formData = new FormData();
-        formData.append('image', background);
-
-        try {
-            const responseJsonApi = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
-            const responseApi = await responseJsonApi.json();
-
-            formData.delete('image');
-            formData.append('image', responseApi.data.url);
-            formData.append('id', user.id);
-
-            // const response = await axios.post('/Users/upload-image', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
-
-            // Atualizar o estado do usuário com a nova imagem
-            // setUser({ ...user, imageSrc: response.data.imageSrc });
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const followCommunity = async () => {
 
@@ -262,12 +185,8 @@ const CommunityPage = () => {
                         <div className={classes.communityInfo}>
                             <div className={classes.infoHeader}>
                                 <div className={`${classes.background} ${!community.backgroundImageSrc && classes.defaultBakground}`}>
-                                    {backgroundImagePreview ? (
-                                        <img src={backgroundImagePreview} alt='Preview do background' />
-                                    ) : (
-                                        community.backgroundImageSrc && (
-                                            <img src={community.backgroundImageSrc} alt={community.name} />
-                                        )
+                                    {community.backgroundImageSrc && (
+                                        <img src={community.backgroundImageSrc} alt='Background' className={classes.imgBackground}/>
                                     )}
                                 </div>
                                 <div className={classes.headerInfo}>
@@ -300,11 +219,11 @@ const CommunityPage = () => {
                                                 </div>
                                             )}</div>
                                             <div className={`${classes.paragraph} ${classes.game}`}>
-                                                <p className={classes.spanData}>Jogo: 
+                                                <p className={classes.spanData}>Jogo Tema: 
                                                 {community.game ? (
                                                     <Link to={`/`} className={classes.infoLink}>{community.game}</Link>
                                                 ): (
-                                                    <span className={classes.noRegistry}>Sem jogo</span>
+                                                    <span className={classes.noRegistry}>Sem jogo </span>
                                                 )}
                                                 </p>
                                             </div>
@@ -356,12 +275,12 @@ const CommunityPage = () => {
                             </div>
                         </div>
                     </div>
-                    {<CommunityPosts user={user} communityId={community.id} />}
+                    <CommunityPosts key={community.id} user={user} communityId={community.id} />
                 </div>
             ) : (
                 <div className={classes.divCenter}>
-                    <h1>editar</h1>
-                    <button className={classes.btnEdit} onClick={showFormEdit}>Voltar</button>
+                    <button className="btnTransparent" onClick={showFormEdit}>Voltar</button>
+                    <UpdateCommunity user={user} community={community}/>
                 </div>
             )}
         </div>

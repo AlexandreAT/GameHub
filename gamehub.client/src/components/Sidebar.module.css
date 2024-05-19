@@ -48,6 +48,10 @@
     display: inline-block;
 }
 
+.sideContent .noRegistry{
+    text-align: center;
+}
+
 .sideDiv:hover .sideDivContainer{
     border-bottom-color: var(--mediumgrey);
     width: 90%;
@@ -86,28 +90,39 @@
     overflow: hidden;
     animation-duration: 1s;
     animation-name: showText;
-    white-space: nowrap;
     gap: 5px;
+    width: 100%;
+    height: 100%;
     transition: all 0.3s ease;
 }
-
+/* é a partir daqui que eu estava tentando arrumar o parágrafo */
 .sideDiv .sideContent .divData{
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    padding-right: 10px;
+    height: 100%;
+}
+
+.sideDiv .sideContent .paragraph{
+    white-space: nowrap;
 }
 
 .sideContent .divData img{
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    max-width: 35px;
+    max-height: 35px;
     object-fit: cover;
     border: 2px solid var(--black);
 }
 
 .sideContent .divData p{
+    width: 100%;
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
 }
@@ -116,6 +131,7 @@
     color: var(--whiteSmoke);
     border-bottom-color: var(--turquoise);
 }
+    
 
 .sideDiv div label,
 .sideDiv div .sideIcon,
@@ -182,6 +198,10 @@
 
 .sideDivContainer .sideFooter .sideIcon:hover{
     fill: var(--turquoise);
+}
+
+.sideContent .divCommunities{
+    width: 100%;
 }
 
 .sideContent .divFollowing button,
