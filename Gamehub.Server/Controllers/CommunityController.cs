@@ -12,11 +12,13 @@ namespace Gamehub.Server.Controllers
     {
         private readonly CommunityServices _communityServices;
         private readonly UserServices _userServices;
+        private readonly PostServices _postServices;
 
-        public CommunityController(CommunityServices communityServices, UserServices userServices)
+        public CommunityController(CommunityServices communityServices, UserServices userServices, PostServices postServices)
         {
             _communityServices = communityServices;
             _userServices = userServices;
+            _postServices = postServices;
         }
 
         [HttpGet]
@@ -36,21 +38,28 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateCommunity(string id, Community community)
+        public async Task UpdateCommunity([FromForm]string id, [FromForm] string name, [FromForm] string description)
         {
-            User creatorUser = await _userServices.GetAsync(community.Creator);
-            if (id != community.Id)
-            {
-                throw new Exception("Erro ao encontrar o id da comunidade");
-            }
-            else
-            {
-                await _communityServices.UpdateAsync(id, community);
-            }
+            Community community = await _communityServices.GetAsync(id);
+            community.Name = name;
+            community.Description = description;
+            await _communityServices.UpdateAsync(id, community);
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteCommunity(string id) => await _communityServices.RemoveAsync(id);
+        public async Task DeleteCommunity(string id, string userId)
+        {
+            await _communityServices.RemoveAsync(id);
+            User user = await _userServices.GetAsync(userId);
+            var communityToRemove = user.UserCreatedCommunities.FirstOrDefault(x => x == id);
+            if (communityToRemove != null)
+            {
+                user.UserCreatedCommunities.Remove(communityToRemove);
+                await _userServices.UpdateAsync(userId, user);
+            }
+            await _userServices.DeleteCommunityId(id);
+            await _postServices.RemovePostsCommunity(id);
+        }
 
         [HttpPost("upload-image")]
         public async Task<ActionResult<User>> UploadImage([FromForm] string image, [FromForm] string id, [FromForm] string opt)

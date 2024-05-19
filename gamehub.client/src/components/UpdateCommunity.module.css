@@ -1,0 +1,262 @@
+.divCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    gap: 2rem;
+}
+
+.divContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 65%;
+}
+
+.communityInfo{
+    width: 100%;
+    height: 100%;
+}
+
+.infoHeader{
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
+.infoHeader .headerInfo{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    bottom: -35%;
+    left: 15px;
+    width: 100%;
+}
+
+.communityInfo .infoHeader .background .imgBackground{
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+
+.defaultBakground{
+    background-image: url(../image/background3.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.infoHeader .background{
+    position: absolute;
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.infoHeader .headerInfo img{
+    border-radius: 50%;
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+    border: 8px solid var(--deepgray);
+}
+
+.headerInfo .divInfoController{
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+}
+
+.headerInfo .divInfoController .infoDiv{
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    gap: 3rem;
+    justify-content: left;
+    font-size: 28px;
+    font-weight: bold;
+    background-color: transparent;
+}
+    
+
+.headerInfo .divInfoController .paragraph{
+    display: flex;
+    flex-direction: row;
+    width: 180px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    padding: 5px 5px;
+    border: 2px solid var(--grey);
+    background-color: var(--clearblack);
+}
+
+.divInfoController{
+    position: relative;
+}
+
+.divInfoController p{
+    position: absolute;
+    cursor: default;
+    color: var(--grey);
+}
+
+.btnIcone{
+    top: 4rem;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 5rem 0 0 10px;
+}
+
+.btnIcone button{
+    margin: 10px 0;
+    font-size: 16px;
+    max-width: 200px;
+}
+
+.infoFooter{
+    margin-top: 9rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.description{
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.description p{
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.description .title{
+    font-size: 18px;
+    color: var(--lightGrey);
+    font-weight: bold;
+}
+
+.description .spanData{
+    max-width: 100%;
+}
+
+.infoFooter .description button{
+    margin: 10px 0;
+    font-size: 16px;
+    max-width: 200px;
+}
+
+.noRegistry{
+    color: var(--grey);
+}
+
+.divBtn{
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formBiography:focus-within .footerFormBiography{
+    display: flex;
+}
+
+.biographyText{
+    background-color: transparent;
+    border: none;
+    margin-bottom: 1rem;
+    border: 2px solid var(--grey);
+    border-radius: 5px;
+    padding: 2px 50px 2px 6px;
+    color: var(--lightGrey);
+    font-size: 17px;
+    width: 100%;
+    height: 100px;
+    padding-top: 5px;
+    outline: none;
+    min-height: 57px;
+    resize: vertical;
+    transition: all 0.3s ease-in-out;
+}
+
+.biographyText:focus{
+    border-color: var(--turquoise);
+    color: var(--turquoise);
+}
+
+.biographyText::placeholder{
+    font-size: 15px;
+    color: var(--mediumgrey);
+}
+
+.divEditBackground{
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.divEditBackground label, .divEditBackground span,
+.btnIcone label, .btnIcone span{
+    cursor: pointer;
+    color: var(--lightGrey);
+    transition: all 0.2s ease;
+}
+
+.divEditBackground span,
+.btnIcone span{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.divEditBackground label:hover, .divEditBackground label:hover span,
+.btnIcone label:hover, .btnIcone label:hover span{
+    color: var(--turquoise);
+    transform: scale(1.01);
+}
+
+.divEditBackground label,
+.btnIcone label{
+    cursor: pointer;
+}
+
+.divEditBackground input,
+.btnIcone input{
+    display: none;
+}
+
+.btnBackground{
+    background-color: var(--clearblack);
+    border: 2px solid transparent;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btnBackground:hover{
+    border-color: var(--turquoise);
+}

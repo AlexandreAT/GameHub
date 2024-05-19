@@ -103,7 +103,7 @@
 
 .communityData{
     width: 160px;
-    height: 160px;
+    height: 170px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -137,6 +137,7 @@
     color: var(--lightGrey);
     width: 100%;
     word-wrap: break-word;
+    text-align: center;
 }
 
 .noRegistry{

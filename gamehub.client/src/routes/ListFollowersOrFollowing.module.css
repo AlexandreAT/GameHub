@@ -137,6 +137,7 @@
     color: var(--lightGrey);
     width: 100%;
     word-wrap: break-word;
+    text-align: center;
 }
 
 .noRegistry{

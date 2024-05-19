@@ -94,6 +94,21 @@ namespace Gamehub.Server.Services
 
         public async Task RemoveAsync(string id) => await _postCollection.DeleteOneAsync(x => x.Id == id);
 
+        public async Task RemovePostsCommunity(string id)
+        {
+            List<Post> posts = await GetAsync();
+            foreach(Post post in posts)
+            {
+                if(post.CommunityId != null)
+                {
+                    if(post.CommunityId == id)
+                    {
+                        await RemoveAsync(post.Id);
+                    }
+                }
+            }
+        }
+
         public async Task<Post> AddComment(Comment comment, Post post)
         {
             if (post.Comments == null)
