@@ -1,0 +1,146 @@
+.divMain{
+    display: flex;
+    flex-direction: column;
+}
+
+.divCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-top: 95px;
+    gap: 2rem;
+}
+
+.searchBar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.searchBar .icon{
+    position: absolute;
+    fill: var(--grey);
+    left: 10px;
+    transition: all 0.3s ease;
+}
+
+.searchBar input{
+    width: 100%;
+    height: 100%;
+    padding: 10px 35px;
+    border: 2px solid var(--grey);
+    border-radius: 10px;
+    font-size: 16px;
+    color: whitesmoke;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.searchBar input:focus,
+.searchBar:focus-within .icon{
+    color: var(--turquoise);
+    border-color: var(--turquoise);
+    fill: var(--turquoise);
+}
+
+.searchBar input::placeholder{
+    font-size: 14px;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 70%;
+}
+
+.contentHearder{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.contentHearder h3{
+    color: var(--lightGrey);
+    font-size: 24px;
+}
+
+.contentHearder p{
+    color: var(--grey);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.content .usersDiv{
+    display: flex;
+    flex: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.userData{
+    width: 160px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 10px;
+    border: 2px solid var(--mediumgrey);
+    background-color: var(--lightBlack);
+    gap: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.userData:hover{
+    transform: scale(1.1);
+    border-color: var(--turquoise);
+    box-shadow: 0px 0px 10px var(--darkSlateGray);
+}
+
+.userData img{  
+    min-width: 100px;
+    min-height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 100%;
+    object-fit: cover;
+    border: 2px solid var(--black);
+}
+
+.userData p{
+    color: var(--lightGrey);
+    width: 100%;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.noRegistry{
+    font-size: 16px;
+    color: var(--grey);
+    cursor: default;
+}
+
+.youSpan{
+    position: absolute;
+    font-size: 14px;
+    color: var(--grey);
+    bottom: 0;
+}

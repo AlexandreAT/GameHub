@@ -150,6 +150,11 @@ const Sidebar = ({ user }: { user: User | null }) => {
                             <p className={classes.noRegistry}>Não segue nenhuma comunidade</p>
                         )}
                     </div>
+                    {simplifiedFollowingCommunity && simplifiedFollowingCommunity.length > 0 && (
+                        <div className={classes.sideFooter}>
+                            <Link to={"/communitiesPosts"} className={classes.link}>Posts das comunidades seguidas</Link>
+                        </div>
+                    )}
                 </div>
                 <div className={classes.sideDivContainer}>
                     <div className={classes.sideHeader}>

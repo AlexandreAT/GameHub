@@ -107,10 +107,10 @@ const ListFollowersOrFollowing = () => {
         }
     }
 
-    const getUsers = () => {
+    const getUsers = async () => {
 
         try {
-            getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
+            await getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
                 opt: opt,
                 userId: id
             });
