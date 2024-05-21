@@ -182,7 +182,7 @@ function UpdateCommunity({ user, community }: Props) {
             alert("O nome da comunidade deve ter no minimo 3 caracteres");
             return;
         }
-        else if (description.length > 1000) {
+        else if (description && description.length > 0 && description.length > 1000) {
             alert("A descrição deve ter no máximo 1000 caracteres");
             return;
         }

@@ -122,9 +122,16 @@
 
 .headerInfo .divInfoController .paragraph .infoLink,
 .spanData{
+    position: relative;
     cursor: pointer;
     color: var(--lightGrey);
     transition: all 0.3s ease;
+}
+.headerInfo .divInfoController .paragraph .infoLink{
+    text-align: center;
+}
+.headerInfo .divInfoController .paragraph .creatorLink{
+    width: 100%;
 }
 
 .headerInfo .divInfoController .paragraph .infoLink:hover,

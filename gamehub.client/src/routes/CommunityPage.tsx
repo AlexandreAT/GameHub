@@ -196,12 +196,12 @@ const CommunityPage = () => {
                                         <div className={classes.infoDiv}>
                                             <div className={`${classes.paragraph} ${classes.infoCreator}`}>
                                                 {community.creator !== user.id ? (
-                                                    <Link to={`/anotherProfile/${community.creator}`} className={classes.infoLink}>Criador: {creator?.nickName} <img src={creator?.userImageSrc} className={classes.imgCreator} alt={creator?.nickName} /></Link>
+                                                    <Link to={`/anotherProfile/${community.creator}`} className={`${classes.infoLink} ${classes.creatorLink}`}>Criador: {creator?.nickName} <img src={creator?.userImageSrc} className={classes.imgCreator} alt={creator?.nickName} /></Link>
                                                 ) : (
-                                                    <Link to={`/profile`} className={classes.infoLink}>Criador: {creator?.nickName} <img src={creator?.userImageSrc} className={classes.imgCreator} alt={creator?.nickName} /></Link>
+                                                    <Link to={`/profile`} className={`${classes.infoLink} ${classes.creatorLink}`}>Criador: {creator?.nickName} <img src={creator?.userImageSrc} className={classes.imgCreator} alt={creator?.nickName} /></Link>
                                                 )}
                                             </div>
-                                            <div className={classes.paragraph}><Link to={"/"} className={classes.infoLink}>Seguidores: </Link>{!community.followers || community.followers.length <= 0 ? (
+                                            <div className={classes.paragraph}><Link to={`/listFollowingCommunity/${community.id}`} className={classes.infoLink}>Seguidores: </Link>{!community.followers || community.followers.length <= 0 ? (
                                                 <span className={classes.noRegistry}>0</span>
                                             ) : (
                                                 <div className={classes.divShowSimplified}>

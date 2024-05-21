@@ -38,7 +38,7 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateCommunity([FromForm]string id, [FromForm] string name, [FromForm] string description)
+        public async Task UpdateCommunity([FromForm]string id, [FromForm] string name, [FromForm] string? description)
         {
             Community community = await _communityServices.GetAsync(id);
             community.Name = name;
