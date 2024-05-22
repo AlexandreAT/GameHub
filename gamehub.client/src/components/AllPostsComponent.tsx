@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
 
 import classes from "./AllPostsComponent.module.css"
@@ -64,6 +64,7 @@ const AllPostsComponent = ({ user }: Props) => {
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
+    const navigate = useNavigate();
 
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
@@ -269,6 +270,10 @@ const AllPostsComponent = ({ user }: Props) => {
         }
     }
 
+    const navigatePost = (id: string) => {
+        navigate(`/post/${id}`);
+    }
+
     return (
         <>
             {!posts ? (
@@ -292,6 +297,7 @@ const AllPostsComponent = ({ user }: Props) => {
                                             <span>-</span>
                                             <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                                         </div>
+                                        <button onClick={() => navigatePost(post.id)}>aaa</button>
                                         <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
                                     </div>
                                 ) : (

@@ -62,9 +62,21 @@ const Sidebar = ({ user }: { user: User | null }) => {
         }
     }
 
+    useEffect(() => {
+
+        getFollowing();
+        getCreatedCommunity();
+        getFollowingCommunity();
+
+    }, [user]);
+
+    if (!user) {
+        return <h1 className='loading'>Carregando...</h1>
+    }
+
     const getCreatedCommunity = async () => {
         const opt = "created";
-        if (user) {
+        if (user.userCreatedCommunities.length > 0) {
             try {
                 const response = await axios.post("/Users/getFollowingCommunityOrCreatedCommunity", qs.stringify({
                     opt: opt,
@@ -76,7 +88,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 });
                 setSimplifiedCommunity(response.data);
             } catch (error) {
-                console.clear();
                 console.error(error);
             }
         }
@@ -84,7 +95,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
 
     const getFollowingCommunity = async () => {
         const opt = "following";
-        if (user) {
+        if (user.userCommunities.length > 0) {
             try {
                 const response = await axios.post("/Users/getFollowingCommunityOrCreatedCommunity", qs.stringify({
                     opt: opt,
@@ -100,18 +111,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 console.error(error);
             }
         }
-    }
-
-    useEffect(() => {
-
-        getFollowing();
-        getCreatedCommunity();
-        getFollowingCommunity();
-
-    }, [user]);
-
-    if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
     }
 
     const showUsers = () => {

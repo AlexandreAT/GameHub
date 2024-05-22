@@ -21,6 +21,7 @@ import ListCommunities from './routes/ListCommunities.tsx'
 import CommunityPage from './routes/CommunityPage.tsx'
 import ListFollowingCommunity from './routes/ListFollowingCommunity.tsx'
 import FollowingCommunitiesPost from './routes/FollowingCommunitiesPost.tsx'
+import IsolatedPost from './routes/IsolatedPost.tsx'
 
 
 const router = createBrowserRouter([
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: "communitiesPosts",
         element: <FollowingCommunitiesPost />
+      },
+      {
+        path: "post/:id",
+        element: <IsolatedPost />
       },
       {
         path: "*",

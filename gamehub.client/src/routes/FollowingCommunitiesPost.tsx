@@ -7,6 +7,7 @@ import classes from './FollowingCommunitiesPost.module.css';
 
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import ListCommunitiesPosts from '../components/ListCommunitiesPosts';
 
 interface User {
     id: string;
@@ -51,8 +52,8 @@ const FollowingCommunitiesPost = () => {
             <div className={classes.divCenter}>
                 {<Sidebar user={user} />}
 
-                <div className={classes.content}>
-                    TESTE
+                <div className={classes.divContent}>
+                    {user && <ListCommunitiesPosts user={user}/>}
                 </div>
             </div>
         </div>

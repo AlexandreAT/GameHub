@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { axios, setAuthToken } from '../axios-config';
 import Cookies from 'js-cookie';
 
-import React, { FormEvent, useState } from 'react'
+import { FormEvent, useState } from 'react'
 
 import classes from "./Login.module.css";
 

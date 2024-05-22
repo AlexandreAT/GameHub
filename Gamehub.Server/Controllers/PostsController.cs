@@ -25,6 +25,9 @@ namespace Gamehub.Server.Controllers
         [HttpGet]
         public async Task<List<Post>> GetPost() => await _postServices.GetAsync();
 
+        [HttpGet("getPost/{id}")]
+        public async Task<Post> GetPost(string id) => await _postServices.GetAsync(id);
+
         [HttpGet("communityPosts/{id}")]
         public async Task<List<Post>> GetCommunityPosts(string communityId) => await _postServices.GetCommunityPosts(communityId);
 
@@ -158,6 +161,20 @@ namespace Gamehub.Server.Controllers
             {
                 List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
                 posts = posts.Concat(followingPosts).ToList();
+            }
+            return posts.OrderByDescending(x => x.Date).ToList();
+        }
+
+        [HttpGet("GetListCommunitiesPosts")]
+        public async Task<List<Post>> GetCommunitiesIsolatedPosts(string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity("following", user);
+            List<Post> posts = new List<Post>();
+            foreach (SimplifiedCommunity currentCommunity in simplifiedCommunities)
+            {
+                List<Post> communitiesPosts = await _postServices.GetCommunityPosts(currentCommunity.Id);
+                posts = posts.Concat(communitiesPosts).ToList();
             }
             return posts.OrderByDescending(x => x.Date).ToList();
         }
