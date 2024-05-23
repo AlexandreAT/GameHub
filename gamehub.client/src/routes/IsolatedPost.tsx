@@ -21,6 +21,7 @@ interface User {
     userCommunities: string[];
     userCreatedCommunities: string[];
     following: string[];
+    backgroundImage: string;
 }
 
 interface Post {
@@ -46,6 +47,7 @@ interface SimplifiedUser {
     userId: string;
     nickName: string;
     userImageSrc: string;
+    backgroundImage: string;
 }
 
 interface SimplifiedCommunity {
@@ -112,13 +114,9 @@ const IsolatedPost = () => {
         }
     }
 
-    if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
-    }
-
     const checksFeedback = () => {
         // Verifica se o usuário já deu like ou dislike
-        if (post) {
+        if (post && user) {
             if (post.like && post.dislike) {
                 const userLike = post.like.find(like => like.simplifiedUser.userId === user.id);
                 const userDislike = post.dislike.find(dislike => dislike.simplifiedUser.userId === user.id);
@@ -177,12 +175,15 @@ const IsolatedPost = () => {
 
     useEffect(() => {
         GetPost();
-    }, [user, updatedPosts]);
-
+    }, [user]);
 
     useEffect(() => {
         checksFeedback();
     }, [post])
+
+    if (!user) {
+        return <h1 className='loading'>Carregando...</h1>
+    }
 
     const handleShowFormComment = (id: string) => {
         setActiveCommentButtons(prevState => ({
@@ -212,6 +213,7 @@ const IsolatedPost = () => {
         } else {
             handleDislike(postId);
         }
+        window.location.reload();
     };
 
     const handleLike = async (postId: string) => {
@@ -301,34 +303,44 @@ const IsolatedPost = () => {
 
                 <div className={classes.divContent}>
                     {post ? (
-                        <div className={classes.containerPosts}>
-                            <div key={post.id} className={classes.divPost}>
-                                <div className={classes.postHeader}>
+                        <div className={classes.containerPost}>
+
+                            <div className={classes.divAuthor}>
+                                {user.backgroundImage ? (
+                                    <img src={user.backgroundImage} alt={user.nickname} className={classes.imgBackground} />
+                                ) : (
+                                    <img src='..\src\image\background3.jpg' alt='Sem imagem' className={classes.imgBackground} />
+                                )}
+                                <div className={classes.infoAuthor}>
                                     {post.authorImage ? (
                                         <img src={post.authorImage} alt={post.author} />
                                     ) : (
                                         <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
                                     )}
+
                                     {post.idAuthor === user.id ? (
-                                        <div className={classes.postUser}>
-                                            <div className={classes.postHeader}>
-                                                <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>
-                                                <span>-</span>
-                                                <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
-                                            </div>
-                                            <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                                        <div className={classes.authorHeader}>
+                                            <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>
+                                            <span>-</span>
+                                            <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                                         </div>
                                     ) : (
-                                        <div className={classes.postHeader}>
+                                        <div className={classes.authorHeader}>
                                             <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
                                             <span>-</span>
                                             <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                                         </div>
                                     )}
                                 </div>
+                            </div>
+
+                            <div className={classes.divPost}>
                                 {post.communityId && (
                                     <Link to={`/communityPage/${post.communityId}`} className={classes.communityLink}><p onMouseOver={() => getCommunity(post.communityId)}>Post de comunidade <span className={classes.community}><img src={community?.iconeImageSrc}></img> {community?.name}</span></p></Link>
                                 )}
+                                <div className={classes.postOption}>
+                                    <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                                </div>
                                 <div className={classes.postContent}>
                                     <h3 className={classes.title}>{post.title}</h3>
                                     <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>

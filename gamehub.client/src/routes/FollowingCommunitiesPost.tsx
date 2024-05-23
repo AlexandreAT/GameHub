@@ -16,7 +16,6 @@ interface User {
     userCommunities: string[];
     userCreatedCommunities: string[];
     following: string[];
-    followers: string[];
 }
 
 const FollowingCommunitiesPost = () => {

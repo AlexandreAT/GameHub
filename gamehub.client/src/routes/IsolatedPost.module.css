@@ -20,5 +20,325 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    width: 70%;
+    width: 60%;
+}
+
+.containerPost{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 1rem;
+}
+
+.containerPost .divAuthor{
+    width: 100%;
+    height: 200px;
+    position: relative;
+}
+
+.divAuthor .imgBackground{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.divAuthor .infoAuthor {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    bottom: -35%;
+    left: 15px;
+    width: 100%;
+}
+
+.divAuthor .infoAuthor img{
+    border-radius: 50%;
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+    border: 8px solid var(--deepgray);
+    background-color: var(--black);
+}
+
+.infoAuthor .authorHeader{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 5px;
+    max-height: 80px;
+    padding: 25px 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.authorHeader p, .authorHeader .date, .authorHeader span{
+    font-size: 30px;
+    text-shadow: 1px 1px 2px var(--turquoise);
+    max-width: 100%;
+    overflow-wrap: break-word;
+    color: var(--lightGrey);
+}
+
+.authorHeader .date{
+    font-size: 18px;
+}
+
+.authorHeader .author{
+    position: relative;
+}
+
+.authorHeader .author::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 2px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+  
+.authorHeader .author:hover::after{
+    width: 100%;
+}
+
+.divPost{
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem 10px 1rem 10px;
+    gap: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.divPost:hover{
+    background-color: var(--clearblack);
+}
+
+.postOption{
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
+
+.postOption .trashButton{
+    padding: 2px;
+    background-color: transparent;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.trashButton .trashIcon{
+    fill: var(--grey);
+    transition: all 0.3s ease;
+}
+
+.trashButton:hover .trashIcon{
+    fill: crimson;
+    transform: scale(1.3);
+}
+
+.postContent{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
+    gap: 1rem;
+}
+
+.postContent .title{
+    font-size: 30px;
+    font-weight: bold;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.postContent .content{
+    font-size: 20px;
+    color: var(--lightGrey);
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.postContent .postImage{
+    max-width: 100%;
+    max-height: 1500px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid var(--mediumgrey);
+    transition: all 0.3s ease;
+}
+
+.divPost:hover .postImage{
+    border-color: var(--grey);
+    box-shadow: 0px 0px 5px var(--black);
+}
+
+.divPost .divBtnImage{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divPost .divBtnImage div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.divPost .divBtnImage label{
+    font-size: 14px;
+    color: var(--grey);
+}
+
+.divPost .btnShowImage{
+    background-color: transparent;
+    padding: 0px;
+    color: var(--lightGrey);
+    font-size: 15px;
+    font-weight: bold;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.btnShowImage::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 1px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+  
+.btnShowImage:hover::after{
+    width: 100%;
+}
+
+.postFooter{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.postFooter button{
+    background-color: transparent;
+    font-size: 20px;
+}
+
+.postFooter .postIcon, .postFooter .postIconDislike{
+    border: 2px solid transparent;
+    padding: 1px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-size: 1.6rem;
+}
+
+.postFooter .postIcon:hover{
+    fill: var(--turquoise);
+    transform: scale(1.2);
+}
+
+.postFooter .postIconDislike:hover{
+    fill: crimson;
+    transform: scale(1.2);
+}
+
+.opinionActivatedLike{
+    fill: var(--turquoise);
+    transform: scale(1.3);
+}
+
+.opinionActivatedDislike{
+    fill: crimson;
+    transform: scale(1.3);
+}
+
+.divLike{
+    position: relative;
+}
+
+.divLike p{
+    position: absolute;
+    margin-top: 0 auto;
+    width: 100%;
+    font-size: 10px;
+    color: var(--grey);
+}
+
+.youSpan{
+    font-size: 14px;
+    color: var(--grey);
+    display: none;
+}
+
+.divPost:hover .youSpan,
+.divPost:hover .trashButton
+{
+    display: inline;
+}
+
+.communityLink p{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--grey);
+}
+
+.communityLink p span{
+    margin-left: 5px;
+    display: none;
+    opacity: 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.communityLink p span img{
+    border-radius: 50%;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+    object-fit: cover;
+    border: 2px solid var(--black);
+}
+
+.communityLink p:hover span{
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    border-bottom-color: var(--turquoise);
+    animation-duration: 1s;
+    animation-name: showText;
+}
+
+.communityLink{
+    width: 50%;
+}
+
+@keyframes showText {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 100%;
+    }
 }

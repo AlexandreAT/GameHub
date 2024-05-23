@@ -305,6 +305,7 @@ const AllPostsComponent = ({ user }: Props) => {
                                         <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
                                         <span>-</span>
                                         <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                                        <button onClick={() => navigatePost(post.id)}>aaa</button>
                                     </div>
                                 )}
                             </div>

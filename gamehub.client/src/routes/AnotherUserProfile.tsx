@@ -22,6 +22,7 @@ interface AnotherUser {
   state: string;
   userCommunities: string[];
   userCreatedCommunities: string[];
+  backgroundImage: string;
 }
 
 interface SimplifiedUser {
