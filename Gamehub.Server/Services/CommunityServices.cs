@@ -186,7 +186,8 @@ namespace Gamehub.Server.Services
                     {
                         UserId = followerId,
                         NickName = currentUser.Nickname,
-                        UserImageSrc = currentUser.ImageSrc
+                        UserImageSrc = currentUser.ImageSrc,
+                        BackgroundImage = currentUser.BackgroundImage
                     };
                     users.Add(newSimplifiedUser);
                 }

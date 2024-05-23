@@ -18,6 +18,7 @@ interface User {
     userCreatedCommunities: string[];
     following: string[];
     followers: string[];
+    backgroundImage: string;
 }
 
 interface AnotherUser {
@@ -26,6 +27,7 @@ interface AnotherUser {
     imageSrc: string;
     userCommunities: string[];
     userCreatedCommunities: string[];
+    backgroundImage: string;
 }
 
 interface SimplifiedCommunity {

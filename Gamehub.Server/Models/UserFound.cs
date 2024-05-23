@@ -41,5 +41,8 @@ namespace Gamehub.Server.Models
 
         [JsonIgnore]
         public string? State { get; set; } = null;
+
+        [JsonIgnore]
+        public string? BackgroundImage { get; set; } = null;
     }
 }

@@ -86,6 +86,7 @@
     max-height: 150px;
     object-fit: cover;
     border: 8px solid var(--deepgray);
+    background-color: var(--black);
 }
 
 .headerInfo .divInfoController{

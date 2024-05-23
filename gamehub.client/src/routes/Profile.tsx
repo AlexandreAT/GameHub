@@ -41,6 +41,7 @@ interface User {
   biography: string;
   city: string;
   state: string;
+  backgroundImage: string;
 }
 
 function Profile() {

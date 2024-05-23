@@ -67,5 +67,8 @@ namespace Gamehub.Server.Models
         [BsonElement("Estado")]
         public string? State { get; set; } = null;
 
+        [BsonElement("Background")]
+        public string? BackgroundImage {  get; set; } = null;
+
     }
 }

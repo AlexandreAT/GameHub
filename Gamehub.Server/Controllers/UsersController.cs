@@ -78,7 +78,8 @@ namespace Gamehub.Server.Controllers
             {
                 UserId = userId,
                 NickName = user.Nickname,
-                UserImageSrc = user.ImageSrc
+                UserImageSrc = user.ImageSrc,
+                BackgroundImage = user.BackgroundImage,
             };
 
             return newSimplifiedUser;
@@ -134,6 +135,7 @@ namespace Gamehub.Server.Controllers
                 Biography = userFound.Biography,
                 City = userFound.City,
                 State = userFound.State,
+                BackgroundImage = userFound.BackgroundImage,
             };
 
             // Retorna o usuário encontrado
@@ -250,6 +252,7 @@ namespace Gamehub.Server.Controllers
                 State = user.State,
                 UserCommunities = user.UserCommunities,
                 UserCreatedCommunities = user.UserCreatedCommunities,
+                BackgroundImage = user.BackgroundImage
             };
         }
 
@@ -266,6 +269,21 @@ namespace Gamehub.Server.Controllers
             await _postServices.UpdateUserPosts(user);
             await _postServices.UpdateUserComments(user);
             //await _userServices.UpdateSimplifiedUser(user);
+            return Ok(user);
+        }
+
+        [HttpPost("upload-background")]
+        public async Task<ActionResult<User>> UploadBackground([FromForm] string background, [FromForm] string id)
+        {
+            if (background == null || background.Length == 0)
+            {
+                return BadRequest("Imagem não pode ser nula ou vazia.");
+            }
+            User user = await _userServices.GetAsync(id);
+            user.BackgroundImage = background;
+            await _userServices.UpdateAsync(id, user);
+            await _postServices.UpdateUserPosts(user);
+            await _postServices.UpdateUserComments(user);
             return Ok(user);
         }
 

@@ -17,6 +17,7 @@ interface User {
     userCreatedCommunities: string[];
     following: string[];
     followers: string[];
+    backgroundImage: string;
 }
 
 interface AnotherUser {
@@ -25,12 +26,14 @@ interface AnotherUser {
     imageSrc: string;
     following: string[];
     followers: string[];
+    backgroundImage: string;
 }
 
 interface SimplifiedUser {
     userId: string;
     nickName: string;
     userImageSrc: string;
+    backgroundImage: string;
 }
 
 const ListFollowersOrFollowing = () => {
