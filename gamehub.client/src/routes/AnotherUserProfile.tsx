@@ -203,13 +203,77 @@ const AnotherUserProfile = () => {
         <Sidebar user={user} />
 
         <div className={classes.divUserInfo}>
+          <div className={classes.background}>
+            {anotherUser.backgroundImage ? (
+              <img src={anotherUser.backgroundImage} alt={anotherUser.nickname} className={classes.imgBackground} />
+            ) : (
+              <img src='..\src\image\background3.jpg' alt='Sem imagem' className={classes.imgBackground} />
+            )}
+          </div>
           <div className={classes.userInfoContent}>
             <div className={classes.userImg}>
-              {anotherUser.imageSrc ? (
-                <img src={anotherUser.imageSrc} alt={anotherUser.nickname} />
-              ) : (
-                <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
-              )}
+              <div className={classes.imgController}>
+                {anotherUser.imageSrc ? (
+                  <img src={anotherUser.imageSrc} alt={anotherUser.nickname} className={classes.img} />
+                ) : (
+                  <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' className={classes.img} />
+                )}
+
+                <div className={classes.footerDiv}>
+                  <div className={classes.paragraph}><Link to={`/listFollowersOrFollowings/${anotherUser.id}/${"following"}`} className={classes.link}>Seguindo: </Link>{!anotherUser.following || anotherUser.following.length <= 0 ? (
+                    <span className={classes.noRegistry}>Não segue ninguém</span>
+                  ) :
+                    <div className={classes.divShowSimplified}>
+                      <span className={classes.spanData} onMouseOver={() => getUsers("following")}>{anotherUser.following.length}</span>
+                      <div className={classes.divSimplifiedData}>
+                        {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
+                          mapUser.userId === user.id ? (
+                            <Link to={"/profile"} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
+                          ) : (
+                            <p key={mapUser.userId} className={classes.spanData} onClick={() => navigateAnotherUser(mapUser.userId)}><img src={mapUser.userImageSrc} /> {mapUser.nickName}</p>
+                          )
+                        ))}
+                      </div>
+                    </div>
+                  }</div>
+
+                  <div className={classes.paragraph}><Link to={`/listCommunities/${anotherUser.id}/${"following"}`} className={classes.link}>Comunidades em que faz parte: </Link>{!anotherUser.userCommunities || anotherUser.userCommunities.length <= 0 ? (
+                    <span className={classes.noRegistry}>Nenhuma</span>
+                  ) :
+                    <div className={classes.divShowSimplified}>
+                      <span className={classes.spanData} onMouseOver={() => getCommunity("following")}>{anotherUser.userCommunities.length}</span>
+                      {simplifiedFollowingCommunity !== undefined && (
+                        <div className={classes.divSimplifiedData}>
+                          {simplifiedFollowingCommunity && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
+                            <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
+                              <img src={community.iconeImageSrc} />
+                              {community.name}
+                            </p></Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  }</div>
+
+                  <div className={classes.paragraph}><Link to={`/listCommunities/${anotherUser.id}/${"created"}`} className={classes.link}>Comunidades criadas: </Link>{!anotherUser.userCreatedCommunities || anotherUser.userCreatedCommunities.length <= 0 ? (
+                    <span className={classes.noRegistry}>Nenhuma</span>
+                  ) :
+                    <div className={classes.divShowSimplified}>
+                      <span className={classes.spanData} onMouseOver={() => getCommunity("created")}>{anotherUser.userCreatedCommunities.length}</span>
+                      {simplifiedCommunity !== undefined && (
+                        <div className={classes.divSimplifiedData}>
+                          {simplifiedCommunity && simplifiedCommunity.map((community: SimplifiedCommunity) => (
+                            <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
+                              <img src={community.iconeImageSrc} />
+                              {community.name}
+                            </p></Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  }</div>
+                </div>
+              </div>
             </div>
             <div className={classes.anotherUserData}>
               <header className={classes.anotherUserDataHeader}>
@@ -243,61 +307,6 @@ const AnotherUserProfile = () => {
             </div>
           </div>
           <div className={classes.anotherUserInfoFooter}>
-            <div className={classes.footerDiv}>
-              <div className={classes.paragraph}><Link to={`/listFollowersOrFollowings/${anotherUser.id}/${"following"}`} className={classes.link}>Seguindo: </Link>{!anotherUser.following || anotherUser.following.length <= 0 ? (
-                <span className={classes.noRegistry}>Não segue ninguém</span>
-              ) :
-                <div className={classes.divShowSimplified}>
-                  <span className={classes.spanData} onMouseOver={() => getUsers("following")}>{anotherUser.following.length}</span>
-                  <div className={classes.divSimplifiedData}>
-                    {simplifiedUsers && simplifiedUsers.map((mapUser: SimplifiedUser) => (
-                      mapUser.userId === user.id ? (
-                        <Link to={"/profile"} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
-                      ) : (
-                        <p key={mapUser.userId} className={classes.spanData} onClick={() => navigateAnotherUser(mapUser.userId)}><img src={mapUser.userImageSrc} /> {mapUser.nickName}</p>
-                      )
-                    ))}
-                  </div>
-                </div>
-              }</div>
-
-              <div className={classes.paragraph}><Link to={`/listCommunities/${anotherUser.id}/${"following"}`} className={classes.link}>Comunidades em que faz parte: </Link>{!anotherUser.userCommunities ? (
-                <span className={classes.noRegistry}>Não faz parte de comunidades</span>
-              ) :
-                <div className={classes.divShowSimplified}>
-                  <span className={classes.spanData} onMouseOver={() => getCommunity("following")}>{anotherUser.userCommunities.length}</span>
-                  {simplifiedFollowingCommunity !== undefined && (
-                    <div className={classes.divSimplifiedData}>
-                      {simplifiedFollowingCommunity && simplifiedFollowingCommunity.map((community: SimplifiedCommunity) => (
-                        <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
-                          <img src={community.iconeImageSrc} />
-                          {community.name}
-                        </p></Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              }</div>
-
-              <div className={classes.paragraph}><Link to={`/listCommunities/${anotherUser.id}/${"created"}`} className={classes.link}>Comunidades criadas: </Link>{!anotherUser.userCreatedCommunities || anotherUser.userCreatedCommunities.length <= 0 ? (
-                <span className={classes.noRegistry}>Sem comunidades criadas</span>
-              ) :
-                <div className={classes.divShowSimplified}>
-                  <span className={classes.spanData} onMouseOver={() => getCommunity("created")}>{anotherUser.userCreatedCommunities.length}</span>
-                  {simplifiedCommunity !== undefined && (
-                    <div className={classes.divSimplifiedData}>
-                      {simplifiedCommunity && simplifiedCommunity.map((community: SimplifiedCommunity) => (
-                        <Link to={`/communityPage/${community.id}`} key={community.id}><p className={classes.spanData}>
-                          <img src={community.iconeImageSrc} />
-                          {community.name}
-                        </p></Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              }</div>
-
-            </div>
             <div className={classes.divBiography}>
               <p>Biografia: <br />{!anotherUser.biography ? (
                 <span className={classes.noRegistry}>Sem biografia</span>
