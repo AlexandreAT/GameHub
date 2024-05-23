@@ -45,6 +45,10 @@ const FollowingCommunitiesPost = () => {
         fetchUsers();
     }, []);
 
+    if (!user) {
+        return <h1 className='loading'>Carregando...</h1>
+    }
+
     return (
         <div className={classes.divMain}>
             <div className='navbar'>{<Navbar />}</div>

@@ -33,9 +33,37 @@
 .divUserInfo{
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     width: 100%;
     padding: 0 2rem;
+}
+
+.divUserInfo p,
+.divUserInfo .paragraph{
+    position: relative;
+}
+
+.paragraph .spanPublic,
+p .spanPublic{
+    position: absolute;
+    top: -15px;
+    display: none;
+    font-size: 12px;
+    color: var(--grey);
+    text-shadow: none;
+}
+
+p:hover .spanPublic,
+.paragraph:hover .spanPublic{
+    display: block;
+}
+
+.imgBackground{
+    width: 100%;
+    min-height: 200px;
+    max-height: 200px;
+    border-radius: 15px;
+    object-fit: cover;
+    z-index: -1;
 }
 
 .userInfoContent{
@@ -45,36 +73,140 @@
 }
 
 .userImg{
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    width: 400px;
-    height: 400px;
+    min-width: 370px;
+    min-height: 250px;
 }
 
-.userImg img{
+.imgController{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    top: -150px;
+}
+
+.imgController .img{
     border-radius: 50%;
-    width: 350px;
-    height: 350px;
+    min-width: 250px;
+    min-height: 250px;
+    max-width: 250px;
+    max-height: 250px;
+    object-fit: cover;
+    border: 8px solid var(--deepgray);
+    background-color: var(--black);
+}
+
+.footerDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 20px 10px;
+    border-radius: 10px;
+    background-color: var(--clearblack);
+}
+
+.footerDiv .paragraph,
+.anotherUserInfoFooter p{
+    width: 100%;
+    font-size: 18px;
+    color: var(--lightGrey);
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.link{
+    color: var(--lightGrey);
+}
+
+.divShowSimplified{
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divShowSimplified span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 25px;
+}
+
+.divSimplifiedData{
+    display: none;
+    position: absolute;
+    padding: 3px 5px;
+    border: 1px solid var(--lightGrey);
+    border-radius: 5px;
+    background-color: var(--black);
+    z-index: 1;
+}
+
+.divSimplifiedData p{
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.divSimplifiedData p:hover{
+    color: var(--whitesmoke);
+}
+
+.divSimplifiedData p img{
+    border-radius: 50%;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
     object-fit: cover;
     border: 2px solid var(--black);
 }
 
-.anotherUserData{
+.paragraph .divShowSimplified:hover .divSimplifiedData{
     display: flex;
     flex-direction: column;
+    gap: 5px;
+    top: -2px;
+    left: -2px;
+}
+
+.anotherUserData{
+    height: 239px;
+    margin-top: 10px;
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    padding: 0 20px;
-    gap: 15px;
+    padding: 20px;
+    gap: 2rem;
+    border-radius: 10px;
+    background-color: var(--clearblack);
 }
 
 .anotherUserDataHeader{
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    width: 100%;
     align-items: center;
+    justify-content: space-around;
 }
 
 .anotherUserDataHeader h2{
@@ -90,7 +222,7 @@
 .anotherUserDataContent{
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     height: 100%;
 }
 
@@ -145,85 +277,18 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    height: 100%
-}
-
-.footerDiv{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.anotherUserInfoFooter .paragraph,
-.anotherUserInfoFooter p{
-    width: 100%;
-    font-size: 18px;
-    color: var(--lightGrey);
-    font-weight: bold;
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-}
-
-.link{
-    color: var(--lightGrey);
-}
-
-.divShowSimplified{
-    position: relative;
-    cursor: pointer;
-}
-
-.divSimplifiedData{
-    display: none;
-    position: absolute;
-    padding: 3px 5px;
-    border: 1px solid var(--lightGrey);
-    border-radius: 5px;
-    background-color: var(--black);
-    z-index: 1;
-}
-
-.divSimplifiedData p{
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.divSimplifiedData p:hover{
-    color: var(--whitesmoke);
-}
-
-.divSimplifiedData p img{
-    border-radius: 50%;
-    min-width: 30px;
-    min-height: 30px;
-    max-width: 30px;
-    max-height: 30px;
-    object-fit: cover;
-    border: 2px solid var(--black);
-}
-
-.paragraph .divShowSimplified:hover .divSimplifiedData{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    top: -2px;
-    left: -2px;
+    height: 100%;
 }
 
 .divBiography{
     display: flex;
     flex-direction: column;
-}
-
-.anotherUserInfoFooter button {
-    margin: 1rem 0;
-    color: var(--lightGrey);
-    border-color: var(--lightGrey);
-    width: 200px;
+    max-width: 100%;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: var(--clearblack);
+    margin-bottom: 10px;
 }
 
 .formBiography{

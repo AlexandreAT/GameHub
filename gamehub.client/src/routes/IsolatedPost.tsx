@@ -62,6 +62,7 @@ const IsolatedPost = () => {
     const { id } = useParams();
     const [user, setUser] = useState<User | null>(null);
     const [post, setPost] = useState<Post | null>(null);
+    const [anotherAuthor, setAnotherAuthor] = useState<SimplifiedUser | null>(null);
     const [showFormComment, setShowFormComment] = useState<{ id: string; show: boolean }[]>([]);
     const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
@@ -173,8 +174,27 @@ const IsolatedPost = () => {
         }
     }
 
+    const getAuthor = async () => {
+        if(user && post){
+            if (user.id !== post.idAuthor) {
+                try {
+                    const response = await axios.get<SimplifiedUser>('/Users/getSimplifiedUser', {
+                        params: {
+                            userId: post.idAuthor
+                        }
+                    });
+                    setAnotherAuthor(response.data);
+                } catch (error) {
+                    console.clear();
+                    console.error('Error fetching author:', error);
+                }
+            }
+        }
+    }
+
     useEffect(() => {
         GetPost();
+        getAuthor();
     }, [user]);
 
     useEffect(() => {
@@ -306,8 +326,14 @@ const IsolatedPost = () => {
                         <div className={classes.containerPost}>
 
                             <div className={classes.divAuthor}>
-                                {user.backgroundImage ? (
-                                    <img src={user.backgroundImage} alt={user.nickname} className={classes.imgBackground} />
+                                {user.backgroundImage || anotherAuthor?.backgroundImage ? (
+                                    <>
+                                        {!anotherAuthor ? (
+                                            <img src={user.backgroundImage} alt={user.nickname} className={classes.imgBackground} />
+                                        ) : (
+                                            <img src={anotherAuthor.backgroundImage} alt={anotherAuthor.nickName} className={classes.imgBackground} />
+                                        )}
+                                    </>
                                 ) : (
                                     <img src='..\src\image\background3.jpg' alt='Sem imagem' className={classes.imgBackground} />
                                 )}
@@ -339,7 +365,7 @@ const IsolatedPost = () => {
                                     <Link to={`/communityPage/${post.communityId}`} className={classes.communityLink}><p onMouseOver={() => getCommunity(post.communityId)}>Post de comunidade <span className={classes.community}><img src={community?.iconeImageSrc}></img> {community?.name}</span></p></Link>
                                 )}
                                 <div className={classes.postOption}>
-                                    <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                                    {post.idAuthor === user.id && (<button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>)}
                                 </div>
                                 <div className={classes.postContent}>
                                     <h3 className={classes.title}>{post.title}</h3>

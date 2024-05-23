@@ -109,8 +109,12 @@
 
 .divInfoController p{
     position: absolute;
+    top: -8px;
     cursor: default;
     color: var(--grey);
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
 .btnIcone{
@@ -230,6 +234,12 @@
 .btnIcone span{
     font-weight: bold;
     text-decoration: underline;
+}
+
+.divEditBackground label{
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 10px;
 }
 
 .divEditBackground label:hover, .divEditBackground label:hover span,

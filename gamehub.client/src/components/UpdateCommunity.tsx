@@ -1,4 +1,4 @@
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
 import { useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
