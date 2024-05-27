@@ -24,14 +24,15 @@
     background-color: var(--clearblack);
 }
 
-.postHeader{
+.postHeader,
+.headerInfo{
     display: flex;
     align-items: center;
     flex-direction: row;
     gap: 5px;
 }
 
-.postHeader .postUser{
+.postHeader .headerControl{
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -39,28 +40,31 @@
     align-items: center;
 }
 
-.postUser .trashButton{
+.postOption{
     display: none;
 }
 
-.postUser .trashButton{
+.postOption .iconButton{
     padding: 2px;
     background-color: transparent;
     font-size: 18px;
     transition: all 0.3s ease;
+    margin: 0px 5px;
 }
 
-.trashButton{
-    display: none;
-}
-
-.trashButton .trashIcon{
+.iconButton .trashIcon,
+.iconButton .buttonIcon{
     fill: var(--grey);
     transition: all 0.3s ease;
 }
 
-.trashButton:hover .trashIcon{
+.iconButton:hover .trashIcon{
     fill: crimson;
+    transform: scale(1.3);
+}
+
+.iconButton:hover .buttonIcon{
+    fill: var(--turquoise);
     transform: scale(1.3);
 }
 
@@ -239,7 +243,7 @@
 }
 
 .divPost:hover .youSpan,
-.divPost:hover .trashButton
+.divPost:hover .postOption
 {
     display: inline;
 }

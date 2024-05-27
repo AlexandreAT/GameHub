@@ -56,7 +56,7 @@ const FollowingCommunitiesPost = () => {
                 {<Sidebar user={user} />}
 
                 <div className={classes.divContent}>
-                    {user && <ListCommunitiesPosts user={user}/>}
+                    {user && (<ListCommunitiesPosts user={user}/>)}
                 </div>
             </div>
         </div>

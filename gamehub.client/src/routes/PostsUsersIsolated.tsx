@@ -16,7 +16,6 @@ interface User {
     userCommunities: string[];
     userCreatedCommunities: string[];
     following: string[];
-    followers: string[];
 }
 
 const PostsUsersIsolated = () => {
@@ -45,6 +44,10 @@ const PostsUsersIsolated = () => {
 
         fetchUsers();
     }, []);
+
+    if (!user) {
+        return <h1 className='loading'>Carregando...</h1>
+    }
 
     return (
         <div className={classes.divMain}>

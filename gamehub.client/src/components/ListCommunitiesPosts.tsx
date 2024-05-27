@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
 
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
+import { IoIosExpand } from "react-icons/io";
 
 import classes from './ListCommunitiesPosts.module.css'
 import CommentsForm from './CommentsForm';
@@ -63,6 +64,7 @@ const ListCommunitiesPosts = ({ user }: Props) => {
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
     const [updatedPosts, setUpdatedPosts] = useState(false);
+    const navigate = useNavigate();
 
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
@@ -270,6 +272,10 @@ const ListCommunitiesPosts = ({ user }: Props) => {
         }
     }
 
+    const navigatePost = (id: string) => {
+        navigate(`/post/${id}`);
+    }
+
     return (
         <div className={classes.containerPosts}>
             <h3 className={classes.pageTitle}>Posts das comunidades que você segue</h3>
@@ -282,19 +288,27 @@ const ListCommunitiesPosts = ({ user }: Props) => {
                             <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
                         )}
                         {post.idAuthor === user.id ? (
-                            <div className={classes.postUser}>
-                                <div className={classes.postHeader}>
+                            <div className={classes.headerControl}>
+                                <div className={classes.headerInfo}>
                                     <Link to={"/profile"}><p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p></Link>
                                     <span>-</span>
                                     <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                                 </div>
-                                <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                                <div className={classes.postOption}>
+                                    <button className={classes.iconButton} onClick={() => navigatePost(post.id)}><IoIosExpand className={classes.buttonIcon} /></button>
+                                    <button className={classes.iconButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                                </div>
                             </div>
                         ) : (
-                            <div className={classes.postHeader}>
-                                <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
-                                <span>-</span>
-                                <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                            <div className={classes.headerControl}>
+                                <div className={classes.headerInfo}>
+                                    <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
+                                    <span>-</span>
+                                    <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                                </div>
+                                <div className={classes.postOption}>
+                                    <button className={classes.iconButton} onClick={() => navigatePost(post.id)}><IoIosExpand className={classes.buttonIcon} /></button>
+                                </div>
                             </div>
                         )}
                     </div>
