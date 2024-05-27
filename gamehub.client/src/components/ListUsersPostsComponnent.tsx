@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
 
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
+import { IoIosExpand } from "react-icons/io";
 
 import classes from "./ListUsersPostsComponnent.module.css"
 import CommentsForm from './CommentsForm';
@@ -61,6 +62,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
+    const navigate = useNavigate();
 
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
@@ -255,6 +257,10 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
         }
     }
 
+    const navigatePost = (id: string) => {
+        navigate(`/post/${id}`);
+    }
+
     return (
         <div className={classes.containerPosts}>
             <h3 className={classes.pageTitle}>Posts dos usuários que você segue</h3>
@@ -266,10 +272,15 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
                         ) : (
                             <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' />
                         )}
-                        <div className={classes.postHeader}>
-                            <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
-                            <span>-</span>
-                            <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                        <div className={classes.headerControl}>
+                            <div className={classes.postHeader}>
+                                <Link to={`/anotherProfile/${post.idAuthor}`}><p className={classes.author}>{post.author}</p></Link>
+                                <span>-</span>
+                                <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                            </div>
+                            <div className={classes.postOption}>
+                                <button className={classes.iconButton} onClick={() => navigatePost(post.id)}><IoIosExpand className={classes.buttonIcon} /></button>
+                            </div>
                         </div>
                     </div>
                     {post.communityId && (

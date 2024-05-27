@@ -66,7 +66,6 @@ const IsolatedPost = () => {
     const [showFormComment, setShowFormComment] = useState<{ id: string; show: boolean }[]>([]);
     const [activeCommentButtons, setActiveCommentButtons] = useState<Record<string, boolean>>({});
     const [opinionButtons, setOpinionButtons] = useState<Record<string, 'like' | 'dislike' | null>>({});
-    const [updatedPosts, setUpdatedPosts] = useState(false);
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
@@ -108,7 +107,8 @@ const IsolatedPost = () => {
             });
 
             response.data.date = isValidDateString(response.data.date) ? new Date(response.data.date) : new Date();
-            setPost(response.data)
+            setPost(response.data);
+            getAuthor();
         } catch (error) {
             console.clear();
             console.error('Error fetching post:', error);
@@ -194,7 +194,6 @@ const IsolatedPost = () => {
 
     useEffect(() => {
         GetPost();
-        getAuthor();
     }, [user]);
 
     useEffect(() => {
@@ -326,16 +325,18 @@ const IsolatedPost = () => {
                         <div className={classes.containerPost}>
 
                             <div className={classes.divAuthor}>
-                                {user.backgroundImage || anotherAuthor?.backgroundImage ? (
-                                    <>
-                                        {!anotherAuthor ? (
-                                            <img src={user.backgroundImage} alt={user.nickname} className={classes.imgBackground} />
-                                        ) : (
-                                            <img src={anotherAuthor.backgroundImage} alt={anotherAuthor.nickName} className={classes.imgBackground} />
-                                        )}
-                                    </>
+                                {anotherAuthor ? (
+                                    anotherAuthor.backgroundImage ? (
+                                        <img src={anotherAuthor.backgroundImage} alt={anotherAuthor.nickName} className={classes.imgBackground} />
+                                    ) : (
+                                        <img src='..\src\image\background3.jpg' alt='Sem imagem' className={classes.imgBackground} />
+                                    )
                                 ) : (
-                                    <img src='..\src\image\background3.jpg' alt='Sem imagem' className={classes.imgBackground} />
+                                    !anotherAuthor && user.backgroundImage ? (
+                                        <img src={user.backgroundImage} alt={user.nickname} className={classes.imgBackground} />
+                                    ) : (
+                                        <img src='..\src\image\background3.jpg' alt='Sem imagem' className={classes.imgBackground} />
+                                    )
                                 )}
                                 <div className={classes.infoAuthor}>
                                     {post.authorImage ? (

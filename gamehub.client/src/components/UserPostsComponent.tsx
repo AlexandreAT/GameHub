@@ -1,11 +1,11 @@
-import React from 'react'
 import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
+import { IoIosExpand } from "react-icons/io";
 import * as qs from 'qs';
 
 import classes from './UserPostsComponent.module.css'
@@ -71,6 +71,7 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
   const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
   const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
   const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
+  const navigate = useNavigate();
 
   function isValidDateString(dateString: Date): boolean {
     const date = new Date(dateString);
@@ -330,6 +331,10 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
     }
   }
 
+  const navigatePost = (id: string) => {
+    navigate(`/post/${id}`);
+  }
+
   return (
     <>
       {!anotherUser ? (
@@ -357,19 +362,27 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
                   )
                 )}
                 {post.idAuthor === user.id ? (
-                  <div className={classes.postUser}>
-                    <div className={classes.postHeader}>
+                  <div className={classes.headerControl}>
+                    <div className={classes.headerInfo}>
                       <p className={classes.author}>{post.author} <span className={classes.youSpan}>(você)</span></p>
                       <span>-</span>
                       <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
                     </div>
-                    <button className={classes.trashButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                    <div className={classes.postOption}>
+                      <button className={classes.iconButton} onClick={() => navigatePost(post.id)}><IoIosExpand className={classes.buttonIcon} /></button>
+                      <button className={classes.iconButton} onClick={() => deletePost(post.id)}><IoTrashBin className={classes.trashIcon} /></button>
+                    </div>
                   </div>
                 ) : (
-                  <div className={classes.postHeader}>
-                    <p className={classes.author}>{post.author}</p>
-                    <span>-</span>
-                    <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                  <div className={classes.headerControl}>
+                    <div className={classes.headerInfo}>
+                      <p className={classes.author}>{post.author}</p>
+                      <span>-</span>
+                      <p className={classes.date}>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(post.date)}</p>
+                    </div>
+                    <div className={classes.postOption}>
+                      <button className={classes.iconButton} onClick={() => navigatePost(post.id)}><IoIosExpand className={classes.buttonIcon} /></button>
+                    </div>
                   </div>
                 )}
               </div>
