@@ -1,4 +1,5 @@
-﻿using Gamehub.Server.Models;
+﻿using DnsClient;
+using Gamehub.Server.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -9,6 +10,7 @@ namespace Gamehub.Server.Services
     public class PostServices
     {
         private readonly IMongoCollection<Post> _postCollection;
+        private readonly int _pageSize = 15;
 
         public PostServices(IOptions<PostDatabaseSettings> postServices)
         {
@@ -20,10 +22,42 @@ namespace Gamehub.Server.Services
 
         public async Task<List<Post>> GetAsync() => await _postCollection.Find(x => true).SortByDescending(x => x.Date).ToListAsync();
 
-        public async Task<List<Post>> GetCommunityPosts(string communityId)
+        public async Task<List<Post>> GetAsync(int page)
+        {
+            var skip = (page - 1) * _pageSize;
+            return await _postCollection.Find(x => true).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
+        }
+
+        public async Task<int> CountAsync() => (int)await _postCollection.CountDocumentsAsync(x => true);
+        public async Task<int> CountCommunityPost(string communityId)
+        {
+            return (int)await _postCollection.CountDocumentsAsync(x => x.CommunityId == communityId);
+        }
+
+        public async Task<List<Post>> GetAllCommunityPosts(string communityId)
         {
             var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
             return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetCommunityPosts(string communityId, int page)
+        {
+            var skip = (page - 1) * _pageSize;
+            var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetCommunityPostsPage(string communityId, int page)
+        {
+            var skip = (page - 1) * _pageSize;
+            var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
+        }
+
+        public async Task<int> CountAllCommunityPosts(List<SimplifiedCommunity> communities)
+        {
+            var filter = Builders<Post>.Filter.In(p => p.CommunityId, communities.Select(c => c.Id).ToList());
+            return (int)await _postCollection.CountDocumentsAsync(filter).ConfigureAwait(false);
         }
 
         public async Task<Post> GetAsync(string id) => await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

@@ -14,6 +14,7 @@ namespace Gamehub.Server.Controllers
         private readonly PostServices _postServices;
         private readonly UserServices _userServices;
         private readonly CommunityServices _communityServices;
+        private readonly int _pageSize = 15;
 
         public PostsController(PostServices postServices, UserServices userServices, CommunityServices communityServices)
         {
@@ -25,11 +26,89 @@ namespace Gamehub.Server.Controllers
         [HttpGet]
         public async Task<List<Post>> GetPost() => await _postServices.GetAsync();
 
+        [HttpGet("getPagePost/{page}")]
+        public async Task<ActionResult<List<Post>>> GetPost(int page)
+        {
+            if(page == 0)
+            {
+                page = 1;
+            }
+            var posts = await _postServices.GetAsync(page);
+            var totalPosts = await _postServices.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+            var result = new
+            {
+                Posts = posts,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
+
+            return Ok(result);
+        }
+
         [HttpGet("getPost/{id}")]
         public async Task<Post> GetPost(string id) => await _postServices.GetAsync(id);
 
         [HttpGet("communityPosts/{id}")]
-        public async Task<List<Post>> GetCommunityPosts(string communityId) => await _postServices.GetCommunityPosts(communityId);
+        public async Task<ActionResult<List<Post>>> GetCommunityPosts(string communityId, int page)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+            var posts = await _postServices.GetCommunityPosts(communityId, page);
+            var totalPosts = await _postServices.CountCommunityPost(communityId);
+            var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+            var result = new
+            {
+                Posts = posts,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetListCommunitiesPosts")]
+        public async Task<ActionResult<List<Post>>> GetCommunitiesIsolatedPosts(string userId, int page)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+
+            User user = await _userServices.GetAsync(userId);
+            List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity("following", user);
+            List<Post> allPosts = new List<Post>();
+
+            foreach (SimplifiedCommunity currentCommunity in simplifiedCommunities)
+            {
+                List<Post> communitiesPosts = await _postServices.GetAllCommunityPosts(currentCommunity.Id);
+                allPosts.AddRange(communitiesPosts);
+            }
+
+            // Ordena os posts por data em ordem decrescente
+            allPosts = allPosts.OrderByDescending(x => x.Date).ToList();
+
+            // Limita a quantidade de posts por página
+            int skip = (page - 1) * _pageSize;
+            List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
+
+            // Calcula o número total de páginas
+            int totalPosts = allPosts.Count;
+            int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+            var result = new
+            {
+                Posts = posts,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
+
+            return Ok(result);
+        }
 
         [HttpPost]
         public async Task<Post> PostPost(Post post)
@@ -161,20 +240,6 @@ namespace Gamehub.Server.Controllers
             {
                 List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
                 posts = posts.Concat(followingPosts).ToList();
-            }
-            return posts.OrderByDescending(x => x.Date).ToList();
-        }
-
-        [HttpGet("GetListCommunitiesPosts")]
-        public async Task<List<Post>> GetCommunitiesIsolatedPosts(string userId)
-        {
-            User user = await _userServices.GetAsync(userId);
-            List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity("following", user);
-            List<Post> posts = new List<Post>();
-            foreach (SimplifiedCommunity currentCommunity in simplifiedCommunities)
-            {
-                List<Post> communitiesPosts = await _postServices.GetCommunityPosts(currentCommunity.Id);
-                posts = posts.Concat(communitiesPosts).ToList();
             }
             return posts.OrderByDescending(x => x.Date).ToList();
         }

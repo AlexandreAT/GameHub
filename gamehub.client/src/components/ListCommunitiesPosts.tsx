@@ -8,6 +8,8 @@ import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
 import { IoIosExpand } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 import classes from './ListCommunitiesPosts.module.css'
 import CommentsForm from './CommentsForm';
@@ -54,6 +56,12 @@ interface SimplifiedCommunity {
     iconeImageSrc: string;
 }
 
+interface PaginatedResult<T> {
+    posts: T[];
+    totalPages: number;
+    currentPage: number;
+}
+
 const ListCommunitiesPosts = ({ user }: Props) => {
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -64,6 +72,8 @@ const ListCommunitiesPosts = ({ user }: Props) => {
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
     const [updatedPosts, setUpdatedPosts] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
 
     function isValidDateString(dateString: Date): boolean {
@@ -73,18 +83,26 @@ const ListCommunitiesPosts = ({ user }: Props) => {
 
     const getCommunitiesPosts = async (url: string) => {
         try {
-            const response = await axios.get<Post[]>(url, {
+            const response = await axios.get<PaginatedResult<Post>>(url, {
                 params: {
                     userId: user.id,
+                    page: page
                 }
             })
-            setPosts(response.data.map(post => ({
-                ...post,
-                date: isValidDateString(post.date) ? new Date(post.date) : new Date()
-            })));
+            if (response.data) {
+                setPosts(response.data.posts.map(post => ({
+                    ...post,
+                    date: isValidDateString(post.date) ? new Date(post.date) : new Date()
+                })));
+                setTotalPages(response.data.totalPages);
+
+
+            } else {
+                console.log('Nenhum dado retornado do servidor');
+            }
         } catch (error) {
             console.clear();
-            console.error(error);
+            console.log('Erro ao buscar posts:', error);
         }
     }
 
@@ -151,13 +169,14 @@ const ListCommunitiesPosts = ({ user }: Props) => {
 
     //Recarrega os posts após 1 segundo
     useEffect(() => {
+        getCommunitiesPosts("/Posts/GetListCommunitiesPosts");
         const interval = setInterval(() => {
             getCommunitiesPosts("/Posts/GetListCommunitiesPosts");
         }, 1000); // 1000 ms = 1 segundo
         return () => {
             clearInterval(interval);
         }
-    }, [user, updatedPosts]);
+    }, [user, updatedPosts, page]);
 
     useEffect(() => {
         checksFeedback();
@@ -276,9 +295,22 @@ const ListCommunitiesPosts = ({ user }: Props) => {
         navigate(`/post/${id}`);
     }
 
+    const truncateText = (html: string, maxLength: number) => {
+        const text = html.replace(/<br\/?>/g, '').replace(/<[^>]+>/g, '');
+        if (text.length > maxLength) {
+            const truncatedText = text.substring(0, maxLength) + "";
+            return truncatedText.replace(/\s+$/, '') + '[...]'; // Remover espaços em branco no final
+        }
+        return html; // Se o texto for curto, retorna o conteúdo original
+    };
+
     return (
         <div className={classes.containerPosts}>
             <h3 className={classes.pageTitle}>Posts das comunidades que você segue</h3>
+            <div className={classes.pagination}>
+                <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
+                <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
+            </div>
             {posts.length > 0 ? (posts.map((post: Post) => (
                 <div key={post.id} className={classes.divPost}>
                     <div className={classes.postHeader}>
@@ -315,7 +347,13 @@ const ListCommunitiesPosts = ({ user }: Props) => {
                     <Link to={`/communityPage/${post.communityId}`} className={classes.communityLink}><p onMouseOver={() => getCommunity(post.communityId)}>Post de comunidade <span className={classes.community}><img src={community?.iconeImageSrc}></img> {community?.name}</span></p></Link>
                     <div className={classes.postContent}>
                         <h3 className={classes.title}>{post.title}</h3>
-                        <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                        <div
+                            className={classes.content}
+                            dangerouslySetInnerHTML={{
+                                __html: truncateText(post.content, 600).replace(/\n/g, '<br/>')
+                            }}
+                        >
+                        </div>
                         {post.imageSrc &&
                             <div className={classes.divBtnImage}>
                                 {activeImageButton[post.id] ? (
@@ -383,6 +421,10 @@ const ListCommunitiesPosts = ({ user }: Props) => {
             ))) : (
                 <h1>Carregando posts das comunidades...</h1>
             )}
+            <div className={classes.pagination}>
+                <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
+                <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
+            </div>
         </div>
     )
 }

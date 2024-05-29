@@ -10,6 +10,8 @@ import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
 import { IoIosExpand } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 import CommentsForm from './CommentsForm';
 
@@ -55,6 +57,12 @@ interface SimplifiedCommunity {
     iconeImageSrc: string;
 }
 
+interface PaginatedResult<T> {
+    posts: T[];
+    totalPages: number;
+    currentPage: number;
+}
+
 const AllPostsComponent = ({ user }: Props) => {
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -65,6 +73,8 @@ const AllPostsComponent = ({ user }: Props) => {
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
 
     function isValidDateString(dateString: Date): boolean {
@@ -74,18 +84,29 @@ const AllPostsComponent = ({ user }: Props) => {
 
     const getPosts = async () => {
         try {
-            if (!user) return;
-            const response = await axios.get<Post[]>('/Posts');
-            setPosts(response.data.map(post => ({
+          if (!user) return;
+          const response = await axios.get<PaginatedResult<Post>>(`/Posts/getPagePost/${page}`, {
+            params: {
+                page: page,
+            }
+          });
+          if (response.data) {
+            setPosts(response.data.posts.map(post => ({
                 ...post,
                 date: isValidDateString(post.date) ? new Date(post.date) : new Date()
             })));
+            setTotalPages(response.data.totalPages);
+            
+            
+          } else {
+            console.log('Nenhum dado retornado do servidor');
+          }
         } catch (error) {
-            console.clear();
-            console.log('Error fetching user:', error);
+          console.clear();
+          console.log('Erro ao buscar posts:', error);
         }
-    }
-
+      }
+      
     const checksFeedback = () => {
         // Verifica se o usuário já deu like ou dislike
         if (user) {
@@ -156,7 +177,7 @@ const AllPostsComponent = ({ user }: Props) => {
         return () => {
             clearInterval(interval);
         }
-    }, [user, updatedPosts]);
+    }, [user, updatedPosts, page]);
 
     useEffect(() => {
         checksFeedback();
@@ -275,6 +296,15 @@ const AllPostsComponent = ({ user }: Props) => {
         navigate(`/post/${id}`);
     }
 
+    const truncateText = (html: string, maxLength: number) => {
+        const text = html.replace(/<br\/?>/g, '').replace(/<[^>]+>/g, '');
+        if (text.length > maxLength) {
+            const truncatedText = text.substring(0, maxLength) + "";
+            return truncatedText.replace(/\s+$/, '') + '[...]'; // Remover espaços em branco no final
+        }
+        return html; // Se o texto for curto, retorna o conteúdo original
+    };
+
     return (
         <>
             {!posts ? (
@@ -283,6 +313,10 @@ const AllPostsComponent = ({ user }: Props) => {
                 </div>
             ) : (
                 <div className={classes.containerPosts}>
+                    <div className={classes.pagination}>
+                        <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon}/> Página anterior</button>
+                        <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon}/></button>
+                    </div>
                     {posts && posts.map((post: Post) => (
                         <div key={post.id} className={classes.divPost}>
                             <div className={classes.postHeader}>
@@ -321,7 +355,13 @@ const AllPostsComponent = ({ user }: Props) => {
                             )}
                             <div className={classes.postContent}>
                                 <h3 className={classes.title}>{post.title}</h3>
-                                <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                                <div
+                                    className={classes.content}
+                                    dangerouslySetInnerHTML={{
+                                        __html: truncateText(post.content, 600).replace(/\n/g, '<br/>')
+                                    }}
+                                >
+                                </div>
                                 {post.imageSrc &&
                                     <div className={classes.divBtnImage}>
                                         {activeImageButton[post.id] ? (
@@ -387,6 +427,10 @@ const AllPostsComponent = ({ user }: Props) => {
                             </div>
                         </div>
                     ))}
+                    <div className={classes.pagination}>
+                        <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon}/> Página anterior</button>
+                        <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon}/></button>
+                    </div>
                 </div>
             )}
         </>
