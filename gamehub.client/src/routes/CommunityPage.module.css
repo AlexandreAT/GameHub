@@ -371,3 +371,8 @@
     width: 100%;
     word-break: break-all;
 }
+
+.youSpan{
+    font-size: 14px;
+    color: var(--grey);
+}

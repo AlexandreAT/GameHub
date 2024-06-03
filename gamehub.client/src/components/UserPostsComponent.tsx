@@ -6,6 +6,8 @@ import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoTrashBin } from "react-icons/io5";
 import { IoIosExpand } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 import * as qs from 'qs';
 
 import classes from './UserPostsComponent.module.css'
@@ -60,6 +62,12 @@ interface SimplifiedCommunity {
   iconeImageSrc: string;
 }
 
+interface PaginatedResult<T> {
+  posts: T[];
+  totalPages: number;
+  currentPage: number;
+}
+
 function UserPostsComponent({ user, anotherUser }: PostProps) {
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -71,6 +79,8 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
   const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
   const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
   const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
 
   function isValidDateString(dateString: Date): boolean {
@@ -81,15 +91,23 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
   const getUserPosts = async (url: string, userId?: string) => {
     if (userId) {
       try {
-        const response = await axios.get<Post[]>(url, {
+        const response = await axios.get<PaginatedResult<Post>>(url, {
           params: {
-            id: userId
+            userId: user.id,
+            page: page
           }
         })
-        setPosts(response.data.map(post => ({
-          ...post,
-          date: isValidDateString(post.date) ? new Date(post.date) : new Date()
-        })));
+        if (response.data) {
+          setPosts(response.data.posts.map(post => ({
+            ...post,
+            date: isValidDateString(post.date) ? new Date(post.date) : new Date()
+          })));
+          setTotalPages(response.data.totalPages);
+
+
+        } else {
+          console.log('Nenhum dado retornado do servidor');
+        }
       } catch (error) {
         console.clear();
         console.log('Error fetching posts: ' + error);
@@ -178,6 +196,7 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
   useEffect(() => {
     if (showPostsContainer === true) {
       if (anotherUser) {
+        getUserPosts(`/Posts/userPosts/${anotherUser.id}`, anotherUser.id);
         const interval = setInterval(() => {
           getUserPosts(`/Posts/userPosts/${anotherUser.id}`, anotherUser.id);
         }, 1000); // 1000 ms = 1 segundo
@@ -186,6 +205,7 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
         }
       }
       else {
+        getUserPosts(`/Posts/userPosts/${user.id}`, user.id);
         const interval = setInterval(() => {
           getUserPosts(`/Posts/userPosts/${user.id}`, user.id);
         }, 1000); // 1000 ms = 1 segundo
@@ -194,7 +214,7 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
         }
       }
     }
-  }, [user, anotherUser, showPostsContainer]);
+  }, [user, anotherUser, showPostsContainer, page]);
 
   useEffect(() => {
     checksFeedback();
@@ -335,6 +355,15 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
     navigate(`/post/${id}`);
   }
 
+  const truncateText = (html: string, maxLength: number) => {
+    const text = html.replace(/<br\/?>/g, '').replace(/<[^>]+>/g, '');
+    if (text.length > maxLength) {
+      const truncatedText = text.substring(0, maxLength) + "";
+      return truncatedText.replace(/\s+$/, '') + '[...]'; // Remover espaços em branco no final
+    }
+    return html; // Se o texto for curto, retorna o conteúdo original
+  };
+
   return (
     <>
       {!anotherUser ? (
@@ -345,6 +374,10 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
 
       {showPostsContainer === true && (
         <div className={classes.containerPosts}>
+          <div className={classes.pagination}>
+            <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
+            <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
+          </div>
           {posts && posts.map((post: Post) => (
             <div key={post.id} className={classes.divPost}>
               <div className={classes.postHeader}>
@@ -391,7 +424,13 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
               )}
               <div className={classes.postContent}>
                 <h3 className={classes.title}>{post.title}</h3>
-                <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{
+                    __html: truncateText(post.content, 600).replace(/\n/g, '<br/>')
+                  }}
+                >
+                </div>
                 {post.imageSrc &&
                   <div className={classes.divBtnImage}>
                     {activeImageButton[post.id] ? (
@@ -460,6 +499,10 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
           {!posts.length && (
             <h3>Usuário sem posts!</h3>
           )}
+          <div className={classes.pagination}>
+            <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
+            <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
+          </div>
         </div>
       )}
     </>
