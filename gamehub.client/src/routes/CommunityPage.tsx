@@ -208,11 +208,12 @@ const CommunityPage = () => {
                                                     <span className={classes.spanData} onMouseOver={() => getUsers()}>{community.followers.length}</span>
                                                     {simplifiedFollowers !== undefined && (
                                                         <div className={classes.divSimplifiedData}>
-                                                            {simplifiedFollowers && simplifiedFollowers.map((user: SimplifiedUser) => (
-                                                                <Link to={`/anotherProfile/${user.userId}`} key={user.userId}><p className={classes.spanData}>
-                                                                    <img src={user.userImageSrc} />
-                                                                    {user.nickName}
-                                                                </p></Link>
+                                                            {simplifiedFollowers && simplifiedFollowers.map((mapUser: SimplifiedUser) => (
+                                                                mapUser.userId === user.id ? (
+                                                                    <Link to={"/profile"} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} /> {mapUser.nickName} <span className={classes.youSpan}>(você)</span></p></Link>
+                                                                ) : (
+                                                                    <Link to={`/anotherProfile/${mapUser.userId}`} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} />{mapUser.nickName}</p></Link>
+                                                                )
                                                             ))}
                                                         </div>
                                                     )}

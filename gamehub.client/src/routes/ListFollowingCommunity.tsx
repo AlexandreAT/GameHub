@@ -140,7 +140,7 @@ const ListFollowingCommunity = () => {
                 </div>
                 <div className={classes.content}>
                     <div className={classes.contentHearder}>
-                        <h3>Usuários seguem a comunidade: {community.name}</h3>
+                        <h3>Usuários que seguem a comunidade: {community.name}</h3>
                         <p>Total: {community.followers && community.followers.length > 0 ? community.followers.length : (0)}</p>
                     </div>
                     {!community.followers || community.followers.length <= 0 ? (

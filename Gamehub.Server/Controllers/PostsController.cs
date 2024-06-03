@@ -3,6 +3,7 @@ using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
 
 namespace Gamehub.Server.Controllers
 {
@@ -110,6 +111,58 @@ namespace Gamehub.Server.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetListUsersPosts")]
+        public async Task<ActionResult<List<Post>>> GetUsersIsolatedPosts(string userId, int page)
+        {
+            User user = await _userServices.GetAsync(userId);
+            List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync("following", user);
+            List<Post> allPosts = new List<Post>();
+
+            foreach (SimplifiedUser following in simplifiedUsers)
+            {
+                List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
+                allPosts = allPosts.Concat(followingPosts).ToList();
+            }
+
+            allPosts = allPosts.OrderByDescending(x => x.Date).ToList();
+
+            int skip = (page - 1) * _pageSize;
+            List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
+
+            int totalPosts = allPosts.Count;
+            int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+            var result = new
+            {
+                Posts = posts,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("userPosts/{userId}")]
+        public async Task<ActionResult<List<Post>>> GetUserPosts(string userId, int page)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+            var posts = await _postServices.GetUserPosts(userId, page);
+            var totalPosts = await _postServices.CountUserPosts(userId);
+            var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+            var result = new
+            {
+                Posts = posts,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
+
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<Post> PostPost(Post post)
         {
@@ -134,9 +187,6 @@ namespace Gamehub.Server.Controllers
 
             return post;
         }
-
-        [HttpGet("userPosts/{id}")]
-        public async Task<List<Post>> GetUserPosts(string id) => await _postServices.GetUserPosts(id);
 
         [HttpDelete("{id}")]
         public async Task DeletePost(string postId) => await _postServices.RemoveAsync(postId);
@@ -228,20 +278,6 @@ namespace Gamehub.Server.Controllers
         public async Task<List<LikeDisLike>> GetDislike(string postId)
         {
             return await _postServices.GetDislikeAsync(postId);
-        }
-
-        [HttpGet("GetListUsersPosts")]
-        public async Task<List<Post>> GetUsersIsolatedPosts(string userId)
-        {
-            User user = await _userServices.GetAsync(userId);
-            List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync("following", user);
-            List<Post> posts = new List<Post>();
-            foreach (SimplifiedUser following in simplifiedUsers)
-            {
-                List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
-                posts = posts.Concat(followingPosts).ToList();
-            }
-            return posts.OrderByDescending(x => x.Date).ToList();
         }
     }
 }

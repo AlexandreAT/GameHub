@@ -295,3 +295,46 @@
         opacity: 100%;
     }
 }
+
+.pagination{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.pagination button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: transparent;
+    border-bottom: 2px solid transparent;
+    padding: 2px;
+    color: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.pagination button .icon{
+    fill: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.pagination button:disabled{
+    color: var(--mediumgrey);
+    cursor: not-allowed;
+}
+
+.pagination button:disabled .icon{
+    fill: var(--mediumgrey);
+}
+
+.pagination .able:hover{
+    border-color: var(--turquoise);
+    color: var(--whiteSmoke);
+}
+
+.pagination .able:hover .icon{
+    fill: var(--turquoise);
+}

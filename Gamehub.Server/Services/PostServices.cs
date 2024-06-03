@@ -29,9 +29,16 @@ namespace Gamehub.Server.Services
         }
 
         public async Task<int> CountAsync() => (int)await _postCollection.CountDocumentsAsync(x => true);
+
         public async Task<int> CountCommunityPost(string communityId)
         {
             return (int)await _postCollection.CountDocumentsAsync(x => x.CommunityId == communityId);
+        }
+
+        public async Task<int> CountUserPosts(string userId)
+        {
+            var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
+            return (int)await _postCollection.CountDocumentsAsync(filter);
         }
 
         public async Task<List<Post>> GetAllCommunityPosts(string communityId)
@@ -47,17 +54,11 @@ namespace Gamehub.Server.Services
             return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
         }
 
-        public async Task<List<Post>> GetCommunityPostsPage(string communityId, int page)
+        public async Task<List<Post>> GetUserPosts(string userId, int page)
         {
+            var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
             var skip = (page - 1) * _pageSize;
-            var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
             return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
-        }
-
-        public async Task<int> CountAllCommunityPosts(List<SimplifiedCommunity> communities)
-        {
-            var filter = Builders<Post>.Filter.In(p => p.CommunityId, communities.Select(c => c.Id).ToList());
-            return (int)await _postCollection.CountDocumentsAsync(filter).ConfigureAwait(false);
         }
 
         public async Task<Post> GetAsync(string id) => await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

@@ -7,6 +7,8 @@ import { FaRegComment } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaCommentSlash } from "react-icons/fa6";
 import { IoIosExpand } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 import classes from "./ListUsersPostsComponnent.module.css"
 import CommentsForm from './CommentsForm';
@@ -53,6 +55,12 @@ interface SimplifiedCommunity {
     iconeImageSrc: string;
 }
 
+interface PaginatedResult<T> {
+    posts: T[];
+    totalPages: number;
+    currentPage: number;
+}
+
 const ListUsersPostsComponnent = ({ user }: Props) => {
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -62,6 +70,8 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
     const [showImage, setShowImage] = useState<{ id: string; show: boolean }[]>([]);
     const [activeImageButton, setActiveImageButton] = useState<Record<string, boolean>>({});
     const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
 
     function isValidDateString(dateString: Date): boolean {
@@ -71,15 +81,23 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
 
     const getUsersPosts = async (url: string) => {
         try {
-            const response = await axios.get<Post[]>(url, {
+            const response = await axios.get<PaginatedResult<Post>>(url, {
                 params: {
                     userId: user.id,
+                    page: page
                 }
             })
-            setPosts(response.data.map(post => ({
-                ...post,
-                date: isValidDateString(post.date) ? new Date(post.date) : new Date()
-            })));
+            if (response.data) {
+                setPosts(response.data.posts.map(post => ({
+                    ...post,
+                    date: isValidDateString(post.date) ? new Date(post.date) : new Date()
+                })));
+                setTotalPages(response.data.totalPages);
+
+
+            } else {
+                console.log('Nenhum dado retornado do servidor');
+            }
         } catch (error) {
             console.clear();
             console.error(error);
@@ -149,13 +167,14 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
 
     //Recarrega os posts após 1 segundo
     useEffect(() => {
+        getUsersPosts("/Posts/GetListUsersPosts");
         const interval = setInterval(() => {
             getUsersPosts("/Posts/GetListUsersPosts");
         }, 1000); // 1000 ms = 1 segundo
         return () => {
             clearInterval(interval);
         }
-    }, [user]);
+    }, [user, page]);
 
     useEffect(() => {
         checksFeedback();
@@ -261,9 +280,22 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
         navigate(`/post/${id}`);
     }
 
+    const truncateText = (html: string, maxLength: number) => {
+        const text = html.replace(/<br\/?>/g, '').replace(/<[^>]+>/g, '');
+        if (text.length > maxLength) {
+            const truncatedText = text.substring(0, maxLength) + "";
+            return truncatedText.replace(/\s+$/, '') + '[...]'; // Remover espaços em branco no final
+        }
+        return html; // Se o texto for curto, retorna o conteúdo original
+    };
+
     return (
         <div className={classes.containerPosts}>
             <h3 className={classes.pageTitle}>Posts dos usuários que você segue</h3>
+            <div className={classes.pagination}>
+                <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
+                <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
+            </div>
             {posts.length > 0 ? (posts.map((post: Post) => (
                 <div key={post.id} className={classes.divPost}>
                     <div className={classes.postHeader}>
@@ -288,7 +320,13 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
                     )}
                     <div className={classes.postContent}>
                         <h3 className={classes.title}>{post.title}</h3>
-                        <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                        <div
+                            className={classes.content}
+                            dangerouslySetInnerHTML={{
+                                __html: truncateText(post.content, 600).replace(/\n/g, '<br/>')
+                            }}
+                        >
+                        </div>
                         {post.imageSrc &&
                             <div className={classes.divBtnImage}>
                                 {activeImageButton[post.id] ? (
@@ -356,6 +394,10 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
             ))) : (
                 <h1>Carregando posts dos usuários...</h1>
             )}
+            <div className={classes.pagination}>
+                <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
+                <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
+            </div>
         </div>
     )
 }
