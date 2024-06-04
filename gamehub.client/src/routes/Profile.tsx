@@ -221,10 +221,9 @@ function Profile() {
         }
       });
       if (opt === "following") {
-        setSimplifiedFollowing(response.data);
-      }
-      else if (opt === "followers") {
-        setSimplifiedFollowers(response.data);
+        setSimplifiedFollowing(response.data.slice(0, 5));
+      } else if (opt === "followers") {
+        setSimplifiedFollowers(response.data.slice(0, 5));
       }
     } catch (error) {
       console.clear();
@@ -257,10 +256,9 @@ function Profile() {
         }
       });
       if (opt === "following") {
-        setSimplifiedFollowingCommunity(response.data);
-      }
-      else if (opt === "created") {
-        setSimplifiedCommunity(response.data);
+        setSimplifiedFollowingCommunity(response.data.slice(0, 5));
+      }  else if (opt === "created") {
+        setSimplifiedCommunity(response.data.slice(0, 5));
       }
     } catch (error) {
       console.clear();
@@ -294,7 +292,7 @@ function Profile() {
 
   return (
     <div className={classes.divProfileMain}>
-      <div className='navbar'>{<Navbar />}</div>
+      <div className='navbar'>{<Navbar user={user}/>}</div>
       {!showEditForm ? (
         <div className={classes.divUser}>
 
@@ -347,6 +345,9 @@ function Profile() {
                                 {user.nickName}
                               </p></Link>
                             ))}
+                            {simplifiedFollowing && user.following.length > 5 && (
+                              <p className={classes.ellipsis}>...</p>
+                            )}
                           </div>
                         )}
                       </div>
@@ -365,6 +366,9 @@ function Profile() {
                                 {user.nickName}
                               </p></Link>
                             ))}
+                            {simplifiedFollowers && user.followers.length > 5 && (
+                              <p className={classes.ellipsis}>...</p>
+                            )}
                           </div>
                         )}
                       </div>
@@ -383,6 +387,9 @@ function Profile() {
                                 {community.name}
                               </p></Link>
                             ))}
+                            {simplifiedFollowingCommunity && user.userCommunities.length > 5 && (
+                              <p className={classes.ellipsis}>...</p>
+                            )}
                           </div>
                         )}
                       </div>
@@ -401,6 +408,9 @@ function Profile() {
                                 {community.name}
                               </p></Link>
                             ))}
+                            {simplifiedCommunity && user.userCreatedCommunities.length > 5 && (
+                              <p className={classes.ellipsis}>...</p>
+                            )}
                           </div>
                         )}
                       </div>

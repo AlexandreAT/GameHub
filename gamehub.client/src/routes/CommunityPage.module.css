@@ -376,3 +376,12 @@
     font-size: 14px;
     color: var(--grey);
 }
+
+.ellipsis{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 14px;
+    color: var(--grey);
+}

@@ -134,7 +134,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
                         <Link to={`/listCommunities/${user.id}/${"following"}`}><label htmlFor='communitiesCreated'>Comunidades seguidas</label></Link>
                     </div>
                     <div className={classes.sideContent}>
-
                         {simplifiedFollowingCommunity && simplifiedFollowingCommunity.length > 0 ? (
                             <div className={classes.divCommunities}>
                                 <p className={classes.paragraph}>Comunidades <button className={`${showFollowingCommunity === true && classes.buttonActivated}`} onClick={showFollowingCommunities}></button></p>
@@ -151,7 +150,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
                     </div>
                     {simplifiedFollowingCommunity && simplifiedFollowingCommunity.length > 0 && (
                         <div className={classes.sideFooter}>
-                            <Link to={"/communitiesPosts"} className={classes.link}>Posts das comunidades seguidas</Link>
+                            <Link to={"/communitiesPosts"} className={classes.link}>Posts das comunidades</Link>
                         </div>
                     )}
                 </div>

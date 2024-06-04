@@ -148,7 +148,7 @@ const CommunityPage = () => {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
-            setSimplifiedFollowers(response.data);
+            setSimplifiedFollowers(response.data.slice(0, 5));
         } catch (error) {
             console.clear();
             console.error(error);
@@ -174,7 +174,7 @@ const CommunityPage = () => {
 
     return (
         <div className={classes.divMain}>
-            <div className='navbar'><Navbar /></div>
+            <div className='navbar'><Navbar user={user}/></div>
 
             {!showEditForm ? (
                 <div className={classes.divCenter}>
@@ -215,6 +215,9 @@ const CommunityPage = () => {
                                                                     <Link to={`/anotherProfile/${mapUser.userId}`} key={mapUser.userId}><p className={classes.spanData}><img src={mapUser.userImageSrc} />{mapUser.nickName}</p></Link>
                                                                 )
                                                             ))}
+                                                            {simplifiedFollowers && community.followers.length > 5 && (
+                                                                <p className={classes.ellipsis}>...</p>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>

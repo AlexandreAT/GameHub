@@ -51,7 +51,7 @@ const PostsUsersIsolated = () => {
 
     return (
         <div className={classes.divMain}>
-            <div className='navbar'>{<Navbar />}</div>
+            <div className='navbar'>{<Navbar user={user}/>}</div>
             <div className={classes.divCenter}>
                 {<Sidebar user={user} />}
                 

@@ -128,7 +128,7 @@ const ListFollowingCommunity = () => {
 
     return (
         <div className={classes.divMain}>
-            <div className='navbar'>{<Navbar />}</div>
+            <div className='navbar'>{<Navbar user={user}/>}</div>
 
             <div className={classes.divCenter}>
 
@@ -151,13 +151,19 @@ const ListFollowingCommunity = () => {
                                 filteredUsers.map((mapUser: SimplifiedUser) => (
                                     mapUser.userId === user.id ? (
                                         <Link to={"/profile"} key={mapUser.userId} className={classes.userData}>
-                                            <img src={mapUser.userImageSrc} />
+                                            {mapUser.backgroundImage && (
+                                                <img src={mapUser.backgroundImage} alt={mapUser.nickName} className={classes.userBackground} />
+                                            )}
+                                            <img src={mapUser.userImageSrc} className={classes.userImg}/>
                                             <p>{mapUser.nickName}</p>
                                             <span className={classes.youSpan}>(você)</span>
                                         </Link>
                                     ) : (
                                         <Link to={`/anotherProfile/${mapUser.userId}`} key={mapUser.userId} className={classes.userData}>
-                                            <img src={mapUser.userImageSrc} />
+                                            {mapUser.backgroundImage && (
+                                                <img src={mapUser.backgroundImage} alt={mapUser.nickName} className={classes.userBackground} />
+                                            )}
+                                            <img src={mapUser.userImageSrc} className={classes.userImg}/>
                                             <p>{mapUser.nickName}</p>
                                         </Link>
                                     )

@@ -328,6 +328,15 @@ p:hover .spanPublic,
     color: var(--lightGrey);
 }
 
+.ellipsis{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 14px;
+    color: var(--grey);
+}
+
 .noRegistry{
     text-shadow: none;
     font-weight: normal;
