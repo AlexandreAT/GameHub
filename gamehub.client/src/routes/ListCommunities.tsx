@@ -35,6 +35,7 @@ interface SimplifiedCommunity {
     name: string;
     creatorId: string;
     iconeImageSrc: string;
+    backgroundImageSrc: string;
 }
 
 const ListCommunities = () => {
@@ -127,7 +128,7 @@ const ListCommunities = () => {
 
     return (
         <div className={classes.divMain}>
-            <div className='navbar'>{<Navbar />}</div>
+            <div className='navbar'>{<Navbar user={user}/>}</div>
             <div className={classes.divCenter}>
                 {<Sidebar user={user} />}
 
@@ -160,7 +161,10 @@ const ListCommunities = () => {
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
                                                 <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
-                                                    <img src={community.iconeImageSrc} />
+                                                    {community.backgroundImageSrc && (
+                                                        <img src={community.backgroundImageSrc} alt={community.name} className={classes.communityBackground}/>
+                                                    )}
+                                                    <img src={community.iconeImageSrc} className={classes.communityImg}/>
                                                     <p>{community.name}</p>
                                                 </Link>
                                             ))
@@ -174,7 +178,10 @@ const ListCommunities = () => {
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
                                                 <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
-                                                    <img src={community.iconeImageSrc} />
+                                                    {community.backgroundImageSrc && (
+                                                        <img src={community.backgroundImageSrc} alt={community.name} className={classes.communityBackground}/>
+                                                    )}
+                                                    <img src={community.iconeImageSrc} className={classes.communityImg}/>
                                                     <p>{community.name}</p>
                                                 </Link>
                                             ))

@@ -128,7 +128,7 @@ const ListFollowersOrFollowing = () => {
 
     return (
         <div className={classes.divMain}>
-            <div className='navbar'>{<Navbar />}</div>
+            <div className='navbar'>{<Navbar user={user}/>}</div>
 
             <div className={classes.divCenter}>
 
@@ -162,7 +162,10 @@ const ListFollowersOrFollowing = () => {
                                         {filteredUsers !== undefined && (
                                             filteredUsers.map((user: SimplifiedUser) => (
                                                 <Link to={`/anotherProfile/${user.userId}`} key={user.userId} className={classes.userData}>
-                                                    <img src={user.userImageSrc} />
+                                                    {user.backgroundImage && (
+                                                        <img src={user.backgroundImage} alt={user.nickName} className={classes.userBackground}/>
+                                                    )}
+                                                    <img src={user.userImageSrc} className={classes.userImg}/>
                                                     <p>{user.nickName}</p>
                                                 </Link>
                                             ))
@@ -176,7 +179,10 @@ const ListFollowersOrFollowing = () => {
                                         {filteredUsers !== undefined && (
                                             filteredUsers.map((user: SimplifiedUser) => (
                                                 <Link to={`/anotherProfile/${user.userId}`} key={user.userId} className={classes.userData}>
-                                                    <img src={user.userImageSrc} />
+                                                    {user.backgroundImage && (
+                                                        <img src={user.backgroundImage} alt={user.nickName} className={classes.userBackground}/>
+                                                    )}
+                                                    <img src={user.userImageSrc} className={classes.userImg}/>
                                                     <p>{user.nickName}</p>
                                                 </Link>
                                             ))

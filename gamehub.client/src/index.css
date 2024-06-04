@@ -2,7 +2,6 @@
 
 :root{
   /*-----------------------------------*/
-  --deepgray: #2C2C2C;
   --turquoise: #00C6CF;
   --darkcyan: #068488;
   --darkSlateGray: #324B4C;
@@ -12,6 +11,7 @@
   --lightGrey: rgb(189, 189, 189);
   --grey: rgb(106, 106, 106);
   --mediumgrey: rgb(80, 80, 80);
+  --deepgray: #2C2C2C;
   --clearblack: rgba(35, 35, 35, 0.8);
   --lightBlack: rgb(35,35,35);
   --black-blue: rgb(22, 22, 32);
@@ -44,7 +44,7 @@ a{
   text-decoration: none;
 }
 
-h1, .logoDetail{ 
+h1, .linkLogo, .logoDetail{ 
   font-family: 'DO Futuristic', sans-serif;
   font-weight: 600;
   font-size: 2rem;

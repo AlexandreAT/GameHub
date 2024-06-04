@@ -137,7 +137,7 @@ const AnotherUserProfile = () => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
-      setSimplifiedUsers(response.data);
+      setSimplifiedUsers(response.data.slice(0, 5));
     } catch (error) {
       console.clear();
       console.error(error);
@@ -164,10 +164,10 @@ const AnotherUserProfile = () => {
         }
       });
       if (opt === "following") {
-        setSimplifiedFollowingCommunity(response.data);
+        setSimplifiedFollowingCommunity(response.data.slice(0, 5));
       }
       else if (opt === "created") {
-        setSimplifiedCommunity(response.data);
+        setSimplifiedCommunity(response.data.slice(0, 5));
       }
     } catch (error) {
       console.clear();
@@ -197,7 +197,7 @@ const AnotherUserProfile = () => {
 
   return (
     <div className={classes.divProfileMain}>
-      <div className='navbar'>{<Navbar />}</div>
+      <div className='navbar'>{<Navbar user={user}/>}</div>
       <div className={classes.divUser}>
 
         <Sidebar user={user} />
@@ -233,6 +233,9 @@ const AnotherUserProfile = () => {
                             <p key={mapUser.userId} className={classes.spanData} onClick={() => navigateAnotherUser(mapUser.userId)}><img src={mapUser.userImageSrc} /> {mapUser.nickName}</p>
                           )
                         ))}
+                        {simplifiedUsers && anotherUser.following.length > 5 && (
+                          <p className={classes.ellipsis}>...</p>
+                        )}
                       </div>
                     </div>
                   }</div>
@@ -250,6 +253,9 @@ const AnotherUserProfile = () => {
                               {community.name}
                             </p></Link>
                           ))}
+                          {simplifiedFollowingCommunity && anotherUser.userCommunities.length > 5 && (
+                            <p className={classes.ellipsis}>...</p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -268,6 +274,9 @@ const AnotherUserProfile = () => {
                               {community.name}
                             </p></Link>
                           ))}
+                          {simplifiedCommunity && anotherUser.userCreatedCommunities.length > 5 && (
+                            <p className={classes.ellipsis}>...</p>
+                          )}
                         </div>
                       )}
                     </div>
