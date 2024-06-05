@@ -39,7 +39,7 @@
     border: 2px solid var(--grey);
     border-radius: 10px;
     font-size: 16px;
-    color: whitesmoke;
+    color: var(--whitesmoke);
     background-color: transparent;
     transition: all 0.3s ease;
 }

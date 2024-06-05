@@ -85,6 +85,18 @@ namespace Gamehub.Server.Controllers
             return newSimplifiedUser;
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult<List<SimplifiedUser>>> SearchUsers(string query)
+        {
+            return await _userServices.SearchUsersAsync(query);
+        }
+
+        [HttpGet("searchAll")]
+        public async Task<ActionResult<List<SimplifiedUser>>> SearchAllUsers(string query)
+        {
+            return await _userServices.SearchAllUsersAsync(query);
+        }
+
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {

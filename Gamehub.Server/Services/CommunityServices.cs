@@ -24,6 +24,41 @@ namespace Gamehub.Server.Services
 
         public async Task<Community> GetAsync(string id) => await _communityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
+        public async Task<List<SimplifiedCommunity>> SearchCommunitiesAsync(string query)
+        {
+            var communities = await _communityCollection.Find(c => c.Name.ToLower().StartsWith(query.ToLower()))
+                                                     .ToListAsync();
+            var orderedCommunities = communities.OrderByDescending(c => (c.Followers ?? new List<string>()).Count).Take(5);
+            var simplifiedCommunities = orderedCommunities.Select(c => new SimplifiedCommunity
+            {
+                Id = c.Id,
+                Name = c.Name,
+                CreatorId = c.Creator,
+                CreatorName = c.Creator,
+                IconeImageSrc = c.iconeImageSrc,
+                BackgroundImageSrc = c.backgroundImageSrc
+            }).ToList();
+
+            return simplifiedCommunities;
+        }
+
+        public async Task<List<SimplifiedCommunity>> SearchAllCommunitiesAsync(string query)
+        {
+            var communities = await _communityCollection.Find(c => c.Name.ToLower().Contains(query.ToLower()))
+                                                     .ToListAsync();
+            var simplifiedCommunities = communities.Select(c => new SimplifiedCommunity
+            {
+                Id = c.Id,
+                Name = c.Name,
+                CreatorId = c.Creator,
+                CreatorName = c.Creator,
+                IconeImageSrc = c.iconeImageSrc,
+                BackgroundImageSrc = c.backgroundImageSrc
+            }).ToList();
+
+            return simplifiedCommunities;
+        }
+
         public async Task<Community> CreateAsync(Community community)
         {
             community.Id = null;
@@ -198,51 +233,5 @@ namespace Gamehub.Server.Services
                 throw new Exception("Comunidade sem seguidores");
             }
         }
-
-        /*public async Task UpdateUserInCommunitiesAsync(User user)
-        {
-            List<Community> allCommunities = await GetAsync();
-
-            foreach(Community community in allCommunities)
-            {
-                if (community.Post != null)
-                {
-                    for (int i = 0; i < community.Post.Count; i++)
-                    {
-                        if (community.Post[i].IdAuthor == user.Id)
-                        {
-                            if (community.Post[i].AuthorImage != user.ImageSrc)
-                            {
-                                community.Post[i].AuthorImage = user.ImageSrc;
-                            }
-                            if (community.Post[i].Author != user.Nickname)
-                            {
-                                community.Post[i].Author = user.Nickname;
-                            }
-                        }
-                        if (community.Post[i].Comments != null)
-                        {
-                            for (int j = 0; j < community.Post[i].Comments.Count; j++)
-                            {
-                                if (community.Post[i].Comments[j].User.UserId == user.Id)
-                                {
-                                    if (community.Post[i].Comments[j].User.UserImageSrc != user.ImageSrc)
-                                    {
-                                        community.Post[i].Comments[j].User.UserImageSrc = user.ImageSrc;
-                                    }
-                                    if (community.Post[i].Comments[j].User.NickName != user.Nickname)
-                                    {
-                                        community.Post[i].Comments[j].User.NickName = user.Nickname;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
-            }
-        }*/
-
     }
 }
