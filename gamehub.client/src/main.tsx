@@ -22,6 +22,7 @@ import CommunityPage from './routes/CommunityPage.tsx'
 import ListFollowingCommunity from './routes/ListFollowingCommunity.tsx'
 import FollowingCommunitiesPost from './routes/FollowingCommunitiesPost.tsx'
 import IsolatedPost from './routes/IsolatedPost.tsx'
+import SearchList from './routes/SearchList.tsx'
 
 
 const router = createBrowserRouter([
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: "post/:id",
         element: <IsolatedPost />
+      },
+      {
+        path: "searchPage/:search",
+        element: <SearchList />
       },
       {
         path: "*",

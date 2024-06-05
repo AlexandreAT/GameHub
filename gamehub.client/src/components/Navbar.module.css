@@ -122,7 +122,7 @@
     border: 2px solid var(--grey);
     border-radius: 10px;
     font-size: 16px;
-    color: whitesmoke;
+    color: var(--whitesmoke);
     background-color: transparent;
     transition: all 0.3s ease;
 }
@@ -136,4 +136,70 @@
 
 .searchBar input::placeholder{
     font-size: 14px;
+}
+
+.simplifiedDisplay{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: absolute;
+    gap: 5px;
+    top: 50px;
+    min-width: 30%;
+    max-width: 75%;
+    padding: 5px 15px;
+    background-color: var(--lightBlack);
+    border-radius: 5px;
+    border: 2px solid var(--mediumgrey);
+}
+
+.simplifiedDisplay .spanData{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 5px;
+    color: var(--lightGrey);
+    border: 2px solid transparent;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.simplifiedDisplay .spanData:hover{
+    color: var(--whitesmoke);
+    background-color: var(--deepgray);
+    border-color: var(--turquoise);
+    box-shadow: 0px 0px 10px var(--darkSlateGray);
+}
+
+.simplifiedDisplay .spanData img{
+    border-radius: 50%;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+    object-fit: cover;
+    border: 2px solid var(--black);
+}
+
+.divisionSearch,
+.divisionSearchCommunity{
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: var(--whitesmoke);
+}
+
+.divisionSearchCommunity{
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid var(--mediumgrey);
+}
+
+.noRegistry{
+    text-shadow: none;
+    font-weight: normal;
+    font-size: 15px;
+    color: var(--grey);
 }

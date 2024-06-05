@@ -30,6 +30,38 @@ namespace Gamehub.Server.Services
             var userFound = await _userCollection.Find(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
             return userFound;
         }
+
+        public async Task<List<SimplifiedUser>> SearchUsersAsync(string query)
+        {
+            var users = await _userCollection.Find(u => u.Nickname.ToLower().StartsWith(query.ToLower()))
+                                             .ToListAsync();
+            var orderedUsers = users.OrderByDescending(u => u.Followers.Count).Take(5);
+            var simplifiedUsers = orderedUsers.Select(u => new SimplifiedUser
+            {
+                UserId = u.Id,
+                NickName = u.Nickname,
+                UserImageSrc = u.ImageSrc,
+                BackgroundImage = u.BackgroundImage
+            }).ToList();
+
+            return simplifiedUsers;
+        }
+
+        public async Task<List<SimplifiedUser>> SearchAllUsersAsync(string query)
+        {
+            var users = await _userCollection.Find(u => u.Nickname.ToLower().Contains(query.ToLower()))
+                                             .ToListAsync();
+            var simplifiedUsers = users.Select(u => new SimplifiedUser
+            {
+                UserId = u.Id,
+                NickName = u.Nickname,
+                UserImageSrc = u.ImageSrc,
+                BackgroundImage = u.BackgroundImage
+            }).ToList();
+
+            return simplifiedUsers;
+        }
+
         public async Task<User> CreateAsync(User user)
         {
             if (user.Cpf.ToString().Length != 11)

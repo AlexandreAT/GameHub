@@ -27,6 +27,18 @@ namespace Gamehub.Server.Controllers
         [HttpGet("{id}")]
         public async Task<Community> GetCommunity(string Id) => await _communityServices.GetAsync(Id);
 
+        [HttpGet("search")]
+        public async Task<ActionResult<List<SimplifiedCommunity>>> SearchCommunities(string query)
+        {
+            return await _communityServices.SearchCommunitiesAsync(query);
+        }
+
+        [HttpGet("searchAll")]
+        public async Task<ActionResult<List<SimplifiedCommunity>>> SearchAllCommunities(string query)
+        {
+            return await _communityServices.SearchAllCommunitiesAsync(query);
+        }
+
         [HttpPost]
         public async Task<Community> PostCommunity(Community community)
         {
