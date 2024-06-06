@@ -8,6 +8,7 @@ import * as qs from 'qs';
 import classes from "./ListFollowersOrFollowing.module.css";
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface User {
     id: string;
@@ -75,7 +76,7 @@ const ListFollowersOrFollowing = () => {
     }, [user])
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     if (user.id !== id) {
@@ -207,13 +208,19 @@ const ListFollowersOrFollowing = () => {
                                     filteredUsers.map((mapUser: SimplifiedUser) => (
                                         mapUser.userId === user.id ? (
                                             <Link to={"/profile"} key={mapUser.userId} className={classes.userData}>
-                                                <img src={mapUser.userImageSrc} />
+                                                {mapUser.backgroundImage && (
+                                                    <img src={user.backgroundImage} alt={mapUser.nickName} className={classes.userBackground}/>
+                                                )}
+                                                <img src={mapUser.userImageSrc} className={classes.userImg}/>
                                                 <p>{mapUser.nickName}</p>
                                                 <span className={classes.youSpan}>(você)</span>
                                             </Link>
                                         ) : (
                                             <Link to={`/anotherProfile/${mapUser.userId}`} key={mapUser.userId} className={classes.userData}>
-                                                <img src={mapUser.userImageSrc} />
+                                                {mapUser.backgroundImage && (
+                                                    <img src={user.backgroundImage} alt={mapUser.nickName} className={classes.userBackground}/>
+                                                )}
+                                                <img src={mapUser.userImageSrc} className={classes.userImg}/>
                                                 <p>{mapUser.nickName}</p>
                                             </Link>
                                         )

@@ -10,6 +10,7 @@ import UserPostsComponent from '../components/UserPostsComponent';
 import UpdateUserComponnent from '../components/UpdateUserComponnent';
 import Sidebar from '../components/Sidebar';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface SimplifiedCommunity {
   id: string;
@@ -84,7 +85,7 @@ function Profile() {
   }, []);
 
   if (!user) {
-    return <h1 className='loading'>Carregando...</h1>
+    return <LoadingAnimation opt='user' />
   }
 
   const handleImageChange = (event: any) => {

@@ -8,6 +8,7 @@ import classes from './FollowingCommunitiesPost.module.css';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import ListCommunitiesPosts from '../components/ListCommunitiesPosts';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface User {
     id: string;
@@ -46,7 +47,7 @@ const FollowingCommunitiesPost = () => {
     }, []);
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     return (

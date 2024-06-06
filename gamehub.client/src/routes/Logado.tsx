@@ -10,6 +10,7 @@ import Navbar from '../components/Navbar'
 import MakePostForm from '../components/MakePostForm';
 import Sidebar from '../components/Sidebar';
 import AllPostsComponent from '../components/AllPostsComponent';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface User {
   id: string;
@@ -49,7 +50,7 @@ const Logado = () => {
   }, []);
 
   if (!user) {
-    return <h1 className='loading'>Carregando...</h1>
+    return <div className='loading'>{<LoadingAnimation opt='user' />}</div>
   }
 
   const handleShowForm = (e: FormEvent) => {

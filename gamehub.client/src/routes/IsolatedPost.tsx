@@ -13,6 +13,7 @@ import classes from './IsolatedPost.module.css';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import CommentsForm from '../components/CommentsForm';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface User {
     id: string;
@@ -201,7 +202,7 @@ const IsolatedPost = () => {
     }, [post])
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     const handleShowFormComment = (id: string) => {
@@ -437,7 +438,7 @@ const IsolatedPost = () => {
                             </div>
                         </div>
                     ) : (
-                        <h1 className={classes.loading}>Carregando post...</h1>
+                        <LoadingAnimation opt='post' />
                     )}
                 </div>
             </div>

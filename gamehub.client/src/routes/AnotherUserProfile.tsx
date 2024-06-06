@@ -8,6 +8,7 @@ import * as qs from 'qs';
 import classes from './AnotherUserProfile.module.css'
 import UserPostsComponent from '../components/UserPostsComponent';
 import Sidebar from '../components/Sidebar';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface AnotherUser {
   id: string;
@@ -97,11 +98,11 @@ const AnotherUserProfile = () => {
   }, [id])
 
   if (!anotherUser) {
-    return <h1 className='loading'>Carregando usuário...</h1>
+    return <LoadingAnimation opt='user' />
   }
 
   if (!user) {
-    return <h1 className='loading'>Carregando...</h1>
+    return <LoadingAnimation opt='user' />
   }
 
   const followUser = async () => {

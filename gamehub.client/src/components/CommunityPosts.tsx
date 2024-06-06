@@ -14,6 +14,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 import CommentsForm from './CommentsForm';
+import LoadingAnimation from './LoadingAnimation';
 
 interface Props {
     user: User;
@@ -287,7 +288,7 @@ const CommunityPosts = ({ user, communityId }: Props) => {
         <>
             {!posts ? (
                 <div className={classes.containerPosts}>
-                    <h1 className="loading">Carregando posts...</h1>
+                    {<LoadingAnimation opt='post' />}
                 </div>
             ) : (
                 <div className={classes.containerPosts}>
