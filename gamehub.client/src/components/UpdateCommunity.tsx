@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
 
 import classes from './UpdateCommunity.module.css'
+import LoadingAnimation from './LoadingAnimation';
 
 interface Props {
     user: User | null;
@@ -45,11 +46,11 @@ function UpdateCommunity({ user, community }: Props) {
     const navigate = useNavigate();
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     if (!community) {
-        return <h1 className='loading'>Carregando comunidade...</h1>
+        return <LoadingAnimation opt='generic' />
     }
 
     useEffect(() => {

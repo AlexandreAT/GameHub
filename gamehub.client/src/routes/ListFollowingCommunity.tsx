@@ -8,6 +8,7 @@ import * as qs from 'qs';
 import classes from './ListFollowingCommunity.module.css'
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface User {
     id: string;
@@ -90,11 +91,11 @@ const ListFollowingCommunity = () => {
     }, [user])
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     if (!community) {
-        return <h1 className='loading'>Carregando comunidade...</h1>
+        return <LoadingAnimation opt='generic' />
     }
 
     const getFollowers = async (url: string, data: any) => {

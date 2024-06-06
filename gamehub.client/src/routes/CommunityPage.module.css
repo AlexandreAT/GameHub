@@ -234,6 +234,7 @@
     gap: 5px;
     top: -2px;
     left: -2px;
+    z-index: 2;
 }
 
 .infoHeader .divInfoController h2{

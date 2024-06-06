@@ -27,7 +27,7 @@ const Cadastro = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [termsOfCondition, setTermsOfCondition] = useState(false);
+  let termsOfCondition: boolean = false;
   const [nickname, setNickname] = useState('');
 
   const [formError, setFormError] = useState({
@@ -158,7 +158,6 @@ const Cadastro = () => {
         cpf: !isValidCpf ? "Tamanho do CPF inválido!" : ""
       }
     }
-
     if(!termsOfCondition){
       inputError = {
         ...inputError,
@@ -173,17 +172,19 @@ const Cadastro = () => {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
   
+    validateForm();
+
     if (formSubmitted && Object.values(formError).some(error => error !== '')) {
       setFormSubmitted(false);
     }
   
-    validateForm();
-  
     if (formTouched) {
       setFormSubmitted(true);
   
-      const hasErrors = Object.values(formError).some(error => error !== '');
-      if (!hasErrors && cpf.length === 11) {
+      let hasErrors = false;
+      hasErrors = Object.values(formError).some(error => error !== '')
+      
+      if (!hasErrors) {
         const clearPhone = cleanPhoneNumber(phone);
         console.log("Formulário submetido!");
         console.log(name);
@@ -271,7 +272,8 @@ const Cadastro = () => {
   }
   const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
-    setTermsOfCondition(checked);
+    termsOfCondition = checked;  
+    validateForm();
   }
 
   return (

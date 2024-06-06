@@ -12,6 +12,7 @@ import Sidebar from '../components/Sidebar';
 import MakePostForm from '../components/MakePostForm';
 import CommunityPosts from '../components/CommunityPosts';
 import UpdateCommunity from '../components/UpdateCommunity';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface Community {
     id: string;
@@ -109,11 +110,11 @@ const CommunityPage = () => {
     }, [community])
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     if (!community) {
-        return <h1 className='loading'>Carregando comunidade...</h1>
+        return <LoadingAnimation opt='generic' />
     }
 
     const followCommunity = async () => {

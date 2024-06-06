@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import classes from "./SearchList.module.css";
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 interface User {
     id: string;
@@ -70,7 +71,7 @@ const SearchList = () => {
     }, [user])
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     const getUsers = async (url: string, query: string) => {

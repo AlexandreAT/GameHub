@@ -9,6 +9,7 @@ import { TiGroup } from "react-icons/ti";
 import { FaRunning } from "react-icons/fa";
 import { GoPlusCircle } from "react-icons/go";
 import RegisterCommunity from './RegisterCommunity';
+import LoadingAnimation from './LoadingAnimation';
 
 interface User {
     id: string;
@@ -71,7 +72,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
     }, [user]);
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='small' />
     }
 
     const getCreatedCommunity = async () => {

@@ -14,6 +14,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 import CommentsForm from './CommentsForm';
+import LoadingAnimation from './LoadingAnimation';
 
 interface Props {
     user: User;
@@ -307,12 +308,13 @@ const AllPostsComponent = ({ user }: Props) => {
 
     return (
         <>
-            {!posts ? (
+            {posts.length <= 0 ? (
                 <div className={classes.containerPosts}>
-                    <h1 className="loading">Carregando posts...</h1>
+                    {<LoadingAnimation opt='post' />}
                 </div>
             ) : (
                 <div className={classes.containerPosts}>
+                    <LoadingAnimation />
                     <div className={classes.pagination}>
                         <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon}/> Página anterior</button>
                         <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon}/></button>

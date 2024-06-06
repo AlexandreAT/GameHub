@@ -8,6 +8,7 @@ import * as qs from 'qs';
 import classes from './ListCommunities.module.css';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 
 interface User {
@@ -76,7 +77,7 @@ const ListCommunities = () => {
     }, [user])
 
     if (!user) {
-        return <h1 className='loading'>Carregando...</h1>
+        return <LoadingAnimation opt='user' />
     }
 
     if (user.id !== id) {
@@ -216,7 +217,10 @@ const ListCommunities = () => {
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
                                                 <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
-                                                    <img src={community.iconeImageSrc} />
+                                                    {community.backgroundImageSrc && (
+                                                        <img src={community.backgroundImageSrc} alt={community.name} className={classes.communityBackground}/>
+                                                    )}
+                                                    <img src={community.iconeImageSrc} className={classes.communityImg}/>
                                                     <p>{community.name}</p>
                                                 </Link>
                                             ))
@@ -231,7 +235,10 @@ const ListCommunities = () => {
                                         {filteredCommunities !== undefined && (
                                             filteredCommunities.map((community: SimplifiedCommunity) => (
                                                 <Link to={`/communityPage/${community.id}`} key={community.id} className={classes.communityData}>
-                                                    <img src={community.iconeImageSrc} />
+                                                    {community.backgroundImageSrc && (
+                                                        <img src={community.backgroundImageSrc} alt={community.name} className={classes.communityBackground}/>
+                                                    )}
+                                                    <img src={community.iconeImageSrc} className={classes.communityImg}/>
                                                     <p>{community.name}</p>
                                                 </Link>
                                             ))
