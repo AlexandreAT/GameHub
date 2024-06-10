@@ -8,6 +8,41 @@
     gap: 1rem;
 }
 
+.filterOpt{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    background-color: var(--clearblack);
+    border-radius: 5px;
+    border: 2px solid var(--mediumgrey);
+    gap: 2px;
+}
+
+.filterOpt p{
+    margin-bottom: 5px;
+    color: var(--lightGrey);
+}
+
+.filterOpt span{
+    cursor: pointer;
+}
+
+.filterOpt .opt{
+    color: var(--grey);
+    transition: all 0.3s ease;
+}
+
+.filterOpt .opt:hover{
+    color: var(--lightGrey);
+}
+
+.filterOpt .optSelected{
+    color: var(--whiteSmoke);
+    transition: all 0.3s ease;
+}
+
 .divPost{
     display: flex;
     flex-direction: column;
@@ -45,7 +80,7 @@
     display: none;
 }
 
-.postOption .iconButton{
+.iconButton{
     padding: 2px;
     background-color: transparent;
     font-size: 18px;

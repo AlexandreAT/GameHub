@@ -28,139 +28,291 @@ namespace Gamehub.Server.Controllers
         public async Task<List<Post>> GetPost() => await _postServices.GetAsync();
 
         [HttpGet("getPagePost/{page}")]
-        public async Task<ActionResult<List<Post>>> GetPost(int page)
+        public async Task<ActionResult<List<Post>>> GetPost(int page, string opt)
         {
             if(page == 0)
             {
                 page = 1;
             }
-            var posts = await _postServices.GetAsync(page);
-            var totalPosts = await _postServices.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
 
-            var result = new
+            if(opt == "date")
             {
-                Posts = posts,
-                TotalPages = totalPages,
-                CurrentPage = page
-            };
+                var posts = await _postServices.GetAsync(page);
+                var totalPosts = await _postServices.CountAsync();
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
 
-            return Ok(result);
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else if(opt == "relevant")
+            {
+                var posts = await _postServices.GetAsyncRelevant(page);
+                var totalPosts = await _postServices.CountAsync();
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("getPost/{id}")]
         public async Task<Post> GetPost(string id) => await _postServices.GetAsync(id);
 
         [HttpGet("communityPosts/{id}")]
-        public async Task<ActionResult<List<Post>>> GetCommunityPosts(string communityId, int page)
+        public async Task<ActionResult<List<Post>>> GetCommunityPosts(string communityId, int page, string opt)
         {
             if (page == 0)
             {
                 page = 1;
             }
-            var posts = await _postServices.GetCommunityPosts(communityId, page);
-            var totalPosts = await _postServices.CountCommunityPost(communityId);
-            var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
 
-            var result = new
+            if (opt == "date")
             {
-                Posts = posts,
-                TotalPages = totalPages,
-                CurrentPage = page
-            };
+                var posts = await _postServices.GetCommunityPosts(communityId, page);
+                var totalPosts = await _postServices.CountCommunityPost(communityId);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
 
-            return Ok(result);
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else if (opt == "relevant")
+            {
+                var posts = await _postServices.GetCommunityPostsRelevant(communityId, page);
+                var totalPosts = await _postServices.CountCommunityPost(communityId);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("GetListCommunitiesPosts")]
-        public async Task<ActionResult<List<Post>>> GetCommunitiesIsolatedPosts(string userId, int page)
+        public async Task<ActionResult<List<Post>>> GetCommunitiesIsolatedPosts(string userId, int page, string opt)
         {
             if (page == 0)
             {
                 page = 1;
             }
 
-            User user = await _userServices.GetAsync(userId);
-            List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity("following", user);
-            List<Post> allPosts = new List<Post>();
-
-            foreach (SimplifiedCommunity currentCommunity in simplifiedCommunities)
+            if(opt == "date")
             {
-                List<Post> communitiesPosts = await _postServices.GetAllCommunityPosts(currentCommunity.Id);
-                allPosts.AddRange(communitiesPosts);
+                User user = await _userServices.GetAsync(userId);
+                List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity("following", user);
+                List<Post> allPosts = new List<Post>();
+
+                foreach (SimplifiedCommunity currentCommunity in simplifiedCommunities)
+                {
+                    List<Post> communitiesPosts = await _postServices.GetAllCommunityPosts(currentCommunity.Id);
+                    allPosts.AddRange(communitiesPosts);
+                }
+
+                // Ordena os posts por data em ordem decrescente
+                allPosts = allPosts.OrderByDescending(x => x.Date).ToList();
+
+                // Limita a quantidade de posts por página
+                int skip = (page - 1) * _pageSize;
+                List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
+
+                // Calcula o número total de páginas
+                int totalPosts = allPosts.Count;
+                int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
             }
-
-            // Ordena os posts por data em ordem decrescente
-            allPosts = allPosts.OrderByDescending(x => x.Date).ToList();
-
-            // Limita a quantidade de posts por página
-            int skip = (page - 1) * _pageSize;
-            List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
-
-            // Calcula o número total de páginas
-            int totalPosts = allPosts.Count;
-            int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
-
-            var result = new
+            else if (opt == "relevant")
             {
-                Posts = posts,
-                TotalPages = totalPages,
-                CurrentPage = page
-            };
+                User user = await _userServices.GetAsync(userId);
+                List<SimplifiedCommunity> simplifiedCommunities = await _communityServices.GetSimplifiedCommunity("following", user);
+                List<Post> allPosts = new List<Post>();
 
-            return Ok(result);
+                foreach (SimplifiedCommunity currentCommunity in simplifiedCommunities)
+                {
+                    List<Post> communitiesPosts = await _postServices.GetAllCommunityPosts(currentCommunity.Id);
+                    allPosts.AddRange(communitiesPosts);
+                }
+
+                // Ordena os posts por relevância em ordem decrescente
+                allPosts = allPosts.OrderByDescending(x => (x.Like ?? new List<LikeDisLike>()).Count).ToList();
+
+                // Limita a quantidade de posts por página
+                int skip = (page - 1) * _pageSize;
+                List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
+
+                // Calcula o número total de páginas
+                int totalPosts = allPosts.Count;
+                int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("GetListUsersPosts")]
-        public async Task<ActionResult<List<Post>>> GetUsersIsolatedPosts(string userId, int page)
-        {
-            User user = await _userServices.GetAsync(userId);
-            List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync("following", user);
-            List<Post> allPosts = new List<Post>();
-
-            foreach (SimplifiedUser following in simplifiedUsers)
-            {
-                List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
-                allPosts = allPosts.Concat(followingPosts).ToList();
-            }
-
-            allPosts = allPosts.OrderByDescending(x => x.Date).ToList();
-
-            int skip = (page - 1) * _pageSize;
-            List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
-
-            int totalPosts = allPosts.Count;
-            int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
-
-            var result = new
-            {
-                Posts = posts,
-                TotalPages = totalPages,
-                CurrentPage = page
-            };
-
-            return Ok(result);
-        }
-
-        [HttpGet("userPosts/{userId}")]
-        public async Task<ActionResult<List<Post>>> GetUserPosts(string userId, int page)
+        public async Task<ActionResult<List<Post>>> GetUsersIsolatedPosts(string userId, int page, string opt)
         {
             if (page == 0)
             {
                 page = 1;
             }
-            var posts = await _postServices.GetUserPosts(userId, page);
-            var totalPosts = await _postServices.CountUserPosts(userId);
-            var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
 
-            var result = new
+            if(opt == "date")
             {
-                Posts = posts,
-                TotalPages = totalPages,
-                CurrentPage = page
-            };
+                User user = await _userServices.GetAsync(userId);
+                List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync("following", user);
+                List<Post> allPosts = new List<Post>();
 
-            return Ok(result);
+                foreach (SimplifiedUser following in simplifiedUsers)
+                {
+                    List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
+                    allPosts = allPosts.Concat(followingPosts).ToList();
+                }
+
+                allPosts = allPosts.OrderByDescending(x => x.Date).ToList();
+
+                int skip = (page - 1) * _pageSize;
+                List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
+
+                int totalPosts = allPosts.Count;
+                int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else if (opt == "relevant")
+            {
+                User user = await _userServices.GetAsync(userId);
+                List<SimplifiedUser> simplifiedUsers = await _userServices.GetSimplifiedUsersAsync("following", user);
+                List<Post> allPosts = new List<Post>();
+
+                foreach (SimplifiedUser following in simplifiedUsers)
+                {
+                    List<Post> followingPosts = await _postServices.GetUserPosts(following.UserId);
+                    allPosts = allPosts.Concat(followingPosts).ToList();
+                }
+
+                // Ordena os posts por relevância em ordem decrescente
+                allPosts = allPosts.OrderByDescending(x => (x.Like ?? new List<LikeDisLike>()).Count).ToList();
+
+                // Limita a quantidade de posts por página
+                int skip = (page - 1) * _pageSize;
+                List<Post> posts = allPosts.Skip(skip).Take(_pageSize).ToList();
+
+                // Calcula o número total de páginas
+                int totalPosts = allPosts.Count;
+                int totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("userPosts/{userId}")]
+        public async Task<ActionResult<List<Post>>> GetUserPosts(string userId, int page, string opt)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+
+            if(opt == "date")
+            {
+                var posts = await _postServices.GetUserPosts(userId, page);
+                var totalPosts = await _postServices.CountUserPosts(userId);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else if (opt == "relevant")
+            {
+                var posts = await _postServices.GetUserPostsRelevant(userId, page);
+                var totalPosts = await _postServices.CountUserPosts(userId);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]

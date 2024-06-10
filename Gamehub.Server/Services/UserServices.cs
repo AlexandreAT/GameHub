@@ -35,7 +35,7 @@ namespace Gamehub.Server.Services
         {
             var users = await _userCollection.Find(u => u.Nickname.ToLower().StartsWith(query.ToLower()))
                                              .ToListAsync();
-            var orderedUsers = users.OrderByDescending(u => u.Followers.Count).Take(5);
+            var orderedUsers = users.OrderByDescending(u => (u.Followers ?? new List<string>()).Count).Take(5);
             var simplifiedUsers = orderedUsers.Select(u => new SimplifiedUser
             {
                 UserId = u.Id,
