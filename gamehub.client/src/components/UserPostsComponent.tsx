@@ -8,6 +8,7 @@ import { IoTrashBin } from "react-icons/io5";
 import { IoIosExpand } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
+import { IoFilter } from "react-icons/io5";
 import * as qs from 'qs';
 
 import classes from './UserPostsComponent.module.css'
@@ -81,6 +82,8 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
   const [community, setCommunity] = useState<SimplifiedCommunity | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [opt, setOpt] = useState("date");
+  const [showFilter, setShowFilter] = useState(false);
   const navigate = useNavigate();
 
   function isValidDateString(dateString: Date): boolean {
@@ -94,7 +97,8 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
         const response = await axios.get<PaginatedResult<Post>>(url, {
           params: {
             userId: user.id,
-            page: page
+            page: page,
+            opt: opt
           }
         })
         if (response.data) {
@@ -214,7 +218,7 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
         }
       }
     }
-  }, [user, anotherUser, showPostsContainer, page]);
+  }, [user, anotherUser, showPostsContainer, page, opt]);
 
   useEffect(() => {
     checksFeedback();
@@ -374,6 +378,14 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
 
       {showPostsContainer === true && (
         <div className={classes.containerPosts}>
+          <button className={classes.iconButton} onClick={() => setShowFilter(!showFilter)}><IoFilter className={classes.buttonIcon} /></button>
+          {showFilter && (
+            <div className={classes.filterOpt}>
+              <p>Filtrar por:</p>
+              <span onClick={() => setOpt("date")} className={opt === "date" ? classes.optSelected : classes.opt}>Mais recente</span>
+              <span onClick={() => setOpt("relevant")} className={opt === "relevant" ? classes.optSelected : classes.opt}>Mais relevante</span>
+            </div>
+          )}
           <div className={classes.pagination}>
             <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
             <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>

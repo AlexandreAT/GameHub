@@ -28,23 +28,19 @@ namespace Gamehub.Server.Services
             return await _postCollection.Find(x => true).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
         }
 
-        public async Task<int> CountAsync() => (int)await _postCollection.CountDocumentsAsync(x => true);
-
-        public async Task<int> CountCommunityPost(string communityId)
+        public async Task<List<Post>> GetAsyncRelevant(int page)
         {
-            return (int)await _postCollection.CountDocumentsAsync(x => x.CommunityId == communityId);
+            var posts = await _postCollection.Find(x => true).ToListAsync();
+            var orderedPosts = posts.OrderByDescending(x => (x.Like ?? new List<LikeDisLike>()).Count).Skip((page - 1) * _pageSize).Take(_pageSize);
+            return orderedPosts.ToList();
         }
+
+        public async Task<int> CountAsync() => (int)await _postCollection.CountDocumentsAsync(x => true);
 
         public async Task<int> CountUserPosts(string userId)
         {
             var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
             return (int)await _postCollection.CountDocumentsAsync(filter);
-        }
-
-        public async Task<List<Post>> GetAllCommunityPosts(string communityId)
-        {
-            var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
-            return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
         }
 
         public async Task<List<Post>> GetCommunityPosts(string communityId, int page)
@@ -54,11 +50,42 @@ namespace Gamehub.Server.Services
             return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
         }
 
+        public async Task<List<Post>> GetCommunityPostsRelevant(string communityId, int page)
+        {
+            var posts = await _postCollection.Find(x => x.CommunityId == communityId).ToListAsync();
+            var orderedPosts = posts.OrderByDescending(x => (x.Like ?? new List<LikeDisLike>()).Count).Skip((page - 1) * _pageSize).Take(_pageSize);
+            return orderedPosts.ToList();
+        }
+
+        public async Task<int> CountCommunityPost(string communityId)
+        {
+            return (int)await _postCollection.CountDocumentsAsync(x => x.CommunityId == communityId);
+        }
+
+        public async Task<List<Post>> GetAllCommunityPosts(string communityId)
+        {
+            var filter = Builders<Post>.Filter.Eq(p => p.CommunityId, communityId);
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
+        }
+
         public async Task<List<Post>> GetUserPosts(string userId, int page)
         {
             var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
             var skip = (page - 1) * _pageSize;
             return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetUserPosts(string userId)
+        {
+            var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetUserPostsRelevant(string userId, int page)
+        {
+            var posts = await _postCollection.Find(x => x.IdAuthor == userId).ToListAsync();
+            var orderedPosts = posts.OrderByDescending(x => (x.Like ?? new List<LikeDisLike>()).Count).Skip((page - 1) * _pageSize).Take(_pageSize);
+            return orderedPosts.ToList();
         }
 
         public async Task<Post> GetAsync(string id) => await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
@@ -70,12 +97,6 @@ namespace Gamehub.Server.Services
             await _postCollection.InsertOneAsync(post);
             post.Id = post.Id ?? _postCollection.Find(x => x.Id == post.Id).FirstOrDefault()?.Id;
             return post;
-        }
-
-        public async Task<List<Post>> GetUserPosts(string userId)
-        {
-            var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
-            return await _postCollection.Find(filter).SortByDescending(x => x.Date).ToListAsync();
         }
 
         public async Task UpdateAsync(string id, Post post) => await _postCollection.ReplaceOneAsync(x => x.Id == id, post);

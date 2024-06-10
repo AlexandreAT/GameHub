@@ -55,7 +55,8 @@ const Cadastro = () => {
             Phone: data.clearPhone,
             Email: data.email,
             Password: data.password,
-            Nickname: data.nickname
+            Nickname: data.nickname,
+            ImageSrc: 'https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png'
         };
 
         const response = await axios.post(url, userPascalCase, {
