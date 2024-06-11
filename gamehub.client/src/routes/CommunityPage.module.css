@@ -122,7 +122,7 @@
 }
 
 .headerInfo .divInfoController .paragraph .infoLink,
-.spanData{
+.headerInfo .divInfoController .paragraph .spanData{
     position: relative;
     cursor: pointer;
     color: var(--lightGrey);
@@ -136,7 +136,7 @@
 }
 
 .headerInfo .divInfoController .paragraph .infoLink:hover,
-.spanData:hover{
+.headerInfo .divInfoController .paragraph .spanData:hover{
     color: var(--whitesmoke);
 }
 
@@ -290,6 +290,7 @@
 
 .description .spanData{
     max-width: 100%;
+    color: var(--lightGrey);
 }
 
 .noRegistry{

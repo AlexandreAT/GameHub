@@ -75,6 +75,24 @@ namespace Gamehub.Server.Services
             return user;
         }
 
+        public async Task<bool> NicknameExistsAsync(string nickname)
+        {
+            var user = await _userCollection.Find(x => x.Nickname == nickname).FirstOrDefaultAsync();
+            return user != null;
+        }
+
+        public async Task<bool> CpfExistsAsync(string cpf)
+        {
+            var user = await _userCollection.Find(x => x.Cpf == cpf).FirstOrDefaultAsync();
+            return user != null;
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            var user = await _userCollection.Find(x => x.Email == email).FirstOrDefaultAsync();
+            return user != null;
+        }
+
         public async Task UpdateAsync(string id, User user) => await _userCollection.ReplaceOneAsync(x => x.Id == id, user);
 
         public async Task RemoveAsync(string id) => await _userCollection.DeleteOneAsync(x => x.Id == id);
@@ -217,39 +235,32 @@ namespace Gamehub.Server.Services
                 }
             }
         }
-
-        /*public async Task UpdateSimplifiedUser(User currentUser)
+        public async Task DeleteUserFromFollowersAndFollowing(string userId)
         {
-            List<User> allUsers = await GetAsync();
+            List<User> users = await GetAsync();
 
-            SimplifiedUser newSimplifiedUser = new SimplifiedUser
+            foreach (User user in users)
             {
-                UserId = currentUser.Id,
-                NickName = currentUser.Nickname,
-                UserImageSrc = currentUser.ImageSrc
-            };
-
-            foreach(User user in allUsers)
-            {
-                if(user.Following != null)
+                if (user.Followers != null)
                 {
-                    var userFoundIndex = user.Following.FindIndex(x => x.UserId == currentUser.Id);
-                    if (userFoundIndex >= 0)
+                    var followerToRemove = user.Followers.FirstOrDefault(x => x == userId);
+                    if (followerToRemove != null)
                     {
-                        user.Following[userFoundIndex] = newSimplifiedUser;
+                        user.Followers.Remove(followerToRemove);
                         await UpdateAsync(user.Id, user);
                     }
                 }
-                if(user.Followers != null)
+
+                if (user.Following != null)
                 {
-                    var userFoundIndex = user.Followers.FindIndex(x => x.UserId == currentUser.Id);
-                    if(userFoundIndex >= 0)
+                    var followingToRemove = user.Following.FirstOrDefault(x => x == userId);
+                    if (followingToRemove != null)
                     {
-                        user.Followers[userFoundIndex] = newSimplifiedUser;
+                        user.Following.Remove(followingToRemove);
                         await UpdateAsync(user.Id, user);
                     }
                 }
             }
-        }*/
+        }
     }
 }

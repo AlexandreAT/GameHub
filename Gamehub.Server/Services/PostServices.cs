@@ -406,5 +406,39 @@ namespace Gamehub.Server.Services
             return disLikes = post.Dislike;
         }
 
+        public async Task DeleteUserComments(string userId)
+        {
+            List<Post> posts = await GetAsync();
+
+            foreach (Post post in posts)
+            {
+                if (post.Comments != null)
+                {
+                    for (int i = 0; i < post.Comments.Count; i++)
+                    {
+                        if (post.Comments[i].User.UserId == userId)
+                        {
+                            post.Comments.RemoveAt(i);
+                            i--;
+                        }
+                    }
+
+                    await _postCollection.ReplaceOneAsync(x => x.Id == post.Id, post);
+                }
+            }
+        }
+
+        public async Task DeleteUserPosts(string userId)
+        {
+            List<Post> posts = await GetAsync();
+
+            foreach (Post post in posts)
+            {
+                if (post.IdAuthor == userId)
+                {
+                    await RemoveAsync(post.Id);
+                }
+            }
+        }
     }
 }
