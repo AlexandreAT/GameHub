@@ -1,4 +1,6 @@
 import { useState, FormEvent, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { axios } from '../axios-config';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 import * as qs from 'qs';
@@ -31,8 +33,11 @@ const UpdateUserComponnent = ({ user }: Props) => {
     const [state, setState] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showConfirmBtn, setShowConfirmBtn] = useState(false);
 
     const [formSubmitted, setFormSubmitted] = useState(false);
+
+    const navigate = useNavigate();
 
     const [formError, setFormError] = useState({
         phone: "",
@@ -194,40 +199,61 @@ const UpdateUserComponnent = ({ user }: Props) => {
         }
     }
 
+    const deleteUser = async () => {
+        try{
+            await axios.delete(`/Users/${user.id}`, { params: {
+                id: user.id
+            }})
+            Cookies.remove('.AspNetCore.Application.Authorization');
+            navigate('/');
+        } catch(error){
+            console.log(error);
+        }
+    }
+
     return (
-        <form className={classes.formEditUser} onSubmit={updateUser}>
-            <div>
-                <label htmlFor="nickname">Apelido:</label>
-                <input type="text" name="nickname" id="nickname" placeholder='Digite o seu apelido...' onChange={(e) => setNickname(e.target.value)} value={nickname} />
-                {formSubmitted && (<p className='errorMessage'>{formError.nickname}</p>)}
-            </div>
-            <div>
-                <label htmlFor="phone">Telefone:</label>
-                <input type="text" name='phone' id='phone' placeholder='Digite o seu telefone...' onChange={(e) => setPhone(e.target.value)} value={insertMaskInPhone(phone)} />
-                {formSubmitted && (<p className='errorMessage'>{formError.phone}</p>)}
-            </div>
-            <div>
-                <label htmlFor="city">Cidade:</label>
-                <input type="text" name='city' id='city' placeholder='Digite a sua cidade...' onChange={(e) => setCity(e.target.value)} value={city} />
-                {formSubmitted && (<p className='errorMessage'>{formError.city}</p>)}
-            </div>
-            <div>
-                <label htmlFor="state">Estado:</label>
-                <input type="text" name='state' id='state' placeholder='Digite o seu estado...' onChange={(e) => setState(e.target.value)} value={state} />
-                {formSubmitted && (<p className='errorMessage'>{formError.state}</p>)}
-            </div>
-            <div>
-                <label htmlFor="password">Senha:</label>
-                <input type="password" name='password' placeholder='Digite a nova senha...' onChange={(e) => setPassword(e.target.value)} value={password} />
-                {formSubmitted && (<p className='errorMessage'>{formError.password}</p>)}
-            </div>
-            <div>
-                <label htmlFor="password">Confirme a senha:</label>
-                <input type="password" name='password' placeholder='Digite a nova senha...' onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} />
-                {formSubmitted && (<p className='errorMessage'>{formError.confirmPassword}</p>)}
-            </div>
-            <button type='submit' className='btnTransparent'>Atualizar os dados</button>
-        </form>
+        <>
+                <form className={classes.formEditUser} onSubmit={updateUser}>
+                <div>
+                    <label htmlFor="nickname">Apelido:</label>
+                    <input type="text" name="nickname" id="nickname" placeholder='Digite o seu apelido...' onChange={(e) => setNickname(e.target.value)} value={nickname} />
+                    {formSubmitted && (<p className='errorMessage'>{formError.nickname}</p>)}
+                </div>
+                <div>
+                    <label htmlFor="phone">Telefone:</label>
+                    <input type="text" name='phone' id='phone' placeholder='Digite o seu telefone...' onChange={(e) => setPhone(e.target.value)} value={insertMaskInPhone(phone)} />
+                    {formSubmitted && (<p className='errorMessage'>{formError.phone}</p>)}
+                </div>
+                <div>
+                    <label htmlFor="city">Cidade:</label>
+                    <input type="text" name='city' id='city' placeholder='Digite a sua cidade...' onChange={(e) => setCity(e.target.value)} value={city} />
+                    {formSubmitted && (<p className='errorMessage'>{formError.city}</p>)}
+                </div>
+                <div>
+                    <label htmlFor="state">Estado:</label>
+                    <input type="text" name='state' id='state' placeholder='Digite o seu estado...' onChange={(e) => setState(e.target.value)} value={state} />
+                    {formSubmitted && (<p className='errorMessage'>{formError.state}</p>)}
+                </div>
+                <div>
+                    <label htmlFor="password">Senha:</label>
+                    <input type="password" name='password' placeholder='Digite a nova senha...' onChange={(e) => setPassword(e.target.value)} value={password} />
+                    {formSubmitted && (<p className='errorMessage'>{formError.password}</p>)}
+                </div>
+                <div>
+                    <label htmlFor="password">Confirme a senha:</label>
+                    <input type="password" name='password' placeholder='Digite a nova senha...' onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} />
+                    {formSubmitted && (<p className='errorMessage'>{formError.confirmPassword}</p>)}
+                </div>
+                <button type='submit' className='btnTransparent'>Atualizar os dados</button>
+            </form>
+            <button onClick={() => setShowConfirmBtn(!showConfirmBtn)} className={classes.btnDelete}>Deletar conta</button>
+            {showConfirmBtn && (
+                <div className={classes.confirmDiv}>
+                    <button onClick={deleteUser} className={classes.btnDelete}>Confirmar</button>
+                    <button onClick={() => setShowConfirmBtn(!showConfirmBtn)} className='btnTransparent'>Cancelar</button>
+                </div>
+            )}
+        </>
     )
 }
 

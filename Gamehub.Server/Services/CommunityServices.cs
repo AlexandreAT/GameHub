@@ -233,5 +233,26 @@ namespace Gamehub.Server.Services
                 throw new Exception("Comunidade sem seguidores");
             }
         }
+
+        public async Task DeleteUserCreatedCommunities(string userId)
+        {
+            List<Community> communities = await _communityCollection.Find(x => x.Creator == userId).ToListAsync();
+
+            foreach (Community community in communities)
+            {
+                await _communityCollection.DeleteOneAsync(x => x.Id == community.Id);
+            }
+        }
+
+        public async Task DeleteUserFromCommunityFollowers(string userId)
+        {
+            List<Community> communities = await _communityCollection.Find(x => x.Followers.Contains(userId)).ToListAsync();
+
+            foreach (Community community in communities)
+            {
+                community.Followers.Remove(userId);
+                await _communityCollection.ReplaceOneAsync(x => x.Id == community.Id, community);
+            }
+        }
     }
 }

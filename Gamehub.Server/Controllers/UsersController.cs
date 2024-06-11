@@ -100,6 +100,21 @@ namespace Gamehub.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            if (await _userServices.NicknameExistsAsync(user.Nickname))
+            {
+                return BadRequest("Nickname já existe.");
+            }
+
+            if (await _userServices.CpfExistsAsync(user.Cpf))
+            {
+                return BadRequest("CPF já existe.");
+            }
+
+            if (await _userServices.EmailExistsAsync(user.Email))
+            {
+                return BadRequest("Email já existe.");
+            }
+
             User createdUser = await _userServices.CreateAsync(user);
             return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
         }
@@ -187,7 +202,12 @@ namespace Gamehub.Server.Controllers
         public async Task<ActionResult<List<User>>> DeleteUser(string id)
         {
             await _userServices.RemoveAsync(id);
-            return await _userServices.GetAsync();
+            await _userServices.DeleteUserFromFollowersAndFollowing(id);
+            await _postServices.DeleteUserPosts(id);
+            await _postServices.DeleteUserComments(id);
+            await _communityServices.DeleteUserCreatedCommunities(id);
+            await _communityServices.DeleteUserFromCommunityFollowers(id);
+            return Ok();
         }
 
         [HttpGet("current")]
