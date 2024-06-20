@@ -89,6 +89,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 });
                 setSimplifiedCommunity(response.data);
             } catch (error) {
+                console.clear();
                 console.error(error);
             }
         }

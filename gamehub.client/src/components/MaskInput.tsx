@@ -1,4 +1,3 @@
-  import React from 'react'
   import InputMask from 'react-input-mask';
 
   const onlyNumbers = (str: string) => (str.replace(/[^0-9]/g, ''));

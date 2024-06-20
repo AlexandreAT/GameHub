@@ -14,6 +14,7 @@ import { IoFilter } from "react-icons/io5";
 
 import classes from './ListCommunitiesPosts.module.css'
 import CommentsForm from './CommentsForm';
+import LoadingAnimation from './LoadingAnimation';
 
 interface Props {
     user: User;
@@ -431,7 +432,7 @@ const ListCommunitiesPosts = ({ user }: Props) => {
                     </div>
                 </div>
             ))) : (
-                <h1>Carregando posts das comunidades...</h1>
+                <LoadingAnimation opt='post' />
             )}
             <div className={classes.pagination}>
                 <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>

@@ -357,7 +357,7 @@ const Cadastro = () => {
           </div>
           <div className={classes.inputCheckbox}>
             <input type="checkbox" name='termsOfCondition' onChange={handleTermsChange} />
-            <label htmlFor="termsOfCondition">Estou ciente e aceito os {<Link to="/termsOfCondition" className="link">termos de condição</Link>}.</label>
+            <label htmlFor="termsOfCondition">Estou ciente e aceito os .{<Link to="/termsOfCondition" className="link">termos de condição</Link>}.</label>
             <div className={classes.errorMessage}>
               {formSubmitted && (<p className='errorMessage'>{formError.termsOfCondition}</p>)}
             </div>

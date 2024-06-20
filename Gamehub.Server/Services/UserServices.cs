@@ -262,5 +262,15 @@ namespace Gamehub.Server.Services
                 }
             }
         }
+
+        public async Task<string> GetPassword(string email, string nickname)
+        {
+            var user = await _userCollection.Find(x => x.Email == email && x.Nickname == nickname).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return null;
+            }
+            return user.Password;
+        }
     }
 }

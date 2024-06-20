@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import classes from './MakePostForm.module.css'
 import { axios } from '../axios-config';
+import LoadingAnimation from './LoadingAnimation';
 
 interface Props {
   user: User | null;
@@ -19,9 +20,10 @@ const MakePostForm = ({ user, community }: Props) => {
   const [content, setContent] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isPosting, setIsPosting] = useState(false);
 
   if (!user) {
-    return <h1 className='loading'>Carregando...</h1>
+    return <LoadingAnimation opt='small' />
   }
 
   const postData = async (url: string, data: any) => {
@@ -63,6 +65,7 @@ const MakePostForm = ({ user, community }: Props) => {
 
   const submitPost = async (e: FormEvent) => {
     e.preventDefault();
+    setIsPosting(true);
 
     const author = user.nickname;
     const idAuthor = user.id;
@@ -107,6 +110,8 @@ const MakePostForm = ({ user, community }: Props) => {
         }
       } catch (error) {
         console.error('Erro ao postar:', error);
+      } finally {
+        setIsPosting(false);
       }
     }
 
@@ -120,7 +125,7 @@ const MakePostForm = ({ user, community }: Props) => {
           content,
           imageSrc,
           communityId,
-        })
+        });
 
         if (response.error) {
           console.log('Error from the backend:', response.error);
@@ -146,6 +151,8 @@ const MakePostForm = ({ user, community }: Props) => {
         }
       } catch (error) {
         console.error('Erro ao postar:', error);
+      } finally {
+        setIsPosting(false);
       }
     }
   }
@@ -196,7 +203,7 @@ const MakePostForm = ({ user, community }: Props) => {
           </div>
         </div>
         <div className={classes.divButton}>
-          <button className={classes.button} type='submit'>Postar</button>
+          <button className={classes.button} type='submit' disabled={isPosting}>Postar</button>
         </div>
       </form>
     </div>
