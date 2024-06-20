@@ -112,7 +112,7 @@ const SearchList = () => {
                         <h3>Procurando por: {search}</h3>
                     </div>
                     <div className={classes.mainContent}>
-                        {!user.following || user.following.length <= 0 ? (
+                        {!simplifiedUsers && !simplifiedCommunities ? (
                             <span className={classes.noRegistry}>Nada encontrado</span>
                         ) : (
                             <>

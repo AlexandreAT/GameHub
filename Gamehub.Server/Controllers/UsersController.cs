@@ -365,5 +365,15 @@ namespace Gamehub.Server.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        [HttpGet("getPassword")]
+        public async Task<string> GetPassword(string email, string nickname)
+        {
+            string password = await _userServices.GetPassword(email, nickname);
+            if(password == null)
+            {
+                throw new Exception("Senha não encontrada");
+            }
+            return password;
+        }
     }
 }

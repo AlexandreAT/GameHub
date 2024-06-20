@@ -1,6 +1,8 @@
 const TermsOfCondition = () => {
   return (
-    <div>TermsOfCondition</div>
+    <div>
+      <h1>Termos de condição: nenhum.</h1>
+    </div>
   )
 }
 
