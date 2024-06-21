@@ -1,10 +1,10 @@
-.divProfileMain{
+.divProfileMain {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.divUser{
+.divUser {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +13,8 @@
     margin-top: 95px;
 }
 
-.divUser .divUserInfo button, .btnCancelar{
+.divUser .divUserInfo button,
+.btnCancelar {
     background-color: transparent;
     padding: 5px 18px 5px 15px;
     font-size: 22px;
@@ -23,13 +24,14 @@
     transition: all 0.2s ease-in-out;
 }
 
-.divUser .divUserInfo button:hover, .btnCancelar:hover{
+.divUser .divUserInfo button:hover,
+.btnCancelar:hover {
     border-color: var(--turquoise);
     color: var(--turquoise);
     transform: scale(1.02);
 }
 
-.divUserInfo{
+.divUserInfo {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -37,11 +39,11 @@
     padding: 0 2rem;
 }
 
-.divUserInfo .background{
+.divUserInfo .background {
     position: relative;
 }
 
-.background .divEditBackground{
+.background .divEditBackground {
     position: absolute;
     top: 10px;
     right: 12px;
@@ -55,36 +57,40 @@
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.divEditBackground label, .divEditBackground span,
-.btnIcone label, .btnIcone span{
+.divEditBackground label,
+.divEditBackground span,
+.btnIcone label,
+.btnIcone span {
     cursor: pointer;
     color: var(--lightGrey);
     transition: all 0.2s ease;
 }
 
 .divEditBackground span,
-.btnIcone span{
+.btnIcone span {
     font-weight: bold;
     text-decoration: underline;
 }
 
-.divEditBackground label:hover, .divEditBackground label:hover span,
-.btnIcone label:hover, .btnIcone label:hover span{
+.divEditBackground label:hover,
+.divEditBackground label:hover span,
+.btnIcone label:hover,
+.btnIcone label:hover span {
     color: var(--turquoise);
     transform: scale(1.01);
 }
 
 .divEditBackground label,
-.btnIcone label{
+.btnIcone label {
     cursor: pointer;
 }
 
 .divEditBackground input,
-.btnIcone input{
+.btnIcone input {
     display: none;
 }
 
-.btnBackground{
+.btnBackground {
     background-color: var(--clearblack);
     border: 2px solid transparent;
     padding: 5px 15px;
@@ -93,11 +99,11 @@
     transition: all 0.3s ease;
 }
 
-.btnBackground:hover{
+.btnBackground:hover {
     border-color: var(--turquoise);
 }
 
-.imgBackground{
+.imgBackground {
     width: 100%;
     min-height: 200px;
     max-height: 200px;
@@ -106,19 +112,19 @@
     z-index: -1;
 }
 
-.userInfoContent{
+.userInfoContent {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 }
 
 .divUserInfo p,
-.divUserInfo .paragraph{
+.divUserInfo .paragraph {
     position: relative;
 }
 
 .paragraph .spanPublic,
-p .spanPublic{
+p .spanPublic {
     position: absolute;
     top: -15px;
     display: none;
@@ -128,11 +134,11 @@ p .spanPublic{
 }
 
 p:hover .spanPublic,
-.paragraph:hover .spanPublic{
+.paragraph:hover .spanPublic {
     display: block;
 }
 
-.userImg{
+.userImg {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -142,7 +148,7 @@ p:hover .spanPublic,
     min-height: 420px;
 }
 
-.imgController{
+.imgController {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -153,7 +159,7 @@ p:hover .spanPublic,
     top: -150px;
 }
 
-.imgController .img{
+.imgController .img {
     border-radius: 50%;
     min-width: 250px;
     min-height: 250px;
@@ -165,27 +171,29 @@ p:hover .spanPublic,
     margin-bottom: 2rem;
 }
 
-.imgController input[type="file"]{
+.imgController input[type="file"] {
     display: none;
 }
 
-.imgController label, .imgController .spanImg{
+.imgController label,
+.imgController .spanImg {
     cursor: pointer;
     color: var(--lightGrey);
     transition: all 0.2s ease;
 }
 
-.imgController .spanImg{
+.imgController .spanImg {
     font-weight: bold;
     text-decoration: underline;
 }
 
-.imgController label:hover, .imgController label:hover .spanImg{
+.imgController label:hover,
+.imgController label:hover .spanImg {
     color: var(--turquoise);
     transform: scale(1.01);
 }
 
-.footerDiv{
+.footerDiv {
     margin-top: 45px;
     display: flex;
     flex-direction: column;
@@ -199,7 +207,7 @@ p:hover .spanPublic,
 }
 
 .footerDiv .paragraph,
-.userInfoFooter p{
+.userInfoFooter p {
     width: 100%;
     font-size: 18px;
     color: var(--lightGrey);
@@ -209,11 +217,11 @@ p:hover .spanPublic,
     gap: 5px;
 }
 
-.link{
+.link {
     color: var(--lightGrey);
 }
 
-.divShowSimplified{
+.divShowSimplified {
     position: relative;
     cursor: pointer;
     display: flex;
@@ -221,14 +229,14 @@ p:hover .spanPublic,
     justify-content: center;
 }
 
-.divShowSimplified span{
+.divShowSimplified span {
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 25px;
 }
 
-.divSimplifiedData{
+.divSimplifiedData {
     display: none;
     position: absolute;
     padding: 3px 5px;
@@ -238,7 +246,7 @@ p:hover .spanPublic,
     z-index: 1;
 }
 
-.divSimplifiedData p{
+.divSimplifiedData p {
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -246,11 +254,11 @@ p:hover .spanPublic,
     transition: all 0.3s ease;
 }
 
-.divSimplifiedData p:hover{
+.divSimplifiedData p:hover {
     color: var(--whitesmoke);
 }
 
-.divSimplifiedData p img{
+.divSimplifiedData p img {
     border-radius: 50%;
     min-width: 30px;
     min-height: 30px;
@@ -260,7 +268,7 @@ p:hover .spanPublic,
     border: 2px solid var(--black);
 }
 
-.paragraph .divShowSimplified:hover .divSimplifiedData{
+.paragraph .divShowSimplified:hover .divSimplifiedData {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -268,7 +276,7 @@ p:hover .spanPublic,
     left: -2px;
 }
 
-.userData{
+.userData {
     margin-left: 10px;
     display: flex;
     flex-direction: column;
@@ -279,7 +287,7 @@ p:hover .spanPublic,
     background-color: var(--clearblack);
 }
 
-.userDataHeader{
+.userDataHeader {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -288,19 +296,19 @@ p:hover .spanPublic,
     align-items: center;
 }
 
-.userDataHeader h2{
+.userDataHeader h2 {
     font-size: 35px;
     text-shadow: 1px 1px 2px var(--turquoise);
 }
 
-.userDataContent{
+.userDataContent {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
 }
 
-.userDataContent div{
+.userDataContent div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -308,7 +316,7 @@ p:hover .spanPublic,
     gap: 1rem;
 }
 
-.userDataContent p{
+.userDataContent p {
     width: 100%;
     font-size: 20px;
     color: var(--whitesmoke);
@@ -316,19 +324,19 @@ p:hover .spanPublic,
     text-shadow: 0.5px 0.5px 2px var(--turquoise);
 }
 
-.userDataContent input{
+.userDataContent input {
     background-color: transparent;
     font-size: 20px;
 }
 
-.spanData{
+.spanData {
     text-shadow: none;
     font-size: 18px;
     font-weight: normal;
     color: var(--lightGrey);
 }
 
-.ellipsis{
+.ellipsis {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -337,21 +345,21 @@ p:hover .spanPublic,
     color: var(--grey);
 }
 
-.noRegistry{
+.noRegistry {
     text-shadow: none;
     font-weight: normal;
     font-size: 15px;
     color: var(--grey);
 }
 
-.userInfoFooter{
+.userInfoFooter {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     height: 100%
 }
 
-.divBiography{
+.divBiography {
     display: flex;
     flex-direction: column;
     max-width: 100%;
@@ -361,14 +369,14 @@ p:hover .spanPublic,
     margin-bottom: 10px;
 }
 
-.divBiography p{
+.divBiography p {
     display: flex;
     flex-direction: column;
     max-width: 100%;
     overflow-wrap: break-word;
 }
 
-.divBiography .spanData{
+.divBiography .spanData {
     max-width: 100%;
 }
 
@@ -379,12 +387,12 @@ p:hover .spanPublic,
     width: 200px;
 }
 
-.formBiography{
+.formBiography {
     margin-top: 1rem;
     position: relative;
 }
 
-.biographyText{
+.biographyText {
     background-color: transparent;
     border: none;
     border: 2px solid var(--grey);
@@ -401,17 +409,17 @@ p:hover .spanPublic,
     transition: all 0.3s ease-in-out;
 }
 
-.biographyText:focus{
+.biographyText:focus {
     border-color: var(--turquoise);
     color: var(--turquoise);
 }
 
-.biographyText::placeholder{
+.biographyText::placeholder {
     font-size: 15px;
     color: var(--mediumgrey);
 }
 
-.footerFormBiography{
+.footerFormBiography {
     position: absolute;
     padding: 10px 8px;
     right: 0;
@@ -419,7 +427,7 @@ p:hover .spanPublic,
     display: none;
 }
 
-.divBiography .footerFormBiography button{
+.divBiography .footerFormBiography button {
     background-color: transparent;
     border-bottom: 2px solid transparent;
     border: 5px;
@@ -430,17 +438,17 @@ p:hover .spanPublic,
     transition: all 0.2s ease-in-out;
 }
 
-.divBiography .footerFormBiography button:hover{
+.divBiography .footerFormBiography button:hover {
     background-color: var(--clearblack);
     color: var(--lightGrey);
     border-bottom-color: var(--lightGrey);
 }
 
-.formBiography:focus-within .footerFormBiography{
+.formBiography:focus-within .footerFormBiography {
     display: flex;
 }
 
-.divEditUser{
+.divEditUser {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -448,4 +456,259 @@ p:hover .spanPublic,
     gap: 2rem;
     width: 100%;
     margin-top: 95px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+
+    .footerDiv .paragraph,
+    .userInfoFooter p {
+        font-size: 12px;
+        font-weight: 100;
+        gap: 0px;
+    }
+
+    .background .divEditBackground {
+        position: absolute;
+        width: 100%;
+        top: 0px;
+        right: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-radius: 10px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .divEditBackground label{
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .divUser .divUserInfo button,
+    .btnCancelar {
+        padding: 2px 8px;
+        font-size: 15px;
+        font-weight: 100;
+        border: 2px solid var(--lightGrey);
+        border-radius: 50px;
+    }
+
+    .divUser .divUserInfo .btnProfile{
+        padding: 2px 5px;
+        font-size: 13px;
+    }
+
+    .imgBackground {
+        width: 100%;
+        min-height: 150px;
+        max-height: 150px;
+    }
+
+    .divUser {
+        margin-left: 14%;
+        width: 70%;
+    }
+
+    .userImg {
+        min-width: 100%;
+    }
+
+    .userInfoContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .imgController {
+        gap: 0px;
+        top: -80px;
+    }
+
+    .imgController .img {
+        border-radius: 50%;
+        min-width: 120px;
+        min-height: 120px;
+        max-width: 120px;
+        max-height: 120px;
+        margin-bottom: 0rem;
+    }
+
+    .footerDiv {
+        margin-top: 25px;
+        gap: 10px;
+    }
+
+    .userInfoContent {}
+
+    .userData {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -140px 0px;
+    }
+
+    .userDataHeader h2 {
+        font-size: 25px;
+    }
+
+    .userDataContent {
+        gap: 1rem;
+    }
+
+    .userDataContent div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .userInfoFooter {
+        margin-top: 138px;
+    }
+
+    .divBiography {
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .userDataContent p {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .userDataContent input {
+        width: 100%;
+        text-align: center;
+        background-color: transparent;
+        font-size: 16px;
+    }
+
+    .spanData {
+        font-size: 15px;
+    }
+    
+    .ellipsis {
+        font-size: 12px;
+    }
+    
+    .noRegistry {
+        font-size: 13px;
+        color: var(--grey);
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+    .divUser {
+        width: 60%;
+    }
+
+    .userImg {
+        min-width: 100%;
+    }
+
+    .userInfoContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .imgController {
+        gap: 0px;
+        top: -120px;
+    }
+
+    .imgController .img {
+        border-radius: 50%;
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 200px;
+        max-height: 200px;
+        margin-bottom: 0rem;
+    }
+
+    .footerDiv {
+        margin-top: 25px;
+        gap: 10px;
+    }
+
+    .userInfoContent {}
+
+    .userData {
+        margin: -90px 0px;
+    }
+
+    .userDataContent {
+        gap: 1rem;
+    }
+
+    .userDataContent div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .userInfoFooter {
+        margin-top: 88px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .divUser {
+        width: 60%;
+    }
+
+    .userImg {
+        min-width: 100%;
+    }
+
+    .userInfoContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .imgController {
+        gap: 0px;
+        top: -120px;
+    }
+
+    .imgController .img {
+        border-radius: 50%;
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 200px;
+        max-height: 200px;
+        margin-bottom: 0rem;
+    }
+
+    .footerDiv {
+        margin-top: 25px;
+        gap: 10px;
+    }
+
+    .userInfoContent {}
+
+    .userData {
+        margin: -90px 0px;
+    }
+
+    .userDataContent {
+        gap: 1rem;
+    }
+
+    .userDataContent div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .userInfoFooter {
+        margin-top: 88px;
+    }
 }

@@ -1,4 +1,4 @@
-.formEditUser{
+.formEditUser {
     width: 40%;
     height: 90%;
     border-radius: 10px;
@@ -13,7 +13,7 @@
     gap: 1.5rem;
 }
 
-.formEditUser div{
+.formEditUser div {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -23,14 +23,14 @@
     gap: 3px;
 }
 
-.formEditUser label{
+.formEditUser label {
     font-size: 1.1rem;
     white-space: nowrap;
     max-width: 40%;
     transition: all 0.3s ease;
 }
 
-.formEditUser input{
+.formEditUser input {
     padding: 10px 5px 5px;
     background-color: transparent;
     border-bottom: 1px solid var(--whitesmoke);
@@ -39,12 +39,12 @@
     transition: all 0.3s ease;
 }
 
-.formEditUser input:focus{
+.formEditUser input:focus {
     border-bottom-color: var(--turquoise);
     color: var(--turquoise);
 }
 
-.formEditUser div:focus-within label{
+.formEditUser div:focus-within label {
     color: var(--turquoise);
 }
 
@@ -66,7 +66,7 @@
     transform: scale(1.02);
 }
 
-.confirmDiv{
+.confirmDiv {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -79,6 +79,28 @@
     z-index: 2;
 }
 
-.confirmDiv button{
+.confirmDiv button {
     font-size: 30px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .formEditUser {
+        width: 90%;
+    }
+
+    .confirmDiv {
+        gap: 2rem;
+    }
+    
+    .confirmDiv button {
+        font-size: 25px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+    .formEditUser {
+        width: 90%;
+    }
 }

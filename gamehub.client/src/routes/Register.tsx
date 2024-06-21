@@ -370,7 +370,7 @@ const Cadastro = () => {
             <Link to="/" className='link'>Já tem uma conta?</Link>
           </div>
         </form>
-        <div>
+        <div className={classes.divGenCpf}>
           <input type='button' value="Clique aqui para gerar um CPF válido " className={classes.btnCpf} onClick={handleGenerateCpf} />
           <span className={classes.cpfGenerated} onClick={() => navigator.clipboard.writeText(cpfGenerated)}>{cpfGenerated}</span>
         </div>
