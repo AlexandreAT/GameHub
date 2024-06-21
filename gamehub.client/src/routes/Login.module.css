@@ -190,6 +190,15 @@
 
 /* tablets */
 @media (max-width: 780px) {
+    form .bottomDiv{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .formRemember label{
+        text-align: center;
+    }
     .loginContainer{
         width: 70%;
     }
@@ -202,14 +211,6 @@
     }
     .loginContainer h2{
         font-size: 2.5rem;
-    }
-    .btn{
-        width: 60%;
-        font-size: 1.3rem;
-    }
-    .register{
-        width: 60%;
-        font-size: 1.3rem;
     }
 }
 
@@ -236,15 +237,5 @@
     .bottomDiv{
         text-align: center; 
         margin-bottom: -10px;
-    }
-    .bottomDiv a{
-    }
-    .btn{
-        width: 100%;
-        font-size: 1.1rem;
-    }
-    .register{
-        width: 100%;
-        font-size: 1.1rem;
     }
 }

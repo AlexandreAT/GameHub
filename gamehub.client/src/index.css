@@ -92,6 +92,7 @@ h1, .linkLogo, .logoDetail{
 .link{
   position: relative;
   transition: all 0.3s ease;
+  align-items: center;
 }
 
 .link::after{

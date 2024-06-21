@@ -1,20 +1,22 @@
-.sideDiv{
+.sideDiv {
     position: fixed;
     left: 0px;
     width: 90px;
-    max-width: 250px;
+    max-width: 230px;
+    background-color: var(--deepgray);
     border-right: 2px solid var(--mediumgrey);
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 85%;
+    height: 100%;
     padding: 20px 0;
     gap: 2rem;
     transition: all 0.3s ease;
+    z-index: 2;
 }
 
-.sideDiv:hover{
-    width: 250px;
+.sideDiv:hover {
+    width: 230px;
     gap: 3rem;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -31,11 +33,11 @@
     border-radius: 5px;
 }
 
-.sideDiv:hover .sideIcon{
+.sideDiv:hover .sideIcon {
     transform: scale(1.2);
 }
 
-.sideDiv label{
+.sideDiv label {
     overflow: hidden;
     cursor: pointer;
     display: none;
@@ -45,10 +47,11 @@
 }
 
 @keyframes showText {
-    from{
+    from {
         width: 0;
     }
-    to{
+
+    to {
         width: 100%;
     }
 }
@@ -57,21 +60,21 @@
 .sideDiv:hover .sideContent,
 .sideDiv:hover .sideFooter .sideIcon,
 .sideDiv:hover .sideFooter .link,
-.sideDiv:hover .sideFooter .formCommunity{
+.sideDiv:hover .sideFooter .formCommunity {
     display: inline-block;
 }
 
-.sideContent .noRegistry{
+.sideContent .noRegistry {
     text-align: center;
 }
 
-.sideDiv:hover .sideDivContainer{
+.sideDiv:hover .sideDivContainer {
     border-bottom-color: var(--mediumgrey);
     width: 90%;
     padding-bottom: 10px;
 }
 
-.sideDiv div{
+.sideDiv div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,12 +84,12 @@
     position: relative;
 }
 
-.sideDiv .sideDivContainer{
+.sideDiv .sideDivContainer {
     border-bottom: 2px solid transparent;
     transition: all 0.5s ease;
 }
 
-.sideDiv .sideHeader{
+.sideDiv .sideHeader {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -94,7 +97,7 @@
     gap: 5px;
 }
 
-.sideDiv .sideContent{
+.sideDiv .sideContent {
     display: none;
     overflow: hidden;
     animation-duration: 1s;
@@ -106,7 +109,7 @@
 }
 
 
-.sideDiv .sideContent .divData{
+.sideDiv .sideContent .divData {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -117,11 +120,11 @@
     height: 100%;
 }
 
-.sideDiv .sideContent .paragraph{
+.sideDiv .sideContent .paragraph {
     white-space: nowrap;
 }
 
-.sideContent .divData img{
+.sideContent .divData img {
     border-radius: 50%;
     min-width: 35px;
     min-height: 35px;
@@ -131,35 +134,35 @@
     border: 2px solid var(--black);
 }
 
-.sideContent .divData p{
+.sideContent .divData p {
     width: 100%;
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
 }
 
-.sideContent .divData:hover p{
+.sideContent .divData:hover p {
     color: var(--whiteSmoke);
     border-bottom-color: var(--turquoise);
 }
-    
+
 
 .sideDiv div label,
 .sideDiv div .sideIcon,
 .sideDivContainer .sideFooter .sideIcon,
-.sideDivContainer .sideFooter .link{
+.sideDivContainer .sideFooter .link {
     color: var(--lightGrey);
     fill: var(--lightGrey);
-    font-size: 18px;
+    font-size: 16px;
     transition: all 0.3s ease;
 }
 
 .sideDiv div .sideHeader:hover label,
-.sideDiv div .sideHeader:hover .sideIcon{
+.sideDiv div .sideHeader:hover .sideIcon {
     color: var(--turquoise);
     fill: var(--turquoise);
 }
 
-.sideDiv div .sideHeader::after{
+.sideDiv div .sideHeader::after {
     content: "";
     position: absolute;
     left: 0;
@@ -169,28 +172,28 @@
     background-color: var(--turquoise);
     transition: all 0.3s ease;
 }
-  
-.sideDiv div .sideHeader:hover::after{
+
+.sideDiv div .sideHeader:hover::after {
     width: 100%;
 }
 
-.sideDivContainer .sideFooter .sideIcon{
+.sideDivContainer .sideFooter .sideIcon {
     overflow: hidden;
     cursor: pointer;
     display: none;
     animation-duration: 1s;
     animation-name: showText;
-    font-size: 25px;
+    font-size: 20px;
 }
 
-.sideDivContainer .sideFooter .formCommunity{
+.sideDivContainer .sideFooter .formCommunity {
     overflow: hidden;
     display: none;
     animation-duration: 1s;
     animation-name: showText;
 }
 
-.sideDivContainer .sideFooter .link{
+.sideDivContainer .sideFooter .link {
     overflow: hidden;
     cursor: pointer;
     display: none;
@@ -198,7 +201,7 @@
     border-bottom: 1px solid transparent;
     animation-duration: 1s;
     animation-name: showText;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .sideDivContainer .sideFooter .link:hover {
@@ -206,16 +209,16 @@
     color: var(--whiteSmoke);
 }
 
-.sideDivContainer .sideFooter .sideIcon:hover{
+.sideDivContainer .sideFooter .sideIcon:hover {
     fill: var(--turquoise);
 }
 
-.sideContent .divCommunities{
+.sideContent .divCommunities {
     width: 100%;
 }
 
 .sideContent .divFollowing button,
-.sideContent .divCommunities button{
+.sideContent .divCommunities button {
     border-right: 3px solid var(--grey);
     border-top: 3px solid var(--grey);
     background-color: transparent;
@@ -227,25 +230,190 @@
 }
 
 .sideContent .divFollowing .paragraph,
-.sideContent .divCommunities .paragraph{
+.sideContent .divCommunities .paragraph {
     color: var(--grey);
     font-size: 15px;
     font-weight: bold;
 }
 
 .sideContent .divFollowing .buttonActivated,
-.sideContent .divCommunities .buttonActivated{
+.sideContent .divCommunities .buttonActivated {
     rotate: 135deg;
     border-right-color: var(--turquoise);
     border-top-color: var(--turquoise);
 }
 
-.noRegistry{
+.noRegistry {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--grey);
     cursor: default;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .sideDiv {
+        width: 60px;
+        max-width: 100px;
+    }
+
+    .sideDiv:hover {
+        width: 100px;
+        gap: 2rem;
+    }
+
+    .sideDiv div label,
+    .sideDiv div .sideIcon,
+    .sideDivContainer .sideFooter .sideIcon,
+    .sideDivContainer .sideFooter .link {
+        font-size: 8px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sideDiv div .sideIcon{
+        font-size: 12px;
+    }
+
+    .sideDiv:hover div .sideIcon{
+        display: none;
+    }
+
+    .sideDivContainer .sideFooter .sideIcon {
+        font-size: 10px;
+    }
+
+    .sideDivContainer .sideFooter .link {
+        font-size: 8px;
+    }
+
+    .sideContent .divFollowing .paragraph,
+    .sideContent .divCommunities .paragraph {
+        font-size: 8px;
+        font-weight: 100;
+    }
+
+    .noRegistry {
+        font-size: 6px;
+    }
+
+    .sideContent .divData img {
+        border-radius: 50%;
+        min-width: 15px;
+        min-height: 15px;
+        max-width: 15px;
+        max-height: 15px;
+    }
+    
+    .sideContent .divData p {
+        font-size: 8px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+    .sideDiv {
+        max-width: 160px;
+    }
+
+    .sideDiv:hover {
+        width: 160px;
+    }
+
+    .sideDiv div label,
+    .sideDiv div .sideIcon,
+    .sideDivContainer .sideFooter .sideIcon,
+    .sideDivContainer .sideFooter .link {
+        font-size: 12px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sideDiv div .sideIcon{
+        font-size: 10px;
+    }
+
+    .sideDivContainer .sideFooter .sideIcon {
+        font-size: 15px;
+    }
+
+    .sideDivContainer .sideFooter .link {
+        font-size: 12px;
+    }
+
+    .sideContent .divFollowing .paragraph,
+    .sideContent .divCommunities .paragraph {
+        font-size: 12px;
+        font-weight: 100;
+    }
+
+    .noRegistry {
+        font-size: 10px;
+    }
+
+    .sideContent .divData img {
+        border-radius: 50%;
+        min-width: 28px;
+        min-height: 28px;
+        max-width: 28px;
+        max-height: 28px;
+    }
+    
+    .sideContent .divData p {
+        font-size: 10px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sideDiv {
+        max-width: 180px;
+    }
+
+    .sideDiv:hover {
+        width: 180px;
+    }
+
+    .sideDiv div label,
+    .sideDiv div .sideIcon,
+    .sideDivContainer .sideFooter .sideIcon,
+    .sideDivContainer .sideFooter .link {
+        font-size: 13px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sideDivContainer .sideFooter .sideIcon {
+        font-size: 18px;
+    }
+
+    .sideDivContainer .sideFooter .link {
+        font-size: 13px;
+    }
+
+    .sideContent .divFollowing .paragraph,
+    .sideContent .divCommunities .paragraph {
+        font-size: 13px;
+        font-weight: 100;
+    }
+
+    .noRegistry {
+        font-size: 12px;
+    }
+
+    .sideContent .divData img {
+        border-radius: 50%;
+        min-width: 28px;
+        min-height: 28px;
+        max-width: 28px;
+        max-height: 28px;
+    }
+    
+    .sideContent .divData p {
+        font-size: 12px;
+        text-align: center;
+    }
 }
