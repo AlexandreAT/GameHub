@@ -256,7 +256,7 @@
 /* Mobile */
 @media (max-width: 480px) {
     .sideDiv {
-        width: 60px;
+        width: 40px;
         max-width: 100px;
     }
 

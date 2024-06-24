@@ -365,3 +365,264 @@ p:hover .spanPublic,
     font-size: 14px;
     color: var(--grey);
 }
+
+/* Mobile */
+@media (max-width: 480px) {
+
+    .footerDiv .paragraph,
+    .anotherUserInfoFooter p {
+        font-size: 12px;
+        font-weight: 100;
+        gap: 0px;
+    }
+
+    .background .divEditBackground {
+        position: absolute;
+        width: 100%;
+        top: 0px;
+        right: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-radius: 10px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .divEditBackground label{
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .divUser .divUserInfo button,
+    .btnCancelar {
+        padding: 2px 8px;
+        font-size: 15px;
+        font-weight: 100;
+        border: 2px solid var(--lightGrey);
+        border-radius: 50px;
+    }
+
+    .divUser .divUserInfo .btnProfile{
+        padding: 2px 5px;
+        font-size: 13px;
+    }
+
+    .imgBackground {
+        width: 100%;
+        min-height: 150px;
+        max-height: 150px;
+    }
+
+    .divUser {
+        width: 90%;
+        margin-top: 45px;
+    }
+
+    .userImg {
+        min-width: 100%;
+    }
+
+    .userInfoContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .imgController {
+        gap: 0px;
+        top: -80px;
+    }
+
+    .imgController .img {
+        border-radius: 50%;
+        min-width: 120px;
+        min-height: 120px;
+        max-width: 120px;
+        max-height: 120px;
+        margin-bottom: 0rem;
+        border: 4px solid var(--deepgray);
+    }
+
+    .footerDiv {
+        margin-top: 5px;
+        gap: 10px;
+    }
+
+    .userInfoContent {}
+
+    .anotherUserData {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -85px 0px 0px;
+    }
+
+    .anotherUserDataHeader h2 {
+        font-size: 25px;
+    }
+
+    .anotherUserDataContent {
+        margin-top: 10px;
+        gap: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .anotherUserDataContent div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .anotherUserInfoFooter {
+        margin-top: 0px;
+    }
+
+    .divBiography {
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .anotherUserDataContent p {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .anotherUserDataContent input {
+        width: 100%;
+        text-align: center;
+        background-color: transparent;
+        font-size: 16px;
+    }
+
+    .spanData {
+        font-size: 15px;
+    }
+    
+    .ellipsis {
+        font-size: 12px;
+    }
+    
+    .noRegistry {
+        font-size: 13px;
+        color: var(--grey);
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+    .divUser {
+        width: 60%;
+    }
+
+    .userImg {
+        min-width: 100%;
+    }
+
+    .userInfoContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .imgController {
+        gap: 0px;
+        top: -120px;
+    }
+
+    .imgController .img {
+        border-radius: 50%;
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 200px;
+        max-height: 200px;
+        margin-bottom: 0rem;
+    }
+
+    .footerDiv {
+        margin-top: 25px;
+        gap: 10px;
+    }
+
+    .userInfoContent {}
+
+    .anotherUserData {
+        margin: -10px 0px 0px;
+    }
+
+    .anotherUserDataContent {
+        gap: 1rem;
+    }
+
+    .anotherUserDataContent div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .anotherUserInfoFooter {
+        margin-top: 10px;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .divUser {
+        width: 60%;
+    }
+
+    .userImg {
+        min-width: 100%;
+    }
+
+    .userInfoContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .imgController {
+        gap: 0px;
+        top: -120px;
+    }
+
+    .imgController .img {
+        border-radius: 50%;
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 200px;
+        max-height: 200px;
+        margin-bottom: 0rem;
+    }
+
+    .footerDiv {
+        margin-top: 15px;
+        gap: 10px;
+    }
+
+    .userInfoContent {}
+
+    .anotherUserData {
+        margin: -10px 0px 0px;
+    }
+
+    .anotherUserDataContent {
+        gap: 1rem;
+    }
+
+    .anotherUserDataContent div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .anotherUserInfoFooter {
+        margin-top: 10px;
+        margin-bottom: 1rem;
+    }
+}
