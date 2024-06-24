@@ -154,3 +154,36 @@ h1, .linkLogo, .logoDetail{
 .iconOpinion{
   fill: var(--grey);
 }
+
+/* Mobile */
+@media (max-width: 480px) {
+  .h1, .linkLogo, .logoDetail{ 
+    font-size: 15px;
+    font-weight: 100;
+    letter-spacing: 2px;
+  }
+  .linkLogo, .logoDetail{ 
+    text-align: center;
+  }
+
+  .btnTransparent{
+    background-color: transparent;
+    padding: 5px 12px 5px 12px;
+    font-size: 18px;
+    border-radius: 50px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  .h1, .linkLogo, .logoDetail{ 
+    font-size: 20px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+  h1, .linkLogo, .logoDetail{ 
+    font-size: 20px;
+  }
+}

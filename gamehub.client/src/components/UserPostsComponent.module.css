@@ -375,6 +375,19 @@
 
 /* Mobile */
 @media (max-width: 480px) {
+    .containerPosts {
+        width: 75%;
+    }
+
+    .communityLink{
+        width: 100%;
+    }
+
+    .postHeader,
+    .headerInfo {
+        gap: 2px;
+    }
+
     .pagination{
         justify-content: space-around;
         width: 100%;
@@ -424,9 +437,13 @@
         min-height: 30px;
     }
     
-    .postHeader p, .author, .date{
+    .postHeader p, .author{
         font-size: 12px;
         color: var(--lightGrey);
+    }
+
+    .date, .headerInfo span{
+        display: none;
     }
     
     .postHeader .author{

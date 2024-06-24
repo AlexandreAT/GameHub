@@ -108,6 +108,7 @@
     border-radius: 100%;
     object-fit: cover;
     border: 2px solid var(--black);
+    background-color:var(--black);
     z-index: 1;
 }
 
@@ -130,6 +131,10 @@
     .content span,
     .mainContent h2{
         text-align: center;
+    }
+
+    .divCenter{
+        margin-top: 45px;
     }
 
     .content {

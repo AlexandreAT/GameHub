@@ -143,6 +143,7 @@
     border-radius: 100%;
     object-fit: cover;
     border: 2px solid var(--black);
+    background-color: var(--black);
     z-index: 1;
 }
 
@@ -164,4 +165,124 @@
     font-size: 14px;
     color: var(--grey);
     bottom: 0;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .content h3,
+    .content span,
+    .mainContent h2{
+        text-align: center;
+    }
+
+    .content h3{
+        font-size: 20px;
+    }
+
+    .divCenter{
+        margin-top: 45px;
+    }
+
+    .content {
+        width: 50%;
+    }
+
+    .userData {
+        width: 80px;
+        height: 130px;
+        gap: 5px;
+    }
+
+    .userData .userBackground {
+        min-height: 45px;
+        max-height: 45px;
+    }
+    
+    .userData .userImg {
+        min-width: 55px;
+        min-height: 55px;
+        max-width: 55px;
+        max-height: 55px;
+    }
+
+    .userData p {
+        font-size: 15px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+    .content h3,
+    .content span,
+    .mainContent h2{
+        text-align: center;
+    }
+
+    .content {
+        width: 50%;
+    }
+
+    .userData {
+        width: 130px;
+        height: 150px;
+        gap: 5px;
+    }
+
+    .userData .userBackground {
+        min-height: 60px;
+        max-height: 60px;
+    }
+    
+    .userData .userImg {
+        min-width: 65px;
+        min-height: 65px;
+        max-width: 65px;
+        max-height: 65px;
+    }
+
+    .userData p {
+        font-size: 15px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .content {
+        width: 60%;
+    }
+
+    .content h3,
+    .content span,
+    .mainContent h2{
+        text-align: center;
+    }
+
+    .userData {
+        width: 130px;
+        height: 150px;
+        gap: 5px;
+    }
+
+    .userData .userBackground {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        min-height: 60px;
+        max-height: 60px;
+    }
+    
+    .userData .userImg {
+        min-width: 80px;
+        min-height: 80px;
+        max-width: 80px;
+        max-height: 80px;
+        border-radius: 100%;
+        object-fit: cover;
+        border: 2px solid var(--black);
+        z-index: 1;
+    }
+    
+    .userData p {
+        font-size: 15px;
+    }
 }
