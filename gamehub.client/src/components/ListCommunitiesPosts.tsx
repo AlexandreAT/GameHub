@@ -432,7 +432,7 @@ const ListCommunitiesPosts = ({ user }: Props) => {
                     </div>
                 </div>
             ))) : (
-                <LoadingAnimation opt='post' />
+                <LoadingAnimation opt='medium' />
             )}
             <div className={classes.pagination}>
                 <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
