@@ -375,8 +375,9 @@
 
 /* Mobile */
 @media (max-width: 480px) {
+
     .containerPosts {
-        width: 75%;
+        width: 90%;
     }
 
     .communityLink{

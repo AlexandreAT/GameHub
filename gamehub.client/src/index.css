@@ -168,8 +168,8 @@ h1, .linkLogo, .logoDetail{
 
   .btnTransparent{
     background-color: transparent;
-    padding: 5px 12px 5px 12px;
-    font-size: 18px;
+    padding: 2px 8px 2px 8px;
+    font-size: 14px;
     border-radius: 50px;
   }
 }

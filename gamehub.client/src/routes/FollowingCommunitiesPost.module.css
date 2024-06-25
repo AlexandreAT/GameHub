@@ -22,3 +22,17 @@
     gap: 1rem;
     width: 70%;
 }
+
+@media (max-width: 480px) {
+    .divCenter{
+        margin-top: 45px;
+    }
+    .divContent{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        width: 75%;
+    }
+}

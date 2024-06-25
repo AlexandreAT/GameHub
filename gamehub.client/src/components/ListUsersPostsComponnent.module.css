@@ -384,6 +384,13 @@
 
 /* Mobile */
 @media (max-width: 480px) {
+    .containerPosts .pageTitle{
+        font-weight: 100;
+        font-size: 20px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
     .containerPosts {
         width: 100%;
     }

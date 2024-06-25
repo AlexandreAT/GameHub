@@ -183,7 +183,12 @@
     }
 
     .content {
-        width: 50%;
+        width: 70%;
+    }
+
+    .searchBar{
+        width: 65%;
+        height: 30px;
     }
 
     .communityData {
