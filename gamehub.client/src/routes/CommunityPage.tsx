@@ -194,7 +194,7 @@ const CommunityPage = () => {
                                     <img src={community.iconeImageSrc} alt={community.name} />
                                     <div className={classes.divInfoController}>
                                         <div className={`${classes.infoDiv} ${classes.divName}`}><h2>{community.name}</h2></div>
-                                        <div className={classes.infoDiv}>
+                                        <div className={`${classes.infoDiv} ${classes.infoDivFooter}`}>
                                             <div className={`${classes.paragraph} ${classes.infoCreator}`}>
                                                 {community.creator !== user.id ? (
                                                     <Link to={`/anotherProfile/${community.creator}`} className={`${classes.infoLink} ${classes.creatorLink}`}>Criador: {creator?.nickName} <img src={creator?.userImageSrc} className={classes.imgCreator} alt={creator?.nickName} /></Link>

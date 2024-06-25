@@ -136,3 +136,34 @@
     font-weight: normal;
     transform: none;
 }
+
+@media (max-width: 480px) {
+    .formPost{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 2px solid var(--turquoise);
+        border-radius: 10px;
+        padding: 20px;
+        background-color: var(--clearblack);
+        gap: 1rem;
+        min-width: 40%;
+        max-width: 75%;
+        text-align: center;
+    }
+    .formPost div label{
+        font-size: 15px;
+        color: var(--turquoise);
+    }
+    .formPost div input, .formPost textarea{
+        font-size: 14px;
+        width: 100%;
+    }
+    .button{
+        background-color: transparent;
+        padding: 5px;
+        font-size: 15px;
+        border: 2px solid var(--turquoise);
+        width: 35%;
+    }
+}
