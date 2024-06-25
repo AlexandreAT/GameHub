@@ -209,7 +209,7 @@ const ListFollowersOrFollowing = () => {
                                         mapUser.userId === user.id ? (
                                             <Link to={"/profile"} key={mapUser.userId} className={classes.userData}>
                                                 {mapUser.backgroundImage && (
-                                                    <img src={user.backgroundImage} alt={mapUser.nickName} className={classes.userBackground}/>
+                                                    <img src={mapUser.backgroundImage} alt={mapUser.nickName} className={classes.userBackground}/>
                                                 )}
                                                 <img src={mapUser.userImageSrc} className={classes.userImg}/>
                                                 <p>{mapUser.nickName}</p>
@@ -218,7 +218,7 @@ const ListFollowersOrFollowing = () => {
                                         ) : (
                                             <Link to={`/anotherProfile/${mapUser.userId}`} key={mapUser.userId} className={classes.userData}>
                                                 {mapUser.backgroundImage && (
-                                                    <img src={user.backgroundImage} alt={mapUser.nickName} className={classes.userBackground}/>
+                                                    <img src={mapUser.backgroundImage} alt={mapUser.nickName} className={classes.userBackground}/>
                                                 )}
                                                 <img src={mapUser.userImageSrc} className={classes.userImg}/>
                                                 <p>{mapUser.nickName}</p>
