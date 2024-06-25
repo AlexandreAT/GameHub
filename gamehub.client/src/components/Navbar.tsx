@@ -46,7 +46,6 @@ function Navbar({ user }: Props) {
 
   const handleOpt = () => {
     setShowOpt(!showOpt);
-    console.log(showOpt);
   }
 
   const getUsers = async (url: string, query: string) => {

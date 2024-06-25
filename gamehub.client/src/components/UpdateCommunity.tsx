@@ -235,7 +235,7 @@ function UpdateCommunity({ user, community }: Props) {
                             <div className={classes.divInfoController}>
                                 <input type='text' className={`${classes.infoDiv} ${classes.divName}`} onChange={(e) => setName(e.target.value)} value={name} />
                                 <p>Clique no nome para editar</p>
-                                <div className={classes.infoDiv}>
+                                <div className={`${classes.infoDiv} ${classes.infoDivFooter}`}>
                                     <div className={`${classes.paragraph} ${classes.infoCreator}`}>
                                     </div>
                                     <div className={classes.paragraph}>

@@ -270,3 +270,211 @@
 .btnBackground:hover{
     border-color: var(--turquoise);
 }
+
+/* Mobile */
+@media (max-width: 480px) {
+    .divCenter{
+        margin-top: 0px;
+    }
+
+    .divContent{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        width: 75%;
+    }
+
+    .infoHeader .headerInfo{
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        bottom: -37px;
+        left: 15px;
+        width: 95%;
+    }
+
+    .infoHeader .headerInfo .divBtnController{
+        right: 25px;
+        bottom: 200px;
+    }
+    
+    .infoHeader .headerInfo .divBtnController button{
+        font-size: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .infoHeader .headerInfo img{
+        border-radius: 50%;
+        min-width: 85px;
+        min-height: 85px;
+        max-width: 85px;
+        max-height: 85px;
+        border: 5px solid var(--deepgray);
+    }
+
+    .headerInfo .divInfoController{
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        gap: 5px;
+    }
+
+    .headerInfo .divInfoController .infoDiv{
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+    }
+
+    .headerInfo .divInfoController .infoDivFooter{
+        position: absolute;
+        bottom: -38px;
+        left: -95px;
+        width: 100%;
+        z-index: 1;
+        display: none;
+    }
+
+    .divInfoController p{
+        position: absolute;
+        top: -18px;
+        color: var(--lightGrey);
+        font-size: 12px;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .headerInfo .divInfoController .divName{
+        justify-content: left;
+        width: 99%;
+        font-size: 18px;
+        padding: 0px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .headerInfo .divInfoController .divName h2{
+        font-size: 18px;
+        padding: 5px;
+        text-shadow: 0px 0px 10px var(--black);
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+    }
+    
+    .headerInfo .divInfoController .paragraph{
+        bottom: 100px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2px 5px;
+        width: 200px;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink,
+    .headerInfo .divInfoController .paragraph .spanData{
+        font-size: 10px;
+    }
+
+    .divEditBackground{
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        gap: 2px;
+    }
+
+    .btnIcone{
+        top: 5px;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin: 5rem 0 0 10px;
+        text-align: center;
+    }
+    
+    .btnIcone button{
+        margin: 10px 0;
+        font-size: 16px;
+        max-width: 200px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1182px) {
+    .infoHeader .headerInfo .divBtnController{
+        right: 35px;
+        bottom: 230px;
+    }
+    
+    .infoHeader .headerInfo .divBtnController button{
+        font-size: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .headerInfo .divInfoController{
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+    }
+
+    .headerInfo .divInfoController .infoDiv{
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .headerInfo .divInfoController .divName{
+        justify-content: left;
+    }
+    
+    .headerInfo .divInfoController .paragraph{
+        align-items: center;
+        justify-content: center;
+        max-width: 135px;
+        text-align: center;
+        padding: 2px;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink,
+    .headerInfo .divInfoController .paragraph .spanData{
+        font-size: 15px;
+    }
+
+    .headerInfo .divInfoController .infoCreator .infoLink:hover .imgCreator{
+        display: block;
+        animation-duration: 1s;
+        animation-name: showText;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink .imgCreator{
+        position: absolute;
+        right: -28px;
+        border-radius: 50%;
+        min-width: 25px;
+        min-height: 25px;
+        max-width: 25px;
+        max-height: 25px;
+        border: 1px solid var(--black);
+    }
+}
+
+/* Desktop */
+@media (min-width: 1182px) and (max-width: 1435px) {
+    .infoHeader .headerInfo .divBtnController{
+        right: 35px;
+        bottom: 230px;
+    }
+    
+    .infoHeader .headerInfo .divBtnController button{
+        font-size: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}

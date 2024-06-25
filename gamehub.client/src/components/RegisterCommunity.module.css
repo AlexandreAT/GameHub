@@ -29,3 +29,32 @@
     font-size: 15px;
     color: var(--grey);
 }
+
+@media (max-width: 480px) {
+    .formControl input{
+        border-radius: 10px;
+        border: 1px solid var(--grey);
+        padding: 2px;
+        width: 90px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 10px;
+    }
+    .formControl input::placeholder{
+        font-size: 6px;
+        margin: 0;
+    }
+    .formControl input:focus{
+        border: 1px solid var(--turquoise);
+    }
+    .formControl button{
+        border: 1px solid var(--grey);
+        font-size: 10px;
+    }
+    .formControl{
+        width: 100%;
+    }
+}

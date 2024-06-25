@@ -90,7 +90,7 @@
 }
 
 .headerInfo .divInfoController{
-    width: 600px;
+    max-width: 600px;
     display: flex;
     flex-direction: column;
     padding-left: 10px;
@@ -101,7 +101,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     gap: 3rem;
 }
 
@@ -128,6 +128,7 @@
     color: var(--lightGrey);
     transition: all 0.3s ease;
 }
+
 .headerInfo .divInfoController .paragraph .infoLink{
     text-align: center;
 }
@@ -386,4 +387,200 @@
     width: 100%;
     font-size: 14px;
     color: var(--grey);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .divCenter{
+        margin-top: 45px;
+    }
+
+    .divContent{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        width: 75%;
+    }
+
+    .infoHeader .headerInfo{
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        bottom: -37px;
+        left: 15px;
+        width: 95%;
+    }
+
+    .infoHeader .headerInfo .divBtnController{
+        right: 25px;
+        bottom: 200px;
+    }
+    
+    .infoHeader .headerInfo .divBtnController button{
+        font-size: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .infoHeader .headerInfo img{
+        border-radius: 50%;
+        min-width: 85px;
+        min-height: 85px;
+        max-width: 85px;
+        max-height: 85px;
+        border: 5px solid var(--deepgray);
+    }
+
+    .headerInfo .divInfoController{
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        gap: 5px;
+    }
+
+    .headerInfo .divInfoController .infoDiv{
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .headerInfo .divInfoController .infoDivFooter{
+        position: absolute;
+        bottom: -38px;
+        left: -15px;
+        width: 110%;
+        z-index: 1;
+    }
+    
+    .headerInfo .divInfoController .divName{
+        justify-content: left;
+        height: 50%;
+    }
+
+    .headerInfo .divInfoController .divName h2{
+        font-size: 18px;
+        padding: 5px;        
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+    }
+    
+    .headerInfo .divInfoController .paragraph{
+        bottom: 100px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2px 5px;
+        max-width: 110px;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink,
+    .headerInfo .divInfoController .paragraph .spanData{
+        font-size: 10px;
+    }
+
+    .headerInfo .divInfoController .infoCreator .infoLink:hover .imgCreator{
+        display: block;
+        animation-duration: 1s;
+        animation-name: showText;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink .imgCreator{
+        position: absolute;
+        right: -28px;
+        border-radius: 50%;
+        min-width: 25px;
+        min-height: 25px;
+        max-width: 25px;
+        max-height: 25px;
+        border: 1px solid var(--black);
+    }
+
+    .divMakePost{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+    }
+    
+    .divMakePost p{
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1182px) {
+    .infoHeader .headerInfo .divBtnController{
+        right: 35px;
+        bottom: 230px;
+    }
+    
+    .infoHeader .headerInfo .divBtnController button{
+        font-size: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .headerInfo .divInfoController{
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+    }
+
+    .headerInfo .divInfoController .infoDiv{
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .headerInfo .divInfoController .divName{
+        justify-content: left;
+    }
+    
+    .headerInfo .divInfoController .paragraph{
+        align-items: center;
+        justify-content: center;
+        max-width: 135px;
+        text-align: center;
+        padding: 2px;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink,
+    .headerInfo .divInfoController .paragraph .spanData{
+        font-size: 15px;
+    }
+
+    .headerInfo .divInfoController .infoCreator .infoLink:hover .imgCreator{
+        display: block;
+        animation-duration: 1s;
+        animation-name: showText;
+    }
+    
+    .headerInfo .divInfoController .paragraph .infoLink .imgCreator{
+        position: absolute;
+        right: -28px;
+        border-radius: 50%;
+        min-width: 25px;
+        min-height: 25px;
+        max-width: 25px;
+        max-height: 25px;
+        border: 1px solid var(--black);
+    }
+}
+
+/* Desktop */
+@media (min-width: 1182px) and (max-width: 1435px) {
+    .infoHeader .headerInfo .divBtnController{
+        right: 35px;
+        bottom: 230px;
+    }
+    
+    .infoHeader .headerInfo .divBtnController button{
+        font-size: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
 }
