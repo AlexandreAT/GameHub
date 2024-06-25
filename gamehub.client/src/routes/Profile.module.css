@@ -460,6 +460,17 @@ p:hover .spanPublic,
 
 /* Mobile */
 @media (max-width: 480px) {
+    p:hover .spanPublic,
+    .paragraph:hover .spanPublic {
+        display: none;
+    }
+
+    .divEditBackground label,
+    .divEditBackground span,
+    .btnIcone label,
+    .btnIcone span {
+        font-size: 14px;
+    }
 
     .footerDiv .paragraph,
     .userInfoFooter p {
@@ -499,7 +510,8 @@ p:hover .spanPublic,
 
     .divUser .divUserInfo .btnProfile{
         padding: 2px 5px;
-        font-size: 13px;
+        font-size: 12px;
+        z-index: 2;
     }
 
     .imgBackground {
@@ -536,18 +548,26 @@ p:hover .spanPublic,
         margin-bottom: 0rem;
     }
 
+    .imgController label,
+    .imgController .spanImg {
+        font-size: 12px;
+    }
+
     .footerDiv {
         margin-top: 25px;
         gap: 10px;
     }
 
-    .userInfoContent {}
-
     .userData {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: -155px 0px 0px;
+        margin: -160px 0px 0px;
+    }
+
+    .userDataHeader{
+        flex-direction: column;
+        gap: 5px;
     }
 
     .userDataHeader h2 {
@@ -708,8 +728,30 @@ p:hover .spanPublic,
         justify-content: center;
         align-items: center;
     }
-
+    
     .userInfoFooter {
         margin-top: 88px;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1155px) {
+    .userDataContent p {
+        width: 100%;
+        font-size: 18px;
+        color: var(--whitesmoke);
+        font-weight: bold;
+        text-shadow: 0.5px 0.5px 2px var(--turquoise);
+    }
+    
+    .userDataContent input {
+        background-color: transparent;
+        font-size: 18px;
+    }
+    
+    .spanData {
+        text-shadow: none;
+        font-size: 16px;
+        font-weight: normal;
+        color: var(--lightGrey);
     }
 }

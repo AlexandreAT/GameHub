@@ -450,8 +450,6 @@ p:hover .spanPublic,
         gap: 10px;
     }
 
-    .userInfoContent {}
-
     .anotherUserData {
         display: flex;
         align-items: center;
@@ -460,7 +458,16 @@ p:hover .spanPublic,
     }
 
     .anotherUserDataHeader h2 {
-        font-size: 25px;
+        font-size: 22px;
+    }
+
+    .anotherUserData .anotherUserDataHeader button{
+        font-size: 12px;
+        padding: 2px 5px;
+        z-index: 2;
+    }
+
+    .anotherUserData .anotherUserDataHeader button span{
     }
 
     .anotherUserDataContent {
@@ -547,14 +554,17 @@ p:hover .spanPublic,
         gap: 10px;
     }
 
-    .userInfoContent {}
-
     .anotherUserData {
         margin: -10px 0px 0px;
     }
 
     .anotherUserDataContent {
         gap: 1rem;
+    }
+
+    .anotherUserData .anotherUserDataHeader button{
+        padding: 5px 8px;
+        z-index: 2;
     }
 
     .anotherUserDataContent div {
@@ -603,8 +613,6 @@ p:hover .spanPublic,
         margin-top: 15px;
         gap: 10px;
     }
-
-    .userInfoContent {}
 
     .anotherUserData {
         margin: -10px 0px 0px;

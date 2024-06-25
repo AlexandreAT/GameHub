@@ -304,7 +304,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
                     <span onClick={() => setOpt("relevant")} className={opt === "relevant" ? classes.optSelected : classes.opt}>Mais relevante</span>
                 </div>
             )}
-            <h3 className={classes.pageTitle}>Posts dos usuários que você segue</h3>
+            <h3 className={classes.pageTitle}>Posts dos usuários que voce segue</h3>
             <div className={classes.pagination}>
                 <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
                 <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
