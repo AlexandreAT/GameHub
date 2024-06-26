@@ -172,6 +172,12 @@ h1, .linkLogo, .logoDetail{
     font-size: 14px;
     border-radius: 50px;
   }
+
+  .btn{
+    padding: 5px 8px;
+    font-size: 16px;
+    width: 80%;
+  }
 }
 
 /* Tablet */
