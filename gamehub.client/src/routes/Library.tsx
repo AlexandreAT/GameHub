@@ -71,16 +71,10 @@ const Library = () => {
     const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
         setSearchQuery(query);
-
-        const accessToken = await authenticate();
-        setIgdbToken(accessToken);
-
-        const url = '/Igdb/search';
-        const body = `fields *; search "${query}";`;
-
+    
         try {
-            const response = await axios.post(url, body);
-            const data = await response.data();
+            const response = await axios.post('/Igdb/search', query);
+            const data = response.data;
             setSearchResults(data);
         } catch (error) {
             console.error(error);
