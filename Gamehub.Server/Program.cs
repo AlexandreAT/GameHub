@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-
 builder.Services.Configure<UserDatabaseSetting>
     (builder.Configuration.GetSection("DevNetStoreDatabase"));
 
@@ -26,6 +25,8 @@ builder.Services.Configure<CommunityDatabaseSettings>
     (builder.Configuration.GetSection("DevNetStoreDatabase"));
 
 builder.Services.AddSingleton<CommunityServices>();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {

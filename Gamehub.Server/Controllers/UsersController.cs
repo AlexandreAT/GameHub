@@ -163,6 +163,7 @@ namespace Gamehub.Server.Controllers
                 City = userFound.City,
                 State = userFound.State,
                 BackgroundImage = userFound.BackgroundImage,
+                GamesLibrary = userFound.GamesLibrary
             };
 
             // Retorna o usuário encontrado
@@ -284,7 +285,8 @@ namespace Gamehub.Server.Controllers
                 State = user.State,
                 UserCommunities = user.UserCommunities,
                 UserCreatedCommunities = user.UserCreatedCommunities,
-                BackgroundImage = user.BackgroundImage
+                BackgroundImage = user.BackgroundImage,
+                GamesLibrary = user.GamesLibrary
             };
         }
 

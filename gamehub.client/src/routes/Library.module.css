@@ -1,0 +1,30 @@
+.divMain{
+    display: flex;
+    flex-direction: column;
+}
+
+.divCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-top: 95px;
+    gap: 2rem;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .divCenter{
+        margin-top: 45px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+}

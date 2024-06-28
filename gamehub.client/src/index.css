@@ -46,7 +46,7 @@ a{
 
 h1, .linkLogo, .logoDetail{ 
   font-family: 'DO Futuristic', sans-serif;
-  font-weight: 600;
+  font-weight: 100;
   font-size: 2rem;
   letter-spacing: 3px;
   text-shadow: 1px 1px 5px var(--turquoise);
