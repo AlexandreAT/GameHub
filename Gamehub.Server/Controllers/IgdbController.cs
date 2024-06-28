@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Gamehub.Server.Models;
+using Microsoft.AspNetCore.Cors;
+using IGDB;
+using IGDB.Models;
 
 namespace Gamehub.Server.Controllers
 {
@@ -19,31 +21,20 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> SearchGames([FromBody] string body)
+        [EnableCors("CorsPolicy")]
+        public async Task<IActionResult> SearchGames([FromBody] string query)
         {
-            var accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-            Console.WriteLine($"Token de acesso: {accessToken}");
-
             var clientId = "***REMOVED***";
-            var url = "https://api.igdb.com/v4/games";
+            var clientSecret = "***REMOVED***";
 
-            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            var igdbClient = new IGDBClient(clientId, clientSecret);
+
+            var searchQuery = $"fields *; search \"{query}\";";
+            var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
+
+            if (games != null)
             {
-                Headers =
-                {
-                    { "Client-ID", clientId },
-                    { "Authorization", $"Bearer {accessToken}" },
-                    { "Accept", "application/json" }
-                },
-                Content = new StringContent(body, Encoding.UTF8, "application/json")
-            };
-
-            var response = await _httpClient.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadFromJsonAsync<Game[]>();
-                return Ok(data);
+                return Ok(games);
             }
             else
             {
