@@ -70,5 +70,7 @@ namespace Gamehub.Server.Models
         [BsonElement("Background")]
         public string? BackgroundImage {  get; set; } = null;
 
+        [BsonElement("Biblioteca")]
+        public List<string>? GamesLibrary { get; set; } = null;
     }
 }

@@ -8,6 +8,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { TiGroup } from "react-icons/ti";
 import { FaRunning } from "react-icons/fa";
 import { GoPlusCircle } from "react-icons/go";
+import { IoLibrarySharp } from "react-icons/io5";
 import RegisterCommunity from './RegisterCommunity';
 import LoadingAnimation from './LoadingAnimation';
 
@@ -206,6 +207,12 @@ const Sidebar = ({ user }: { user: User | null }) => {
                             <Link to={"/usersPosts"} className={classes.link}>Posts dos usuários</Link>
                         </div>
                     )}
+                </div>
+                <div className={classes.sideDivContainer}>
+                    <div className={classes.sideHeader}>
+                        <IoLibrarySharp className={classes.sideIcon} />
+                        <Link to={`/library/${user.id}`}><label htmlFor="library">Acessar biblioteca</label></Link>
+                    </div>
                 </div>
             </div>
         </>

@@ -23,6 +23,7 @@ import ListFollowingCommunity from './routes/ListFollowingCommunity.tsx'
 import FollowingCommunitiesPost from './routes/FollowingCommunitiesPost.tsx'
 import IsolatedPost from './routes/IsolatedPost.tsx'
 import SearchList from './routes/SearchList.tsx'
+import Library from './routes/Library.tsx'
 
 
 const router = createBrowserRouter([
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: "searchPage/:search",
         element: <SearchList />
+      },
+      {
+        path: "library/:id",
+        element: <Library />
       },
       {
         path: "*",
