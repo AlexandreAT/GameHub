@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { axios } from '../axios-config';
-import { authenticate, setIgdbToken, clientId } from '../utils/igdb-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import Cookies from 'js-cookie';
@@ -10,6 +9,8 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import classes from './Library.module.css';
 import LoadingAnimation from '../components/LoadingAnimation';
+
+import { GoPlusCircle } from "react-icons/go";
 
 interface User {
     id: string;
@@ -39,8 +40,6 @@ const Library = () => {
     const { id } = useParams();
     const [user, setUser] = useState<User | null>(null);
     const [simplifiedUsers, setSimplifiedUsers] = useState<SimplifiedUser[] | undefined>(undefined);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<Game[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -68,19 +67,6 @@ const Library = () => {
         return <LoadingAnimation opt='user' />
     }
 
-    const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-    
-        try {
-            const response = await axios.post('/Igdb/search', query);
-            const data = response.data;
-            setSearchResults(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     return (
         <div className={classes.divMain}>
             <div className='navbar'>{<Navbar user={user} />}</div>
@@ -88,20 +74,10 @@ const Library = () => {
             <div className={classes.divCenter}>
                 {<Sidebar user={user} />}
 
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Buscar jogos"
-                />
-
-                {searchResults.length > 0 && (
-                    <ul>
-                        {searchResults.map((game) => (
-                            <li key={game.id}>{game.name}</li>
-                        ))}
-                    </ul>
-                )}
+                <Link to={`/gamesPage`} className={classes.linkAdd}>
+                    <GoPlusCircle className={classes.linkIcon}/>
+                    <p>Adicionar jogo</p>
+                </Link>
 
             </div>
         </div>

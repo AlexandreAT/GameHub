@@ -24,6 +24,7 @@ import FollowingCommunitiesPost from './routes/FollowingCommunitiesPost.tsx'
 import IsolatedPost from './routes/IsolatedPost.tsx'
 import SearchList from './routes/SearchList.tsx'
 import Library from './routes/Library.tsx'
+import GamesPage from './routes/GamesPage.tsx'
 
 
 const router = createBrowserRouter([
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
       {
         path: "library/:id",
         element: <Library />
+      },
+      {
+        path: "gamesPage",
+        element: <GamesPage />
       },
       {
         path: "*",

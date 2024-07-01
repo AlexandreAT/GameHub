@@ -14,10 +14,59 @@
     gap: 2rem;
 }
 
+.linkAdd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.linkAdd .linkIcon{
+    font-size: 40px;
+    fill: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.linkAdd:hover .linkIcon{
+    fill: var(--turquoise);
+    transform: scale(1.1);
+}
+
+.linkAdd:hover p{
+    opacity: 1;
+}
+
+.linkAdd p{
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.linkAdd p{
+    color: var(--grey);
+    font-size: 15px;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
     .divCenter{
         margin-top: 45px;
+    }
+    .linkAdd .linkIcon{
+        font-size: 25px;
+    }
+    
+    .linkAdd:hover .linkIcon{
+        fill: var(--turquoise);
+        transform: scale(1.0);
+    }
+    
+    .linkAdd p{
+        opacity: 1;
+    }
+    
+    .linkAdd p{
+        font-size: 10px;
     }
 }
 
