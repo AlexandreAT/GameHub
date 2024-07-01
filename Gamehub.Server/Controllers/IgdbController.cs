@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using IGDB;
 using IGDB.Models;
+using Gamehub.Server.Models;
 
 namespace Gamehub.Server.Controllers
 {
@@ -21,7 +22,6 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("search")]
-        [EnableCors("CorsPolicy")]
         public async Task<IActionResult> SearchGames([FromBody] string query)
         {
             var clientId = "d3ykuhzdgly8hq7c5iy1dxckg6tbvd";
@@ -29,12 +29,44 @@ namespace Gamehub.Server.Controllers
 
             var igdbClient = new IGDBClient(clientId, clientSecret);
 
-            var searchQuery = $"fields *; search \"{query}\";";
+            var searchQuery = $"fields *, artworks.image_id, genres.name; search \"{query}\";";
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
+            List<GameModel> gamesList = new List<GameModel>();
 
             if (games != null)
             {
-                return Ok(games);
+                if (games.Any())
+                {
+                    foreach (var game in games)
+                    {
+                        var gameModel = new GameModel
+                        {
+                            id = game.Id,
+                            name = game.Name,
+                            genres = new List<string>(),
+                        };
+
+                        if (game.Artworks != null && game.Artworks.Values != null)
+                        {
+                            var artworkImageId = game.Artworks.Values.First().ImageId;
+                            var thumb = IGDB.ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.Thumb, retina: false);
+                            gameModel.imageUrl = thumb;
+                        }
+
+                        foreach (var genre in game.Genres.Values)
+                        {
+                            gameModel.genres.Add(genre.Name);
+                        }
+
+                        gamesList.Add(gameModel);
+                    }
+
+                    return Ok(gamesList);
+                }
+                else
+                {
+                    return BadRequest("Nenhum jogo encontrado");
+                }
             }
             else
             {

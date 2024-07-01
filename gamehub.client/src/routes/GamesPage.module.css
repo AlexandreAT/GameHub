@@ -1,0 +1,96 @@
+.divMain{
+    display: flex;
+    flex-direction: column;
+}
+
+.divCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-top: 95px;
+    gap: 2rem;
+}
+
+.searchForm{
+    width: 40%;
+}
+
+.searchBar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.searchBar .icon{
+    position: absolute;
+    fill: var(--grey);
+    left: 10px;
+    transition: all 0.3s ease;
+}
+
+.searchBar .searchGames{
+    width: 100%;
+    height: 100%;
+    padding: 10px 35px;
+    border: 2px solid var(--grey);
+    border-radius: 10px;
+    font-size: 16px;
+    color: var(--whitesmoke);
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.searchBar .searchGames:focus,
+.searchBar:focus-within .icon{
+    color: var(--turquoise);
+    border-color: var(--turquoise);
+    fill: var(--turquoise);
+}
+
+.searchBar .searchGames::placeholder{
+    font-size: 14px;
+}
+
+.btnClearSearch{
+    background-color: transparent;
+    padding: 5px 10px;
+    border: 2px solid var(--grey);
+    color: var(--grey);
+    font-size: 16px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btnClearSearch:hover{
+    color: var(--whitesmoke);
+    border-color: var(--turquoise);
+}
+
+.gameImg{
+    max-width: 80px;
+    min-width: 80px;
+    object-fit: cover;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .divCenter{
+        margin-top: 45px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+}
+
+/* Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+}
