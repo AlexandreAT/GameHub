@@ -9,6 +9,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import classes from './GamesPage.module.css';
 import LoadingAnimation from '../components/LoadingAnimation';
+import { GoPlusCircle } from "react-icons/go";
 
 interface User {
     id: string;
@@ -26,6 +27,8 @@ interface Game {
     name: string;
     genres: string[];
     imageUrl?: string;
+    totalRating?: number;
+    releaseDate?: string;
 }
 
 const GamesPage = () => {
@@ -76,7 +79,6 @@ const GamesPage = () => {
     return (
         <div className={classes.divMain}>
             <div className='navbar'>{<Navbar user={user} />}</div>
-
             <div className={classes.divCenter}>
                 {<Sidebar user={user} />}
 
@@ -86,22 +88,24 @@ const GamesPage = () => {
                         <input type="text" className={classes.searchGames} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Buscar jogos..." />
                     </div>
                 </form>
-
                 {searchResults !== null && searchResults.length > 0 && (
-                    <>
+                    <div className={classes.content}>
                         <button onClick={() => setSearchResults(null)} className={classes.btnClearSearch}>Limpar pesquisa</button>
-                        <ul>
+                        <div className={classes.gamesDiv}>
                             {searchResults.map((game) => (
-                                <li key={game.id}>
-                                    <p>{game.name}</p>
-                                    <p>{game.genres.map((genre: string) => <span>{genre} </span>)}</p>
+                                <div key={game.id} className={classes.gameData}>
                                     <img src={game.imageUrl} alt={game.name} className={classes.gameImg}/>
-                                </li>
+                                    <div className={classes.divSimplifiedData}>
+                                        <h2>{game.name}</h2>
+                                        <p>Gêneros: {game.genres.map((genre) => <span>{genre}, </span>)}</p>
+                                        <p>Data de lançamento: <span>{game.releaseDate}</span></p>
+                                        <div className={classes.btnDiv}><button className={classes.btnAdd}><GoPlusCircle className={classes.sideIcon} /><span>Adicionar na biblioteca</span></button></div>
+                                    </div>
+                                </div>
                             ))}
-                        </ul>
-                    </>
+                        </div>
+                    </div>
                 )}
-
             </div>
         </div>
     )
