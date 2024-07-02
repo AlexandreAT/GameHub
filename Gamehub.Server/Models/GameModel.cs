@@ -6,5 +6,7 @@
         public string name { get; set; }
         public List<string> genres { get; set; }
         public string? imageUrl { get; set; } = null;
+        public double? totalRating { get; set; } = null;
+        public string? releaseDate { get; set; }
     }
 }

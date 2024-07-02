@@ -1,24 +1,29 @@
-.divMain{
+.divMain {
     display: flex;
     flex-direction: column;
+    background: linear-gradient(0deg, rgba(22, 22, 32, 0.5), rgba(22, 22, 32, 0.6)),
+                linear-gradient(280deg, rgba(30, 30, 52, 0.8) 50%, rgba(2, 23, 75, 0.7) 100%), 
+                url(../image/background3.jpg)  center/cover no-repeat;
 }
 
-.divCenter{
+.divCenter {
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     width: 100%;
+    min-height: 100vh;
     height: 100%;
-    margin-top: 95px;
+    margin-top: 80px;
     gap: 2rem;
 }
 
-.searchForm{
+.searchForm {
     width: 40%;
+    margin-top: 15px;
 }
 
-.searchBar{
+.searchBar {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -29,14 +34,14 @@
     position: relative;
 }
 
-.searchBar .icon{
+.searchBar .icon {
     position: absolute;
     fill: var(--grey);
     left: 10px;
     transition: all 0.3s ease;
 }
 
-.searchBar .searchGames{
+.searchBar .searchGames {
     width: 100%;
     height: 100%;
     padding: 10px 35px;
@@ -49,48 +54,191 @@
 }
 
 .searchBar .searchGames:focus,
-.searchBar:focus-within .icon{
+.searchBar:focus-within .icon {
     color: var(--turquoise);
     border-color: var(--turquoise);
     fill: var(--turquoise);
+    background-color: var(--clearblack);
 }
 
-.searchBar .searchGames::placeholder{
+.searchBar .searchGames::placeholder {
     font-size: 14px;
 }
 
-.btnClearSearch{
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    gap: 2rem;
+}
+
+.btnClearSearch {
     background-color: transparent;
     padding: 5px 10px;
     border: 2px solid var(--grey);
     color: var(--grey);
     font-size: 16px;
     border-radius: 5px;
+    margin-bottom: 1rem;
     transition: all 0.3s ease;
 }
 
-.btnClearSearch:hover{
+.btnClearSearch:hover {
     color: var(--whitesmoke);
     border-color: var(--turquoise);
 }
 
-.gameImg{
-    max-width: 80px;
-    min-width: 80px;
+.gamesDiv {
+    display: flex;
+    flex: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.gameData{
+    background-color: var(--black);
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px 5px var(--black);
+    transition: all 0.3s ease;
+}
+
+.gameData:hover .divSimplifiedData{
+    width: 100%;
+    opacity: 1;
+}
+
+.gameData:hover{
+    transform: scale(1.15);
+    box-shadow: 2px 2px 10px 5px var(--turquoise);
+}
+
+.gameData:hover .divSimplifiedData h2,
+ .gameData:hover .divSimplifiedData p{
+    white-space: normal;
+}
+
+.gameImg {
+    width: 200px;
+    min-height: 260px;
+    max-height: 260px;
     object-fit: cover;
+    border-radius: 5px;
+}
+
+.divSimplifiedData{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 5px;
+    width: 0px;
+    height: 99%;
+    top: 0;
+    position: absolute;
+    overflow: hidden;
+    z-index: 1;
+    background-color: var(--clearblack);
+    border-radius: 5px;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.divSimplifiedData h2,
+.divSimplifiedData p{
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: default;
+}
+
+.divSimplifiedData h2{
+    position: relative;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.divSimplifiedData h2::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 3px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+  }
+  
+  .divSimplifiedData h2:hover::after{
+    width: 100%;
+  }
+  
+  .divSimplifiedData h2:hover{
+    color: var(--turquoise);
+  }
+
+.divSimplifiedData p{
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.divSimplifiedData p span{
+    font-weight: normal;
+}
+
+.btnDiv{
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnAdd{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent
+}
+
+.btnAdd span{
+    opacity: 0;
+    color: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.btnAdd .sideIcon{
+    font-size: 20px;
+    fill: var(--whitesmoke);
+    transition: all 0.3s ease;
+}
+
+.btnAdd:hover span{
+    opacity: 1;
+}
+
+.btnAdd:hover .sideIcon{
+    fill: var(--turquoise);
+    transform: scale(1.2);
 }
 
 /* Mobile */
 @media (max-width: 480px) {
-    .divCenter{
+    .divCenter {
         margin-top: 45px;
     }
 }
 
 /* Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
-}
+@media (min-width: 481px) and (max-width: 768px) {}
 
 /* Desktop */
-@media (min-width: 769px) and (max-width: 1024px) {
-}
+@media (min-width: 769px) and (max-width: 1024px) {}

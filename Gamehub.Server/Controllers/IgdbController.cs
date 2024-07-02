@@ -29,7 +29,9 @@ namespace Gamehub.Server.Controllers
 
             var igdbClient = new IGDBClient(clientId, clientSecret);
 
-            var searchQuery = $"fields *, artworks.image_id, genres.name; search \"{query}\";";
+            var searchQuery = $"fields id, name, rating, cover.image_id, genres.name, first_release_date; " +
+                              $"search \"{query}\"; " +
+                              $"where version_parent = null & parent_game = null & cover.image_id != null;";
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
             List<GameModel> gamesList = new List<GameModel>();
 
@@ -44,23 +46,37 @@ namespace Gamehub.Server.Controllers
                             id = game.Id,
                             name = game.Name,
                             genres = new List<string>(),
+                            totalRating = game.Rating ?? 0
                         };
 
-                        if (game.Artworks != null && game.Artworks.Values != null)
+                        if (game.FirstReleaseDate != null)
                         {
-                            var artworkImageId = game.Artworks.Values.First().ImageId;
-                            var thumb = IGDB.ImageHelper.GetImageUrl(imageId: artworkImageId, size: ImageSize.Thumb, retina: false);
+                            gameModel.releaseDate = game.FirstReleaseDate.Value.ToString("dd/MM/yyyy");
+                        }
+
+                        if (game.Cover != null && game.Cover.Value != null)
+                        {
+                            var coverImageId = game.Cover.Value.ImageId;
+                            var thumb = IGDB.ImageHelper.GetImageUrl(imageId: coverImageId, size: ImageSize.CoverBig, retina: false);
                             gameModel.imageUrl = thumb;
                         }
 
-                        foreach (var genre in game.Genres.Values)
+                        if(game.Genres != null && game.Genres.Values != null)
                         {
-                            gameModel.genres.Add(genre.Name);
+                            foreach (var genre in game.Genres.Values)
+                            {
+                                gameModel.genres.Add(genre.Name);
+                            }
+                        }
+                        else
+                        {
+                            gameModel.genres.Add("Gênero não identificado");
                         }
 
                         gamesList.Add(gameModel);
                     }
 
+                    gamesList = gamesList.OrderByDescending(g => g.totalRating).ToList();
                     return Ok(gamesList);
                 }
                 else
