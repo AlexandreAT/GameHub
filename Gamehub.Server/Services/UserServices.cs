@@ -272,5 +272,39 @@ namespace Gamehub.Server.Services
             }
             return user.Password;
         }
+
+        public async Task HandleGameLibrary(string gameId, User user)
+        {
+            if(gameId != null)
+            {
+                if(user.GamesLibrary == null)
+                {
+                    user.GamesLibrary = new List<LibraryGame>();
+                }
+
+                var gameFoud = user.GamesLibrary.FirstOrDefault(x => x.id == gameId);
+                if(gameFoud == null)
+                {
+                    LibraryGame game = new LibraryGame();
+                    game.id = gameId;
+                    user.GamesLibrary.Add(game);
+                    await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
+                }
+                else
+                {
+                    var currentGameIndex = user.GamesLibrary.FindIndex(x => x.id == gameId);
+                    if (currentGameIndex >= 0)
+                    {
+                        user.GamesLibrary.RemoveAt(currentGameIndex);
+                        await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Jogo não encontrado!");
+            }
+        }
+
     }
 }

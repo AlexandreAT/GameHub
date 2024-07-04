@@ -8,5 +8,6 @@
         public string? imageUrl { get; set; } = null;
         public double? totalRating { get; set; } = null;
         public string? releaseDate { get; set; }
+        public string? siteUrl { get; set; }
     }
 }
