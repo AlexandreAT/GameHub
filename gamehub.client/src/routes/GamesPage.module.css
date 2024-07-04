@@ -71,6 +71,7 @@
     align-items: center;
     width: 70%;
     gap: 2rem;
+    margin-bottom: 5rem;
 }
 
 .btnClearSearch {
@@ -107,18 +108,22 @@
     transition: all 0.3s ease;
 }
 
-.gameData:hover .divSimplifiedData{
+.gameData:hover .divSimplifiedData,
+.gameData:focus .divSimplifiedData {
     width: 100%;
     opacity: 1;
 }
 
-.gameData:hover{
+.gameData:hover,
+.gameData:focus {
     transform: scale(1.15);
     box-shadow: 2px 2px 10px 5px var(--turquoise);
 }
 
 .gameData:hover .divSimplifiedData h2,
- .gameData:hover .divSimplifiedData p{
+.gameData:hover .divSimplifiedData p,
+.gameData:focus .divSimplifiedData h2,
+.gameData:focus .divSimplifiedData p {
     white-space: normal;
 }
 
@@ -228,6 +233,18 @@
 .btnAdd:hover .sideIcon{
     fill: var(--turquoise);
     transform: scale(1.2);
+}
+
+.btnAdd:hover .iconRemove{
+    fill: crimson;
+}
+
+.btnAdd .spanRemove{
+    color: crimson;
+}
+
+.btnAdd .spanAdd{
+    color: var(--turquoise);
 }
 
 /* Mobile */

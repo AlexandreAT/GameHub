@@ -29,7 +29,7 @@ namespace Gamehub.Server.Controllers
 
             var igdbClient = new IGDBClient(clientId, clientSecret);
 
-            var searchQuery = $"fields id, name, rating, cover.image_id, genres.name, first_release_date; " +
+            var searchQuery = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url; " +
                               $"search \"{query}\"; " +
                               $"where version_parent = null & parent_game = null & cover.image_id != null;";
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
@@ -46,7 +46,8 @@ namespace Gamehub.Server.Controllers
                             id = game.Id,
                             name = game.Name,
                             genres = new List<string>(),
-                            totalRating = game.Rating ?? 0
+                            totalRating = game.Rating ?? 0,
+                            siteUrl = game.Url
                         };
 
                         if (game.FirstReleaseDate != null)
@@ -77,6 +78,76 @@ namespace Gamehub.Server.Controllers
                     }
 
                     gamesList = gamesList.OrderByDescending(g => g.totalRating).ToList();
+                    return Ok(gamesList);
+                }
+                else
+                {
+                    return BadRequest("Nenhum jogo encontrado");
+                }
+            }
+            else
+            {
+                return BadRequest("Erro ao buscar jogos");
+            }
+        }
+
+        [HttpPost("getLibrary")]
+        public async Task<IActionResult> GetLibrary([FromBody] List<string> libraryIds)
+        {
+            var clientId = "d3ykuhzdgly8hq7c5iy1dxckg6tbvd";
+            var clientSecret = "63lpytvy9kow17vypjt55i1y439x5q";
+
+            var igdbClient = new IGDBClient(clientId, clientSecret);
+            var idList = string.Join(",", libraryIds.Select(id => id.Trim()));
+            Console.WriteLine(idList);
+            var searchIds = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url; " +
+                            $"where id = ({idList});";
+            Console.WriteLine(searchIds);
+            var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchIds);
+            List<GameModel> gamesList = new List<GameModel>();
+
+            if (games != null)
+            {
+                if (games.Any())
+                {
+                    foreach (var game in games)
+                    {
+                        var gameModel = new GameModel
+                        {
+                            id = game.Id,
+                            name = game.Name,
+                            genres = new List<string>(),
+                            totalRating = game.Rating ?? 0,
+                            siteUrl = game.Url
+                        };
+
+                        if (game.FirstReleaseDate != null)
+                        {
+                            gameModel.releaseDate = game.FirstReleaseDate.Value.ToString("dd/MM/yyyy");
+                        }
+
+                        if (game.Cover != null && game.Cover.Value != null)
+                        {
+                            var coverImageId = game.Cover.Value.ImageId;
+                            var thumb = IGDB.ImageHelper.GetImageUrl(imageId: coverImageId, size: ImageSize.CoverBig, retina: false);
+                            gameModel.imageUrl = thumb;
+                        }
+
+                        if (game.Genres != null && game.Genres.Values != null)
+                        {
+                            foreach (var genre in game.Genres.Values)
+                            {
+                                gameModel.genres.Add(genre.Name);
+                            }
+                        }
+                        else
+                        {
+                            gameModel.genres.Add("Gênero não identificado");
+                        }
+
+                        gamesList.Add(gameModel);
+                    }
+
                     return Ok(gamesList);
                 }
                 else

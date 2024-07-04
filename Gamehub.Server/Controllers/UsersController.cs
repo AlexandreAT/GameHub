@@ -344,6 +344,24 @@ namespace Gamehub.Server.Controllers
             return simplifiedCommunities;
         }
 
+        [HttpGet("getPassword")]
+        public async Task<string> GetPassword(string email, string nickname)
+        {
+            string password = await _userServices.GetPassword(email, nickname);
+            if (password == null)
+            {
+                throw new Exception("Senha não encontrada");
+            }
+            return password;
+        }
+
+        [HttpPost("handleGameLibrary")]
+        public async Task HandleGameLibrary([FromForm] string gameId, [FromForm] string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            await _userServices.HandleGameLibrary(gameId, user);
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
@@ -365,17 +383,6 @@ namespace Gamehub.Server.Controllers
                     signingCredentials: credentials
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        [HttpGet("getPassword")]
-        public async Task<string> GetPassword(string email, string nickname)
-        {
-            string password = await _userServices.GetPassword(email, nickname);
-            if(password == null)
-            {
-                throw new Exception("Senha não encontrada");
-            }
-            return password;
         }
     }
 }

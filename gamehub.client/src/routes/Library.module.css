@@ -1,9 +1,9 @@
-.divMain{
+.divMain {
     display: flex;
     flex-direction: column;
 }
 
-.divCenter{
+.divCenter {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -22,58 +22,242 @@
     gap: 5px;
 }
 
-.linkAdd .linkIcon{
+.linkAdd .linkIcon {
     font-size: 40px;
     fill: var(--lightGrey);
     transition: all 0.3s ease;
 }
 
-.linkAdd:hover .linkIcon{
+.linkAdd:hover .linkIcon {
     fill: var(--turquoise);
     transform: scale(1.1);
 }
 
-.linkAdd:hover p{
+.linkAdd:hover p {
     opacity: 1;
 }
 
-.linkAdd p{
+.linkAdd p {
     opacity: 0;
     transition: all 0.3s ease;
 }
 
-.linkAdd p{
+.linkAdd p {
     color: var(--grey);
     font-size: 15px;
 }
 
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    gap: 2rem;
+    margin-bottom: 5rem;
+}
+
+.gamesDiv {
+    display: flex;
+    flex: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.gameData {
+    background-color: var(--black);
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px 5px var(--black);
+    transition: all 0.3s ease;
+}
+
+.gameData:hover .divSimplifiedData,
+.gameData:focus .divSimplifiedData {
+    width: 100%;
+    opacity: 1;
+}
+
+.gameData:hover,
+.gameData:focus {
+    transform: scale(1.15);
+    box-shadow: 2px 2px 10px 5px var(--turquoise);
+}
+
+.gameData:hover .divSimplifiedData h2,
+.gameData:hover .divSimplifiedData p,
+.gameData:focus .divSimplifiedData h2,
+.gameData:focus .divSimplifiedData p {
+    white-space: normal;
+}
+
+.gameImg {
+    width: 200px;
+    min-height: 260px;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.divSimplifiedData {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 5px;
+    width: 0px;
+    height: 99%;
+    top: 0;
+    position: absolute;
+    overflow: hidden;
+    z-index: 1;
+    background-color: var(--clearblack);
+    border-radius: 5px;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.divSimplifiedData h2,
+.divSimplifiedData p {
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: default;
+}
+
+.divSimplifiedData h2 {
+    position: relative;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.divSimplifiedData h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0%;
+    height: 3px;
+    background-color: var(--turquoise);
+    transition: all 0.3s ease;
+}
+
+.divSimplifiedData h2:hover::after {
+    width: 100%;
+}
+
+.divSimplifiedData h2:hover {
+    color: var(--turquoise);
+}
+
+.divSimplifiedData p {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.divSimplifiedData p span {
+    font-weight: normal;
+}
+
+.btnDiv {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnAdd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent
+}
+
+.btnAdd span {
+    opacity: 0;
+    color: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.btnAdd .sideIcon {
+    font-size: 20px;
+    fill: var(--whitesmoke);
+    transition: all 0.3s ease;
+}
+
+.btnAdd:hover span {
+    opacity: 1;
+}
+
+.btnAdd:hover .sideIcon {
+    fill: var(--turquoise);
+    transform: scale(1.2);
+}
+
+.btnAdd:hover .iconRemove {
+    fill: crimson;
+}
+
+.btnAdd .spanRemove{
+    color: crimson;
+}
+
+.gameState{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: var(--mediumgrey);
+}
+
+.gameState p{
+    color: var(--whitesmoke);
+    font-size: 16px;
+}
+
+.btnState{
+    background-color: transparent;
+    padding: 2px 5px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
-    .divCenter{
+    .divCenter {
         margin-top: 45px;
     }
-    .linkAdd .linkIcon{
+
+    .linkAdd .linkIcon {
         font-size: 25px;
     }
-    
-    .linkAdd:hover .linkIcon{
+
+    .linkAdd:hover .linkIcon {
         fill: var(--turquoise);
         transform: scale(1.0);
     }
-    
-    .linkAdd p{
+
+    .linkAdd p {
         opacity: 1;
     }
-    
-    .linkAdd p{
+
+    .linkAdd p {
         font-size: 10px;
     }
 }
 
 /* Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
-}
+@media (min-width: 481px) and (max-width: 768px) {}
 
 /* Desktop */
-@media (min-width: 769px) and (max-width: 1024px) {
-}
+@media (min-width: 769px) and (max-width: 1024px) {}
