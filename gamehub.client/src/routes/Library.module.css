@@ -66,6 +66,49 @@
     gap: 3rem;
 }
 
+.pagination{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.pagination button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: transparent;
+    border-bottom: 2px solid transparent;
+    padding: 2px;
+    color: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.pagination button .icon{
+    fill: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.pagination button:disabled{
+    color: var(--mediumgrey);
+    cursor: not-allowed;
+}
+
+.pagination button:disabled .icon{
+    fill: var(--mediumgrey);
+}
+
+.pagination .able:hover{
+    border-color: var(--turquoise);
+    color: var(--whiteSmoke);
+}
+
+.pagination .able:hover .icon{
+    fill: var(--turquoise);
+}
+
 .gameData {
     background-color: var(--black);
     position: relative;
@@ -107,7 +150,7 @@
     gap: 2px;
     padding: 10px 5px;
     width: 0px;
-    height: 99%;
+    height: 100%;
     top: 0;
     position: absolute;
     overflow: hidden;
@@ -221,15 +264,89 @@
 }
 
 .gameState p{
-    color: var(--whitesmoke);
+    color: var(--lightGrey);
     font-size: 16px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 2px solid transparent;
 }
 
-.btnState{
+.gameState .statusVouJogar{
+    border-color: var(--whiteSmoke);
+    font-weight: bold;
+}
+
+.gameState .statusJogando{
+    background-color: var(--black);
+    border-color: var(--turquoise);
+    color: var(--turquoise);
+    box-shadow: 0px 0px 5px var(--turquoise);
+    font-weight: bold;
+}
+
+.gameState .statusJaJoguei{
+    background-color: var(--turquoise);
+    border-color: var(--darkcyan);
+    color: var(--black);
+    font-weight: bold;
+}
+
+.divStatus{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.labelStatus{
     background-color: transparent;
     padding: 2px 5px;
     font-size: 16px;
     border-radius: 5px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    margin-bottom: 2px;
+}
+
+.labelStatus:hover{
+    background-color: var(--clearblack);
+    border-color: var(--turquoise);
+}
+
+.divStatus select{
+    outline: none;
+}
+
+.selectStatus{
+    top: -72px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background-color: var(--black);
+    text-align: center;
+    border-radius: 5px;
+    border: 2px solid var(--turquoise);
+    width: 100%;
+    padding: 0;
+}
+
+.statusOptions{
+    background-color: transparent;
+    width: 100%;
+}
+
+.statusOptions:hover{
+    background-color: var(--deepgray);
+}
+
+.selectStatus .select{
+    background-color: var(--turquoise);
+    color: var(--black);
 }
 
 /* Mobile */

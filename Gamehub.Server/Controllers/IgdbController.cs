@@ -31,7 +31,8 @@ namespace Gamehub.Server.Controllers
 
             var searchQuery = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url; " +
                               $"search \"{query}\"; " +
-                              $"where version_parent = null & parent_game = null & cover.image_id != null;";
+                              $"where version_parent = null & parent_game = null & cover.image_id != null; " +
+                              $"limit 12;";
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
             List<GameModel> gamesList = new List<GameModel>();
 
@@ -62,7 +63,7 @@ namespace Gamehub.Server.Controllers
                             gameModel.imageUrl = thumb;
                         }
 
-                        if(game.Genres != null && game.Genres.Values != null)
+                        if (game.Genres != null && game.Genres.Values != null)
                         {
                             foreach (var genre in game.Genres.Values)
                             {
@@ -92,16 +93,21 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("getLibrary")]
-        public async Task<IActionResult> GetLibrary([FromBody] List<string> libraryIds)
+        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page)
         {
+            if (page == 0)
+            {
+                page = 1;
+            }
+
             var clientId = "d3ykuhzdgly8hq7c5iy1dxckg6tbvd";
             var clientSecret = "63lpytvy9kow17vypjt55i1y439x5q";
 
             var igdbClient = new IGDBClient(clientId, clientSecret);
             var idList = string.Join(",", libraryIds.Select(id => id.Trim()));
-            Console.WriteLine(idList);
             var searchIds = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url; " +
-                            $"where id = ({idList});";
+                            $"where id = ({idList}); " +
+                            $"limit 500; offset {(page - 1) * 20};";
             Console.WriteLine(searchIds);
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchIds);
             List<GameModel> gamesList = new List<GameModel>();
@@ -148,7 +154,17 @@ namespace Gamehub.Server.Controllers
                         gamesList.Add(gameModel);
                     }
 
-                    return Ok(gamesList);
+                    var totalGames = await GetTotalGames(libraryIds);
+                    var totalPages = (int)Math.Ceiling((double)totalGames / 20);
+
+                    var result = new
+                    {
+                        Games = gamesList,
+                        TotalPages = totalPages,
+                        CurrentPage = page
+                    };
+
+                    return Ok(result);
                 }
                 else
                 {
@@ -159,6 +175,18 @@ namespace Gamehub.Server.Controllers
             {
                 return BadRequest("Erro ao buscar jogos");
             }
+        }
+
+        private async Task<int> GetTotalGames(string[] libraryIds)
+        {
+            var clientId = "d3ykuhzdgly8hq7c5iy1dxckg6tbvd";
+            var clientSecret = "63lpytvy9kow17vypjt55i1y439x5q";
+
+            var igdbClient = new IGDBClient(clientId, clientSecret);
+            var idList = string.Join(",", libraryIds.Select(id => id.Trim()));
+            var searchIds = $"fields id; where id = ({idList});";
+            var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchIds);
+            return games.Count();
         }
     }
 }

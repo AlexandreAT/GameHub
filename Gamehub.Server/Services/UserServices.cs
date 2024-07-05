@@ -305,6 +305,23 @@ namespace Gamehub.Server.Services
                 throw new Exception("Jogo não encontrado!");
             }
         }
-
+        public async Task HandleStatusGame(string status, string gameId, User user)
+        {
+            LibraryGame gameFound = user.GamesLibrary.FirstOrDefault(x => x.id == gameId);
+            if (gameFound != null)
+            {
+                gameFound.state = status;
+                var gameIndex = user.GamesLibrary.FindIndex(x => x.id == gameId);
+                if (gameIndex >= 0)
+                {
+                    user.GamesLibrary[gameIndex].state = status;
+                    await _userCollection.UpdateOneAsync(x => x.Id == user.Id, Builders<User>.Update.Set(u => u.GamesLibrary, user.GamesLibrary));
+                }
+            }
+            else
+            {
+                throw new Exception("Jogo não encontrado!");
+            }
+        }
     }
 }
