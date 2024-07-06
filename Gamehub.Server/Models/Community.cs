@@ -18,7 +18,7 @@ namespace Gamehub.Server.Models
         public string Name { get; set; } = null;
 
         [BsonElement("Jogo relacionado a comunidade")]
-        public string? Game { get; set; } = null;
+        public SimplifiedGame? Game { get; set; } = null;
 
         [BsonElement("Imagem de fundo")]
         public string? backgroundImageSrc { get; set; } = null;

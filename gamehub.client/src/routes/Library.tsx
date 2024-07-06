@@ -14,6 +14,9 @@ import { GoPlusCircle } from "react-icons/go";
 import { GoXCircle } from "react-icons/go";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
+import { TiPinOutline } from "react-icons/ti";
+import { TiPin } from "react-icons/ti";
+import { PiNeedleBold } from 'react-icons/pi';
 
 interface User {
     id: string;
@@ -35,6 +38,9 @@ interface Game {
     totalRating?: number;
     releaseDate?: string;
     siteUrl: string;
+    summary?: string;
+    bigGameData?: boolean;
+    pin?: boolean;
 }
 
 interface SimplifiedUser {
@@ -83,30 +89,54 @@ const Library = () => {
         fetchUsers();
     }, []);
 
-    useEffect(() => {
-        const getLibrary = async () => {
-            try {
-                const libraryIds = user?.gamesLibrary.map(libraryGame => libraryGame.id);
-                const response = await axios.post('/Igdb/getLibrary', libraryIds, {
-                    params: {
-                        page: page,
-                    },
-                });
-                const data = response.data;
-                setGames(data.games);
-                setTotalPages(data.totalPages);
-                setPage(data.currentPage);
-            } catch (error) {
-                console.error(error);
+    const getLibrary = async () => {
+        try {
+            const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
+            const response = await axios.post('/Igdb/getLibrary', libraryIds, {
+                params: {
+                    page: page,
+                    userId: user?.id
+                },
+            });
+            const data = response.data;
+            const games = data.games;
+            if (user && user.gamesLibrary) {
+                const updatedGames = updatePinnedGames(games, user?.gamesLibrary);
+                setGames(updatedGames);
+                const sortedGames = sortGamesByPin(updatedGames);
+                setGames(sortedGames);
             }
-        };
+            setTotalPages(data.totalPages);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
+    useEffect(() => {
         getLibrary();
     }, [user, page])
 
     if (!user) {
         return <LoadingAnimation opt='user' />
     }
+
+    const updatePinnedGames = (games: Game[], userGamesLibrary: LibraryGame[]) => {
+        games.forEach((game) => {
+            const gameFound = userGamesLibrary.find((libraryGame) => libraryGame.id === game.id.toString());
+            if (gameFound) {
+                game.pin = gameFound.pin;
+            }
+        });
+        return games;
+    };
+
+    const sortGamesByPin = (games: Game[]) => {
+        return games.sort((a, b) => {
+            if (a.pin && !b.pin) return -1;
+            if (!a.pin && b.pin) return 1;
+            return 0;
+        });
+    };
 
     const postLibrary = async (url: string, data: any) => {
         try {
@@ -170,6 +200,38 @@ const Library = () => {
         }
     }
 
+    const handlePin = async (pin: boolean, gameId: string) => {
+        try {
+            await postLibrary("/Users/HandlePin", {
+                pin: pin,
+                gameId: gameId,
+                userId: user.id
+            });
+            const updatedGamesLibrary = [...user.gamesLibrary];
+            const gameIndex = updatedGamesLibrary.findIndex(game => game.id === gameId);
+            if (gameIndex !== -1) {
+                updatedGamesLibrary[gameIndex].pin = pin;
+            }
+
+            setUser({ ...user, gamesLibrary: updatedGamesLibrary });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const showGameSummary = (gameId: string) => {
+        if (games) {
+            setGames(
+                games.map((game) => {
+                    if (game.id === gameId) {
+                        game.bigGameData = !game.bigGameData;
+                    }
+                    return game;
+                })
+            );
+        }
+    };
+
     return (
         <div className={classes.divMain}>
             <div className='navbar'>{<Navbar user={user} />}</div>
@@ -193,12 +255,39 @@ const Library = () => {
                                 <p>Página {page} de {totalPages}</p>
                                 <div className={classes.gamesDiv}>
                                     {games.map((game) => (
-                                        <div key={game.id} className={classes.gameData}>
+                                        <div key={game.id} className={`${classes.gameData} ${game.bigGameData && classes.bigGameData}`}>
                                             <img src={game.imageUrl} alt={game.name} className={classes.gameImg} />
+                                            <div className={classes.divPin}>
+                                                {user.gamesLibrary.map((currentGame: LibraryGame) =>
+                                                    game.id.toString() === currentGame.id && (
+                                                        currentGame.pin === true && (
+                                                            <div className={classes.pinController}><TiPin className={classes.iconPin} /></div>
+                                                        )
+                                                    )
+                                                )}
+                                            </div>
                                             <div className={classes.divSimplifiedData}>
+                                                <div className={classes.divPin}>
+                                                    {user.gamesLibrary.map((currentGame: LibraryGame) =>
+                                                        game.id.toString() === currentGame.id && (
+                                                            currentGame.pin === false ? (
+                                                                <button onClick={() => handlePin(true, currentGame.id)}><TiPinOutline className={classes.iconDontPin} /></button>
+                                                            ) : (
+                                                                <button onClick={() => handlePin(false, currentGame.id)}><TiPin className={classes.iconPin} /></button>
+                                                            )
+                                                        )
+                                                    )}
+                                                </div>
                                                 <Link to={game.siteUrl}><h2>{game.name}</h2></Link>
                                                 <p>Gêneros: {game.genres.map((genre) => <span>{genre}, </span>)}</p>
                                                 <p>Data de lançamento: <span>{game.releaseDate}</span></p>
+                                                <button className={classes.btnSummary} onClick={() => showGameSummary(game.id)}>Abrir resumo</button>
+                                                {game.bigGameData && (
+                                                    <div className={classes.divSummary} onMouseLeave={() => showGameSummary(game.id)}>
+                                                        <div className={classes.divContent}><p className={classes.summaryContent}>{game.summary}</p></div>
+                                                        <button className={classes.btnSummary} onClick={() => showGameSummary(game.id)}>Fechar resumo</button>
+                                                    </div>
+                                                )}
                                                 <div className={classes.btnDiv}>
                                                     <button className={classes.btnAdd} onClick={() => addGameLibrary(game.id)}>
                                                         <GoXCircle className={`${classes.sideIcon} ${classes.iconRemove}`} />
