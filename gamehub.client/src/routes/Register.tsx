@@ -61,7 +61,8 @@ const Cadastro = () => {
         Email: data.email,
         Password: data.password,
         Nickname: data.nickname,
-        ImageSrc: 'https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png'
+        ImageSrc: 'https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png',
+        BackgroundImage: 'https://i.ibb.co/zZFcRW4/background3-jpg.jpg'
       };
 
       const response = await axios.post(url, userPascalCase, {

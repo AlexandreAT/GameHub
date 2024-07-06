@@ -323,5 +323,15 @@ namespace Gamehub.Server.Services
                 throw new Exception("Jogo não encontrado!");
             }
         }
+
+        public async Task HandlePinGame(bool pin, string gameId, User user)
+        {   
+            var gameIndex = user.GamesLibrary.FindIndex(x => x.id == gameId);
+            if (gameIndex >= 0)
+            {
+                user.GamesLibrary[gameIndex].pin = pin;
+                await _userCollection.UpdateOneAsync(x => x.Id == user.Id, Builders<User>.Update.Set(u => u.GamesLibrary, user.GamesLibrary));
+            }
+        }
     }
 }

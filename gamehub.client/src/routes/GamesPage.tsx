@@ -32,6 +32,8 @@ interface Game {
     totalRating?: number;
     releaseDate?: string;
     siteUrl: string;
+    summary?: string;
+    bigGameData?: boolean;
 }
 
 interface LibraryGame {
@@ -82,7 +84,8 @@ const GamesPage = () => {
             const data = response.data;
             setSearchResults(data.map((game: Game) => ({
                 ...game,
-                id: game.id.toString()
+                id: game.id.toString(),
+                bigGameData: (false)
             })));
         } catch (error) {
             console.error(error);
@@ -132,6 +135,19 @@ const GamesPage = () => {
         }
     };
 
+    const showGameSummary = (gameId: string) => {
+        if (searchResults) {
+            setSearchResults(
+                searchResults.map((game) => {
+                    if (game.id === gameId) {
+                        game.bigGameData = !game.bigGameData;
+                    }
+                    return game;
+                })
+            );
+        }
+    };
+
     return (
         <div className={classes.divMain}>
             <div className='navbar'>{<Navbar user={user} />}</div>
@@ -149,12 +165,19 @@ const GamesPage = () => {
                         <button onClick={() => setSearchResults(null)} className={classes.btnClearSearch}>Limpar pesquisa</button>
                         <div className={classes.gamesDiv}>
                             {searchResults.map((game) => (
-                                <div key={game.id} className={classes.gameData}>
+                                <div key={game.id} className={`${classes.gameData} ${game.bigGameData && classes.bigGameData}`}>
                                     <img src={game.imageUrl} alt={game.name} className={classes.gameImg} />
                                     <div className={classes.divSimplifiedData}>
                                         <Link to={game.siteUrl}><h2>{game.name}</h2></Link>
                                         <p>Gêneros: {game.genres.map((genre) => <span>{genre}, </span>)}</p>
                                         <p>Data de lançamento: <span>{game.releaseDate}</span></p>
+                                        <button className={classes.btnSummary} onClick={() => showGameSummary(game.id)}>Abrir resumo</button>
+                                        {game.bigGameData && (
+                                            <div className={classes.divSummary} onMouseLeave={() => showGameSummary(game.id)}>
+                                                <div className={classes.divContent}><p className={classes.summaryContent}>{game.summary}</p></div>
+                                                <button className={classes.btnSummary} onClick={() => showGameSummary(game.id)}>Fechar resumo</button>
+                                            </div>
+                                        )}
                                         <div className={classes.btnDiv}>
                                             <button className={classes.btnAdd} onClick={() => addGameLibrary(game.id)}>
                                                 {user.gamesLibrary != undefined && user.gamesLibrary.find(libraryGame => libraryGame.id === game.id) ? (

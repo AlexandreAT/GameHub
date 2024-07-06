@@ -42,7 +42,7 @@ namespace Gamehub.Server.Models
         public List<LikeDisLike>? Dislike { get; set; } = null;
 
         [BsonElement("Jogo relacionado ao post")]
-        public string? Game { get; set; } = null;
+        public SimplifiedGame? Game { get; set; } = null;
 
         [BsonElement("Imagem")]
         public string? ImageSrc { get; set; } = null;
