@@ -11,5 +11,7 @@
         public string? siteUrl { get; set; } = null;
         public string? summary { get; set; } = null;
         public bool? pin { get; set; } = null;
+        public float? userRating { get; set; } = null;
+        public string? state { get; set; } = null;
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Net.NetworkInformation;
 using System.Xml.Linq;
 
 
@@ -331,6 +332,20 @@ namespace Gamehub.Server.Services
             {
                 user.GamesLibrary[gameIndex].pin = pin;
                 await _userCollection.UpdateOneAsync(x => x.Id == user.Id, Builders<User>.Update.Set(u => u.GamesLibrary, user.GamesLibrary));
+            }
+        }
+
+        public async Task HandleRatingGame(float rating, string gameId, User user)
+        {
+            var gameIndex = user.GamesLibrary.FindIndex(x => x.id == gameId);
+            if (gameIndex >= 0)
+            {
+                user.GamesLibrary[gameIndex].rating = rating;
+                await _userCollection.UpdateOneAsync(x => x.Id == user.Id, Builders<User>.Update.Set(u => u.GamesLibrary, user.GamesLibrary));
+            }
+            else
+            {
+                throw new Exception("Nota incorreta!");
             }
         }
     }

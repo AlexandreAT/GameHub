@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { axios } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
@@ -54,7 +54,7 @@ interface LibraryGame {
     id: string;
     state?: string;
     pin?: boolean;
-    rating?: number;
+    rating: number;
 }
 
 const Library = () => {
@@ -202,7 +202,7 @@ const Library = () => {
 
     const handlePin = async (pin: boolean, gameId: string) => {
         try {
-            await postLibrary("/Users/HandlePin", {
+            await postLibrary("/Users/handlePin", {
                 pin: pin,
                 gameId: gameId,
                 userId: user.id
@@ -216,6 +216,26 @@ const Library = () => {
             setUser({ ...user, gamesLibrary: updatedGamesLibrary });
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    const handleRating = async (rating: number, gameId: string, e: FormEvent) => {
+        e.preventDefault();
+        try{
+            await postLibrary("/Users/handleRating", {
+                rating: rating,
+                gameId: gameId,
+                userId: user.id
+            });
+            const updatedGamesLibrary = [...user.gamesLibrary];
+            const gameIndex = updatedGamesLibrary.findIndex(game => game.id === gameId);
+            if (gameIndex !== -1) {
+                updatedGamesLibrary[gameIndex].rating = rating;
+            }
+
+            setUser({ ...user, gamesLibrary: updatedGamesLibrary });
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -255,8 +275,17 @@ const Library = () => {
                                 <p>Página {page} de {totalPages}</p>
                                 <div className={classes.gamesDiv}>
                                     {games.map((game) => (
-                                        <div key={game.id} className={`${classes.gameData} ${game.bigGameData && classes.bigGameData}`}>
+                                        <div key={game.id} className={`${classes.gameData} ${game.bigGameData && classes.bigGameData} ${user.gamesLibrary.find((currentGame) => currentGame.id === game.id.toString())?.state === "ja platinei" ? classes.platinumGame : ""}`}>
                                             <img src={game.imageUrl} alt={game.name} className={classes.gameImg} />
+                                            <div className={classes.divRating}>
+                                                {user.gamesLibrary.map((currentGame: LibraryGame) =>
+                                                    game.id.toString() === currentGame.id && (
+                                                        currentGame.rating >= 0 && (
+                                                            <div className={`${classes.ratingController} ${currentGame.rating >= 5 && currentGame.rating < 8 && classes.aboveAverage} ${currentGame.rating >= 8 && currentGame.rating < 10 && classes.almostPerfect} ${currentGame.rating < 5 && currentGame.rating >= 3 && classes.bad} ${currentGame.rating < 3 && currentGame.rating > 0 && classes.horrible} ${currentGame.rating == 0 && classes.unplayable} ${currentGame.rating == 10 && classes.perfect}`}>{currentGame.rating}</div>
+                                                        )
+                                                    )
+                                                )}
+                                            </div>
                                             <div className={classes.divPin}>
                                                 {user.gamesLibrary.map((currentGame: LibraryGame) =>
                                                     game.id.toString() === currentGame.id && (
@@ -289,6 +318,25 @@ const Library = () => {
                                                     </div>
                                                 )}
                                                 <div className={classes.btnDiv}>
+                                                    <div className={classes.divEditRating}>
+                                                        {user.gamesLibrary.map((currentGame: LibraryGame) =>
+                                                            game.id.toString() === currentGame.id && (
+                                                                currentGame.rating >= 0 ? (
+                                                                    <form className={classes.ratingController} onSubmit={(e) => handleRating(currentGame.rating, game.id, e)}>
+                                                                        <label htmlFor="rating">Adicione uma nova nota!</label>
+                                                                        <input name='rating' type="number" inputMode='numeric' step="0.1" max="10" placeholder='0.0' onChange={(e) => currentGame.rating = e.target.valueAsNumber} />
+                                                                        <button type='submit'>Registrar nova nota</button>
+                                                                    </form>
+                                                                ) : (
+                                                                    <form className={classes.ratingController} onSubmit={(e) => handleRating(currentGame.rating, game.id, e)}>
+                                                                        <label htmlFor="rating">Adicione uma nota!</label>
+                                                                        <input name='rating' type='number' inputMode='numeric' step="0.1" max="10" placeholder='0.0' onChange={(e) => currentGame.rating = e.target.valueAsNumber} className={classes.noRegistry} />
+                                                                        <button type='submit'>Registrar nota</button>
+                                                                    </form>
+                                                                )
+                                                            )
+                                                        )}
+                                                    </div>
                                                     <button className={classes.btnAdd} onClick={() => addGameLibrary(game.id)}>
                                                         <GoXCircle className={`${classes.sideIcon} ${classes.iconRemove}`} />
                                                         <span className={classes.spanRemove}>Retirar da biblioteca</span>
@@ -298,21 +346,15 @@ const Library = () => {
                                                         {showStatus && (
                                                             user.gamesLibrary.map((currentGame) =>
                                                                 currentGame.id === game.id.toString() && (
-                                                                    !currentGame.state ? (
-                                                                        <div className={classes.selectStatus}>
-                                                                            <button className={`${classes.statusOptions} ${classes.select}`}>Selecine o status</button>
-                                                                            <button onClick={() => updateStatus("vou jogar", currentGame.id)} className={`${classes.statusOptions}`}>Vou jogar</button>
-                                                                            <button onClick={() => updateStatus("jogando", currentGame.id)} className={`${classes.statusOptions}`}>Jogando</button>
-                                                                            <button onClick={() => updateStatus("ja joguei", currentGame.id)} className={`${classes.statusOptions}`}>Já joguei</button>
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div className={classes.selectStatus}>
-                                                                            <button className={`${classes.statusOptions}`}>Selecine o status</button>
-                                                                            <button onClick={() => updateStatus("vou jogar", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "vou jogar" && classes.select}`}>Vou jogar</button>
-                                                                            <button onClick={() => updateStatus("jogando", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "jogando" && classes.select}`}>Jogando</button>
-                                                                            <button onClick={() => updateStatus("ja joguei", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "ja joguei" && classes.select}`}>Já joguei</button>
-                                                                        </div>
-                                                                    )
+                                                                    <div className={classes.selectStatus}>
+                                                                        <button className={`${classes.statusOptions} ${!currentGame.state && classes.select}`}>Selecine o status</button>
+                                                                        <button onClick={() => updateStatus("vou jogar", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "vou jogar" && classes.select}`}>Vou jogar</button>
+                                                                        <button onClick={() => updateStatus("jogando", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "jogando" && classes.select}`}>Jogando</button>
+                                                                        <button onClick={() => updateStatus("ja joguei", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "ja joguei" && classes.select}`}>Já joguei</button>
+                                                                        <button onClick={() => updateStatus("vou platinar", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "vou platinar" && classes.select}`}>Vou platinar</button>
+                                                                        <button onClick={() => updateStatus("platinando", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "platinando" && classes.select}`}>Platinando</button>
+                                                                        <button onClick={() => updateStatus("ja platinei", currentGame.id)} className={`${classes.statusOptions} ${currentGame.state === "ja platinei" && classes.select}`}>Já platinei</button>
+                                                                    </div>
                                                                 )
                                                             )
                                                         )}
@@ -329,7 +371,10 @@ const Library = () => {
                                                                 currentGame.state === "vou jogar" ? classes.statusVouJogar :
                                                                     currentGame.state === "jogando" ? classes.statusJogando :
                                                                         currentGame.state === "ja joguei" ? classes.statusJaJoguei :
-                                                                            ''
+                                                                            currentGame.state === "vou platinar" ? classes.statusVouPlatinar :
+                                                                                currentGame.state === "platinando" ? classes.statusPlatinando :
+                                                                                    currentGame.state === "ja platinei" ? classes.statusJaPlatinei :
+                                                                                        ''
                                                             }>{currentGame.state.charAt(0).toUpperCase() + currentGame.state.slice(1)}</p>
                                                         )
                                                     )
