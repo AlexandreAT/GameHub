@@ -8,6 +8,7 @@ using IGDB;
 using IGDB.Models;
 using Gamehub.Server.Models;
 using Gamehub.Server.Services;
+using System.Net.NetworkInformation;
 
 namespace Gamehub.Server.Controllers
 {
@@ -97,7 +98,7 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("getLibrary")]
-        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page, string userId)
+        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page, string userId, string? order, string? filter)
         {
             User user = await _userServices.GetAsync(userId);
 
@@ -160,6 +161,42 @@ namespace Gamehub.Server.Controllers
                         }
 
                         gamesList.Add(gameModel);
+                    }
+
+                    // Verificar a lista de jogos da biblioteca do usuário
+                    foreach (var gameModel in gamesList)
+                    {
+                        var gameFound = user.GamesLibrary.FirstOrDefault(currentGame => currentGame.id == gameModel.id.ToString());
+                        if (gameFound != null)
+                        {
+                            gameModel.pin = gameFound.pin;
+                            gameModel.userRating = gameFound.rating;
+                            gameModel.state = gameFound.state;
+                        }
+                        else
+                        {
+                            gameModel.pin = false;
+                            gameModel.userRating = null;
+                            gameModel.state = null;
+                        }
+                    }
+
+                    if(order != null){
+                        if (order == "rating") {
+                            gamesList = gamesList.OrderByDescending(g => g.pin).ThenBy(g => g.userRating).ToList();
+                        }
+                        else if(order == "name")
+                        {
+                            gamesList = gamesList.OrderByDescending(g => g.pin).ThenBy(g => g.name).ToList();
+                        }
+                    }
+                    else{
+                        // Ordenar a lista de jogos com base no status de pin e nome
+                        gamesList = gamesList.OrderByDescending(g => g.pin).ThenBy(g => g.name).ToList();
+                    }
+
+                    if(filter != null){
+                        gamesList = gamesList.Where(g => g.state == filter).ToList();
                     }
 
                     var totalPages = (int)Math.Ceiling((double)gamesList.Count / 20);

@@ -376,6 +376,13 @@ namespace Gamehub.Server.Controllers
             await _userServices.HandlePinGame(pin, gameId, user);
         }
 
+        [HttpPost("handleRating")]
+        public async Task HandleRating([FromForm] float rating, [FromForm] string gameId, [FromForm] string userId)
+        {
+            User user = await _userServices.GetAsync(userId);
+            await _userServices.HandleRatingGame(rating, gameId, user);
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
