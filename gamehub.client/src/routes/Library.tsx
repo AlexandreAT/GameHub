@@ -16,8 +16,8 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { TiPinOutline } from "react-icons/ti";
 import { TiPin } from "react-icons/ti";
-import { GrOrderedList } from "react-icons/gr";
 import { IoFilter } from 'react-icons/io5';
+import { GoListUnordered } from "react-icons/go";
 
 interface User {
     id: string;
@@ -71,6 +71,7 @@ const Library = () => {
     const [optFilter, setOptFilter] = useState("");
     const [showOrder, setShowOrder] = useState(false);
     const [optOrder, setOptOrder] = useState("");
+    const [searchGames, setSearchGames] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -94,16 +95,18 @@ const Library = () => {
         fetchUsers();
     }, []);
 
-    const getLibrary = async (order?: string, filter?: string) => {
-        if(order){
+    const getLibrary = async (order?: string, filter?: string, searchGames?: string) => {
+        if (order || filter || searchGames) {
             try {
                 const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
-                
+
                 const response = await axios.post('/Igdb/getLibrary', libraryIds, {
                     params: {
                         page: page,
                         userId: user?.id,
-                        order: order
+                        order: order,
+                        filter: filter,
+                        searchQuery: searchGames
                     },
                 });
                 const data = response.data;
@@ -118,38 +121,11 @@ const Library = () => {
             } catch (error) {
                 console.error(error);
             }
-
         }
-        else if(filter){
+        else {
             try {
                 const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
-                console.log(filter);
-                
-                const response = await axios.post('/Igdb/getLibrary', libraryIds, {
-                    params: {
-                        page: page,
-                        userId: user?.id,
-                        filter: filter
-                    },
-                });
-                const data = response.data;
-                const games = data.games;
-                if (user && user.gamesLibrary) {
-                    const updatedGames = updatePinnedGames(games, user?.gamesLibrary);
-                    setGames(updatedGames);
-                    const sortedGames = sortGamesByPin(updatedGames);
-                    setGames(sortedGames);
-                }
-                setTotalPages(data.totalPages);
-            } catch (error) {
-                console.error(error);
-            }
 
-        }
-        else{
-            try {
-                const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
-                
                 const response = await axios.post('/Igdb/getLibrary', libraryIds, {
                     params: {
                         page: page,
@@ -172,18 +148,18 @@ const Library = () => {
     };
 
     useEffect(() => {
-        
-        if(optFilter){
-            getLibrary("", optFilter);
-
+        if (optFilter || optOrder) {
+            getLibrary(optOrder, optFilter);
         }
-        else if(optOrder){
-            getLibrary(optOrder, "");
-        }
-        else{
+        else {
             getLibrary();
         }
     }, [user, page, optFilter, optOrder])
+
+    const handleSearchGames = async (e:FormEvent, searchGames: string) => {
+        e.preventDefault();
+        getLibrary(optOrder, optFilter, searchGames);
+    }
 
     if (!user) {
         return <LoadingAnimation opt='user' />
@@ -290,7 +266,7 @@ const Library = () => {
 
     const handleRating = async (rating: number, gameId: string, e: FormEvent) => {
         e.preventDefault();
-        try{
+        try {
             await postLibrary("/Users/handleRating", {
                 rating: rating,
                 gameId: gameId,
@@ -328,24 +304,49 @@ const Library = () => {
             <div className={classes.divCenter}>
                 {<Sidebar user={user} />}
 
+                <div className={classes.divSearchBar}>
+                    <form onSubmit={(e) => handleSearchGames(e, searchGames)} className={classes.searchBar}>
+                        <FaSearch className={classes.icon} />
+                        <input type='text' name="search" id="search" placeholder='Procurar jogo...' onChange={(e) => setSearchGames(e.target.value)} value={searchGames} />
+                    </form>
+                </div>
+
                 <Link to={`/gamesPage`} className={classes.linkAdd}>
                     <GoPlusCircle className={classes.linkIcon} />
                     <p>Adicionar jogo</p>
                 </Link>
 
                 <div className={classes.content}>
-                <button className={classes.iconButton} onClick={() => setShowFilter(!showFilter)}><IoFilter className={classes.buttonIcon}/></button>
-                    {showFilter && (
-                        <div className={classes.filterOpt}>
-                            <p>Filtrar por status:</p>
-                            <span onClick={() => setOptFilter("")} className={optFilter === "" ? classes.select : classes.statusOptions}>Sem filtro</span>
-                            <span onClick={() => setOptFilter("vou jogar")} className={optFilter === "vou jogar" ? classes.select : classes.statusOptions}>Vou jogar</span>
-                            <span onClick={() => setOptFilter("jogando")} className={optFilter === "jogando" ? classes.select : classes.statusOptions}>Jogando</span>
-                            <span onClick={() => setOptFilter("ja joguei")} className={optFilter === "ja joguei" ? classes.select : classes.statusOptions}>Ja joguei</span>
-                            <span onClick={() => setOptFilter("vou platinar")} className={optFilter === "vou platinar" ? classes.select : classes.statusOptions}>Vou platinar</span>
-                            <span onClick={() => setOptFilter("platinando")} className={optFilter === "platinando" ? classes.select : classes.statusOptions}>Platinando</span>
-                            <span onClick={() => setOptFilter("ja platinei")} className={optFilter === "ja platinei" ? classes.select : classes.statusOptions}>Ja platinei</span>
+                    {page === 1 ? (
+                        <div className={classes.divBtnOpt}>
+                            <div className={classes.divOpt}>
+                                <button className={classes.iconButton} onClick={() => setShowFilter(!showFilter)}><IoFilter className={classes.buttonIcon} /></button>
+                                {showFilter && (
+                                    <div className={classes.filterOpt}>
+                                        <p>Filtrar por status:</p>
+                                        <span onClick={() => setOptFilter("")} className={optFilter === "" ? classes.select : classes.statusOptions}>Sem filtro</span>
+                                        <span onClick={() => setOptFilter("vou jogar")} className={optFilter === "vou jogar" ? classes.select : classes.statusOptions}>Vou jogar</span>
+                                        <span onClick={() => setOptFilter("jogando")} className={optFilter === "jogando" ? classes.select : classes.statusOptions}>Jogando</span>
+                                        <span onClick={() => setOptFilter("ja joguei")} className={optFilter === "ja joguei" ? classes.select : classes.statusOptions}>Ja joguei</span>
+                                        <span onClick={() => setOptFilter("vou platinar")} className={optFilter === "vou platinar" ? classes.select : classes.statusOptions}>Vou platinar</span>
+                                        <span onClick={() => setOptFilter("platinando")} className={optFilter === "platinando" ? classes.select : classes.statusOptions}>Platinando</span>
+                                        <span onClick={() => setOptFilter("ja platinei")} className={optFilter === "ja platinei" ? classes.select : classes.statusOptions}>Ja platinei</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={classes.divOpt}>
+                                <button className={classes.iconButton} onClick={() => setShowOrder(!showOrder)}><GoListUnordered className={classes.buttonIcon} /></button>
+                                {showOrder && (
+                                    <div className={classes.filterOpt}>
+                                        <p>Ordenar:</p>
+                                        <span onClick={() => setOptOrder("name")} className={optOrder === "name" || optOrder === "" ? classes.select : classes.statusOptions}>Nome</span>
+                                        <span onClick={() => setOptOrder("rating")} className={optOrder === "rating" ? classes.select : classes.statusOptions}>Nota</span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
+                    ) : (
+                        <p className={classes.info}>Opções de filtro e ordem na página 1</p>
                     )}
                     {user.gamesLibrary != undefined && user.gamesLibrary.length > 0 ? (
                         games !== null && games.length > 0 ? (
@@ -354,7 +355,7 @@ const Library = () => {
                                     <button onClick={() => setPage(page - 1)} disabled={page === 1} className={`${page !== 1 && classes.able}`}><IoIosArrowBack className={classes.icon} /> Página anterior</button>
                                     <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className={`${page !== totalPages && classes.able}`}>Próxima página <IoIosArrowForward className={classes.icon} /></button>
                                 </div>
-                                <p>Página {page} de {totalPages}</p>
+                                <p className={classes.info}>Página {page} de {totalPages}</p>
                                 <div className={classes.gamesDiv}>
                                     {games.map((game) => (
                                         <div key={game.id} className={`${classes.gameData} ${game.bigGameData && classes.bigGameData} ${user.gamesLibrary.find((currentGame) => currentGame.id === game.id.toString())?.state === "ja platinei" ? classes.platinumGame : ""}`}>
@@ -391,7 +392,7 @@ const Library = () => {
                                                 </div>
                                                 <Link to={game.siteUrl}><h2>{game.name}</h2></Link>
                                                 <p>Gêneros: {game.genres.map((genre) => <span>{genre}, </span>)}</p>
-                                                <p>Data de lançamento: <span>{game.releaseDate}</span></p>
+                                                <p className={classes.pDate}>Data de lançamento: <span>{game.releaseDate}</span></p>
                                                 <button className={classes.btnSummary} onClick={() => showGameSummary(game.id)}>Abrir resumo</button>
                                                 {game.bigGameData && (
                                                     <div className={classes.divSummary} onMouseLeave={() => showGameSummary(game.id)}>
