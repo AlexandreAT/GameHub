@@ -16,7 +16,8 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { TiPinOutline } from "react-icons/ti";
 import { TiPin } from "react-icons/ti";
-import { PiNeedleBold } from 'react-icons/pi';
+import { GrOrderedList } from "react-icons/gr";
+import { IoFilter } from 'react-icons/io5';
 
 interface User {
     id: string;
@@ -66,6 +67,10 @@ const Library = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [showStatus, setShowStatus] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
+    const [optFilter, setOptFilter] = useState("");
+    const [showOrder, setShowOrder] = useState(false);
+    const [optOrder, setOptOrder] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -89,32 +94,96 @@ const Library = () => {
         fetchUsers();
     }, []);
 
-    const getLibrary = async () => {
-        try {
-            const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
-            const response = await axios.post('/Igdb/getLibrary', libraryIds, {
-                params: {
-                    page: page,
-                    userId: user?.id
-                },
-            });
-            const data = response.data;
-            const games = data.games;
-            if (user && user.gamesLibrary) {
-                const updatedGames = updatePinnedGames(games, user?.gamesLibrary);
-                setGames(updatedGames);
-                const sortedGames = sortGamesByPin(updatedGames);
-                setGames(sortedGames);
+    const getLibrary = async (order?: string, filter?: string) => {
+        if(order){
+            try {
+                const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
+                
+                const response = await axios.post('/Igdb/getLibrary', libraryIds, {
+                    params: {
+                        page: page,
+                        userId: user?.id,
+                        order: order
+                    },
+                });
+                const data = response.data;
+                const games = data.games;
+                if (user && user.gamesLibrary) {
+                    const updatedGames = updatePinnedGames(games, user?.gamesLibrary);
+                    setGames(updatedGames);
+                    const sortedGames = sortGamesByPin(updatedGames);
+                    setGames(sortedGames);
+                }
+                setTotalPages(data.totalPages);
+            } catch (error) {
+                console.error(error);
             }
-            setTotalPages(data.totalPages);
-        } catch (error) {
-            console.error(error);
+
+        }
+        else if(filter){
+            try {
+                const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
+                console.log(filter);
+                
+                const response = await axios.post('/Igdb/getLibrary', libraryIds, {
+                    params: {
+                        page: page,
+                        userId: user?.id,
+                        filter: filter
+                    },
+                });
+                const data = response.data;
+                const games = data.games;
+                if (user && user.gamesLibrary) {
+                    const updatedGames = updatePinnedGames(games, user?.gamesLibrary);
+                    setGames(updatedGames);
+                    const sortedGames = sortGamesByPin(updatedGames);
+                    setGames(sortedGames);
+                }
+                setTotalPages(data.totalPages);
+            } catch (error) {
+                console.error(error);
+            }
+
+        }
+        else{
+            try {
+                const libraryIds = user?.gamesLibrary.map((libraryGame) => libraryGame.id);
+                
+                const response = await axios.post('/Igdb/getLibrary', libraryIds, {
+                    params: {
+                        page: page,
+                        userId: user?.id
+                    },
+                });
+                const data = response.data;
+                const games = data.games;
+                if (user && user.gamesLibrary) {
+                    const updatedGames = updatePinnedGames(games, user?.gamesLibrary);
+                    setGames(updatedGames);
+                    const sortedGames = sortGamesByPin(updatedGames);
+                    setGames(sortedGames);
+                }
+                setTotalPages(data.totalPages);
+            } catch (error) {
+                console.error(error);
+            }
         }
     };
 
     useEffect(() => {
-        getLibrary();
-    }, [user, page])
+        
+        if(optFilter){
+            getLibrary("", optFilter);
+
+        }
+        else if(optOrder){
+            getLibrary(optOrder, "");
+        }
+        else{
+            getLibrary();
+        }
+    }, [user, page, optFilter, optOrder])
 
     if (!user) {
         return <LoadingAnimation opt='user' />
@@ -265,6 +334,19 @@ const Library = () => {
                 </Link>
 
                 <div className={classes.content}>
+                <button className={classes.iconButton} onClick={() => setShowFilter(!showFilter)}><IoFilter className={classes.buttonIcon}/></button>
+                    {showFilter && (
+                        <div className={classes.filterOpt}>
+                            <p>Filtrar por status:</p>
+                            <span onClick={() => setOptFilter("")} className={optFilter === "" ? classes.select : classes.statusOptions}>Sem filtro</span>
+                            <span onClick={() => setOptFilter("vou jogar")} className={optFilter === "vou jogar" ? classes.select : classes.statusOptions}>Vou jogar</span>
+                            <span onClick={() => setOptFilter("jogando")} className={optFilter === "jogando" ? classes.select : classes.statusOptions}>Jogando</span>
+                            <span onClick={() => setOptFilter("ja joguei")} className={optFilter === "ja joguei" ? classes.select : classes.statusOptions}>Ja joguei</span>
+                            <span onClick={() => setOptFilter("vou platinar")} className={optFilter === "vou platinar" ? classes.select : classes.statusOptions}>Vou platinar</span>
+                            <span onClick={() => setOptFilter("platinando")} className={optFilter === "platinando" ? classes.select : classes.statusOptions}>Platinando</span>
+                            <span onClick={() => setOptFilter("ja platinei")} className={optFilter === "ja platinei" ? classes.select : classes.statusOptions}>Ja platinei</span>
+                        </div>
+                    )}
                     {user.gamesLibrary != undefined && user.gamesLibrary.length > 0 ? (
                         games !== null && games.length > 0 ? (
                             <>

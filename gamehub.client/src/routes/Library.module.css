@@ -56,6 +56,61 @@
     margin-bottom: 5rem;
 }
 
+.iconButton{
+    background-color: transparent;
+    margin: 0;
+}
+
+.buttonIcon{
+    font-size: 18px;
+    fill: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
+.buttonIcon:hover{
+    fill: var(--turquoise);
+}
+
+.filterOpt{
+    margin-top: -30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.filterOpt p{
+    margin-bottom: 5px;
+    color: var(--lightGrey);
+}
+
+.filterOpt span{
+    border-radius: 5px;
+}
+
+.filterOpt .statusOptions,
+.filterOpt .select{
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+}
+
+.filterOpt .statusOptions{
+    color: var(--grey);
+    transition: all 0.3s ease;
+}
+
+.filterOpt .statusOptions:hover{
+    background-color: var(--mediumgrey);
+    color: var(--whitesmoke);
+}
+
+.filterOpt .select{
+    background-color: var(--turquoise);
+    color: var(--black);
+}
+
 .gamesDiv {
     display: flex;
     flex: row;
@@ -273,7 +328,6 @@
     padding: 5px 3px;
     border-radius: 5px;
     background-color: var(--clearblack);
-
 }
 
 .divSummary .summaryContent {
