@@ -56,6 +56,60 @@
     margin-bottom: 5rem;
 }
 
+.divSearchBar{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchBar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.searchBar .icon{
+    position: absolute;
+    fill: var(--grey);
+    left: 10px;
+    transition: all 0.3s ease;
+}
+
+.searchBar input{
+    width: 100%;
+    height: 100%;
+    padding: 10px 35px;
+    border: 2px solid var(--grey);
+    border-radius: 10px;
+    font-size: 16px;
+    color: var(--whitesmoke);
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.searchBar input:focus,
+.searchBar:focus-within .icon{
+    color: var(--turquoise);
+    border-color: var(--turquoise);
+    fill: var(--turquoise);
+}
+
+.searchBar input::placeholder{
+    font-size: 14px;
+}
+
+.divBtnOpt{
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
 .iconButton{
     background-color: transparent;
     margin: 0;
@@ -71,8 +125,13 @@
     fill: var(--turquoise);
 }
 
+.divOpt{
+    margin-top: -20px;
+    display: flex;
+    flex-direction: column;
+}
+
 .filterOpt{
-    margin-top: -30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -111,6 +170,11 @@
     color: var(--black);
 }
 
+.info{
+    color: var(--grey);
+    font-size: 14px;
+}
+
 .gamesDiv {
     display: flex;
     flex: row;
@@ -122,6 +186,7 @@
 }
 
 .pagination {
+    margin-top: -10px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -331,7 +396,6 @@
 }
 
 .divSummary .summaryContent {
-    
     font-size: 12px;
     color: var(--lightGrey);
 }
@@ -356,6 +420,7 @@
     margin-bottom: 3px;
     cursor: pointer;
     transition: all 0.3s ease;
+    padding: 0px 5px 0px 5px;
 }
 
 .divSimplifiedData h2::after {
@@ -975,6 +1040,22 @@ input[type="number"]::-webkit-outer-spin-button {
         margin-top: 45px;
     }
 
+    .pagination{
+        justify-content: space-around;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .pagination button{
+        font-size: 12px;
+        gap: 2px;
+        padding: 0px;
+    }
+
+    .linkAdd{
+        margin-top: -20px;
+    }
+
     .linkAdd .linkIcon {
         font-size: 25px;
     }
@@ -991,10 +1072,324 @@ input[type="number"]::-webkit-outer-spin-button {
     .linkAdd p {
         font-size: 10px;
     }
+
+    .gamesDiv {
+        gap: 1rem;
+    }    
+
+    .gameData {
+        border: 3px solid transparent;
+        border-radius: 5px;
+        box-shadow: 2px 2px 6px 2px var(--black);
+        transition: all 0.3s ease;
+    }
+    
+    .gameData:hover,
+    .gameData:focus {
+        box-shadow: 2px 2px 6px 2px var(--turquoise);
+    }
+
+    .platinumGame {
+        border-top-color: rgba(193, 190, 186, 0.9);
+        border-right-color: rgba(217, 215, 213, 0.9);
+        border-bottom-color: rgba(241, 241, 239, 0.9);
+        border-left-color: rgba(205, 203, 199, 0.9);
+        border-radius: 10px;
+        box-shadow: 2px 2px 6px 2px rgba(241, 241, 239, 0.5);
+    }
+
+    .gameImg {
+        width: 100px;
+        min-height: 125px;
+        max-height: 125px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+    
+    .btnSummary {
+        width: 100%;
+        background-color: transparent;
+        font-size: 10px;
+        color: var(--lightGrey);
+        transition: all 0.5s ease;
+    }
+    
+    .divSummary {
+        padding: 3px 1px;
+    }
+    
+    .bigGameData {
+        transform: scale(1.2);
+        box-shadow: 2px 2px 6px 3px transparent;
+        border: 3px solid transparent;
+    }
+    
+    .bigGameData .divRating{
+        display: none;
+    }
+
+    .divRating{
+        width: 25px;
+        height: 25px;
+    }
+    
+    .divRating .ratingController{
+        padding-right: 1px;
+        border: 2px solid var(--grey);
+        font-size: 10px;
+        font-weight: 1000;
+    }
+    
+    .bigGameData:hover,
+    .bigGameData:focus {
+        transform: scale(1.2);
+        box-shadow: 2px 2px 8px 3px transparent;
+    }
+
+    .divSummary .summaryContent {
+        font-size: 8px;
+    }
+
+    .divSimplifiedData {
+        gap: 1px;
+        padding: 3px 2px;
+    }
+
+    .divSimplifiedData h2 {
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 2px;
+    }
+
+    .divSimplifiedData p {
+        font-size: 8px;
+        font-weight: normal;
+    }
+    
+    .divSimplifiedData p span {
+        font-weight: normal;
+        font-size: 8px;
+    }
+    .btnSummary {
+        font-size: 8px;
+        font-weight: normal;
+    }
+    .btnAdd .spanRemove {
+        display: none;
+    }
+
+    .divEditRating{
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--grey);
+        width: 100%;
+    }
+    
+    .divEditRating .ratingController{
+        gap: 1px;
+    }
+    
+    .divEditRating .ratingController label{
+        font-size: 8px;
+    }
+    
+    .divEditRating .ratingController input{
+        border: 1px solid var(--grey);
+        width: 20px;
+        height: 20px;
+        font-weight: normal;
+        border-radius: 50%;
+        padding-right: 1px;
+        font-size: 8px;
+    }
+
+    .divEditRating .ratingController button{
+        font-size: 8px;
+    }
+
+    .btnAdd .sideIcon {
+        font-size: 10px;
+    }
+
+    .divStatus {
+        border-top: 1px solid var(--grey);
+    }
+    
+    .labelStatus {
+        padding: 0px 3px;
+        font-size: 8px;
+    }
+
+    .selectStatus {
+        top: -90px;
+        gap: 1px;
+        border: 1px solid var(--turquoise);
+    }
+
+    .statusOptions,
+    .select,
+    .divOpt .filterOpt p{
+        font-size: 10px;
+    }
+    
+    .gameState p {
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .pDate{
+        display: none;
+    }
+
+    .divSearchBar{
+    }
+    
+    .searchBar{
+        width: 60%;
+        height: 25px;
+    }
+    
+    .searchBar .icon{
+        font-size: 12px;
+    }
+    
+    .searchBar input{
+        width: 100%;
+        height: 100%;
+        padding: 0px 25px;
+        font-size: 14px;
+    }
+    
+    .searchBar input::placeholder{
+        font-size: 12px;
+    }
+
+    .linkAdd {
+    }
+    
+    .linkAdd .linkIcon {
+    }
 }
 
 /* Tablet */
-@media (min-width: 481px) and (max-width: 768px) {}
+@media (min-width: 481px) and (max-width: 768px) {
+    .gameData {
+        border: 5px solid transparent;
+        border-radius: 5px;
+        box-shadow: 2px 2px 8px 2px var(--black);
+        transition: all 0.3s ease;
+    }
+    
+    .gameData:hover,
+    .gameData:focus {
+        box-shadow: 2px 2px 8px 2px var(--turquoise);
+    }
+
+    .platinumGame {
+        border-top-color: rgba(193, 190, 186, 0.9);
+        border-right-color: rgba(217, 215, 213, 0.9);
+        border-bottom-color: rgba(241, 241, 239, 0.9);
+        border-left-color: rgba(205, 203, 199, 0.9);
+        border-radius: 10px;
+        box-shadow: 2px 2px 8px 2px rgba(241, 241, 239, 0.5);
+    }
+}
 
 /* Desktop */
-@media (min-width: 769px) and (max-width: 1024px) {}
+@media (min-width: 769px) and (max-width: 1037px) {
+    .gamesDiv {
+        gap: 1.5rem;
+    }    
+
+    .gameData {
+        border: 5px solid transparent;
+        border-radius: 5px;
+        box-shadow: 2px 2px 8px 2px var(--black);
+        transition: all 0.3s ease;
+    }
+    
+    .gameData:hover,
+    .gameData:focus {
+        box-shadow: 2px 2px 8px 2px var(--turquoise);
+    }
+
+    .platinumGame {
+        border-top-color: rgba(193, 190, 186, 0.9);
+        border-right-color: rgba(217, 215, 213, 0.9);
+        border-bottom-color: rgba(241, 241, 239, 0.9);
+        border-left-color: rgba(205, 203, 199, 0.9);
+        border-radius: 10px;
+        box-shadow: 2px 2px 8px 2px rgba(241, 241, 239, 0.5);
+    }
+
+    .gameImg {
+        width: 180px;
+        min-height: 240px;
+        max-height: 240px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+    
+    .btnSummary {
+        width: 100%;
+        background-color: transparent;
+        font-size: 16px;
+        color: var(--lightGrey);
+        transition: all 0.5s ease;
+    }
+    
+    .divSummary {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 5px 2px;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--black);
+    }
+    
+    .bigGameData {
+        transform: scale(1.5);
+        z-index: 2;
+        box-shadow: 2px 2px 10px 5px transparent;
+        border: 5px solid transparent;
+    }
+    
+    .bigGameData .divRating{
+        display: none;
+    }
+    
+    .bigGameData:hover,
+    .bigGameData:focus {
+        transform: scale(1.5);
+        box-shadow: 2px 2px 10px 5px transparent;
+    }
+
+    .divSimplifiedData h2 {
+        position: relative;
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 2px;
+    }
+
+    .divSimplifiedData p {
+        font-size: 11px;
+        font-weight: normal;
+    }
+    
+    .divSimplifiedData p span {
+        font-weight: normal;
+        font-size: 11px;
+        color: var(--lightGrey);
+    }
+    .btnSummary {
+        font-size: 13px;
+        font-weight: bold;
+    }
+    .btnAdd .spanRemove {
+        display: none;
+    }
+}

@@ -98,7 +98,7 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("getLibrary")]
-        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page, string userId, string? order, string? filter)
+        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page, string userId, string? order, string? filter, string? searchQuery)
         {
             User user = await _userServices.GetAsync(userId);
 
@@ -183,7 +183,7 @@ namespace Gamehub.Server.Controllers
 
                     if(order != null){
                         if (order == "rating") {
-                            gamesList = gamesList.OrderByDescending(g => g.pin).ThenBy(g => g.userRating).ToList();
+                            gamesList = gamesList.OrderByDescending(g => g.pin).ThenByDescending(g => g.userRating).ToList();
                         }
                         else if(order == "name")
                         {
@@ -197,6 +197,11 @@ namespace Gamehub.Server.Controllers
 
                     if(filter != null){
                         gamesList = gamesList.Where(g => g.state == filter).ToList();
+                    }
+
+                    if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        gamesList = gamesList.Where(g => g.name.ToLower().Contains(searchQuery.ToLower())).ToList();
                     }
 
                     var totalPages = (int)Math.Ceiling((double)gamesList.Count / 20);

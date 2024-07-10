@@ -140,7 +140,7 @@ h1, .linkLogo, .logoDetail{
   margin: 0 0 15px 0;
   width: 100%;
   position: fixed;
-  z-index: 3;
+  z-index: 4;
 }
 
 .loading{
