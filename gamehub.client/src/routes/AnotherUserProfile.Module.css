@@ -366,6 +366,29 @@ p:hover .spanPublic,
     color: var(--grey);
 }
 
+.libraryLink{
+    font-size: 16px;
+    color: var(--lightGrey);
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.libraryLink:hover,
+.libraryLink:hover .libraryIcon{
+    color: var(--turquoise);
+    fill: var(--turquoise);
+    transform: scale(1.03);
+    border-bottom-color: var(--turquoise);
+}
+
+.libraryIcon{
+    fill: var(--lightGrey);
+    transition: all 0.3s ease;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
 

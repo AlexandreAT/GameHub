@@ -73,28 +73,27 @@ const ListFollowersOrFollowing = () => {
         if (user) {
             getUsers();
         }
+        if (user?.id !== id) {
+            const fetchAnotherUser = async () => {
+                try {
+                    const response = await axios.get(`/Users/anotherUser/${id}`, {
+                        params: {
+                            userId: id,
+                        }
+                    });
+                    setAnotherUser(response.data);
+                } catch (error) {
+                    console.clear();
+                    console.error('Error fetching user:', error);
+                }
+            }
+    
+            fetchAnotherUser();
+        }
     }, [user])
 
     if (!user) {
         return <LoadingAnimation opt='user' />
-    }
-
-    if (user.id !== id) {
-        const fetchAnotherUser = async () => {
-            try {
-                const response = await axios.get(`/Users/anotherUser/${id}`, {
-                    params: {
-                        userId: id,
-                    }
-                });
-                setAnotherUser(response.data);
-            } catch (error) {
-                console.clear();
-                console.error('Error fetching user:', error);
-            }
-        }
-
-        fetchAnotherUser();
     }
 
     const getFollowersOrFollowing = async (url: string, data: any) => {

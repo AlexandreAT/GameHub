@@ -58,7 +58,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 });
                 setSimplifiedFollowing(response.data);
             } catch (error) {
-                console.clear();
                 console.error(error);
             }
         }
@@ -90,7 +89,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 });
                 setSimplifiedCommunity(response.data);
             } catch (error) {
-                console.clear();
                 console.error(error);
             }
         }
@@ -110,7 +108,6 @@ const Sidebar = ({ user }: { user: User | null }) => {
                 });
                 setSimplifiedFollowingCommunity(response.data);
             } catch (error) {
-                console.clear();
                 console.error(error);
             }
         }

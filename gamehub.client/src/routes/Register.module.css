@@ -259,4 +259,8 @@
         align-items: center;
         justify-content: center;
     }
+    .divGenCpf .btnCpf,
+    .divGenCpf .cpfGenerated{
+        font-size: 13px;
+    }
 }
