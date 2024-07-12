@@ -1034,8 +1034,28 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--black);
 }
 
+.noRegistry{
+    text-shadow: none;
+    font-weight: normal;
+    font-size: 15px;
+    color: var(--grey);
+}
+
+.userTitle{
+    color: var(--lightGrey);
+    margin-top: 1rem;
+}
+
+.btnAddAnother{
+    padding-bottom: 5px;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
+    .userTitle{
+        font-size: 14px;
+    }
+
     .divCenter {
         margin-top: 45px;
     }
@@ -1135,7 +1155,7 @@ input[type="number"]::-webkit-outer-spin-button {
     
     .divRating .ratingController{
         padding-right: 1px;
-        border: 2px solid var(--grey);
+        border: 2px solid;
         font-size: 10px;
         font-weight: 1000;
     }
@@ -1263,10 +1283,12 @@ input[type="number"]::-webkit-outer-spin-button {
         font-size: 12px;
     }
 
-    .linkAdd {
-    }
-    
-    .linkAdd .linkIcon {
+    .noRegistry{
+        text-shadow: none;
+        font-weight: normal;
+        font-size: 10px;
+        color: var(--grey);
+        text-align: center;
     }
 }
 

@@ -9,6 +9,7 @@ import classes from './AnotherUserProfile.module.css'
 import UserPostsComponent from '../components/UserPostsComponent';
 import Sidebar from '../components/Sidebar';
 import LoadingAnimation from '../components/LoadingAnimation';
+import { IoLibrarySharp } from "react-icons/io5";
 
 interface AnotherUser {
   id: string;
@@ -326,7 +327,10 @@ const AnotherUserProfile = () => {
             </div>
           </div>
         </div>
-
+        <Link to={`/library/${anotherUser.id}`} className={classes.libraryLink}>
+          <IoLibrarySharp className={classes.libraryIcon} />
+          Acessar biblioteca do usuário
+        </Link>
         <UserPostsComponent user={user} anotherUser={anotherUser} />
       </div>
     </div>
