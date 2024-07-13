@@ -210,6 +210,9 @@ const Sidebar = ({ user }: { user: User | null }) => {
                         <IoLibrarySharp className={classes.sideIcon} />
                         <Link to={`/library/${user.id}`}><label htmlFor="library">Acessar biblioteca</label></Link>
                     </div>
+                    <div className={classes.sideFooter}>
+                        <Link to={`/searchPostsByGame`} className={classes.link}>Procurar posts por jogo</Link>
+                    </div>
                 </div>
             </div>
         </>

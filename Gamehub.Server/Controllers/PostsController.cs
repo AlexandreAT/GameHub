@@ -315,6 +315,51 @@ namespace Gamehub.Server.Controllers
             }
         }
 
+        [HttpGet("getPostsByGame")]
+        public async Task<ActionResult<List<Post>>> GetPostsByGame(string query, int page, string? opt)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+            if (opt == "date")
+            {
+                var posts = await _postServices.GetPostsByGame(query, page);
+                var totalPosts = await _postServices.CountGamePosts(query);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+            else if (opt == "relevant")
+            {
+                var posts = await _postServices.GetGamePostsRelevant(query, page);
+                var totalPosts = await _postServices.CountGamePosts(query);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / _pageSize);
+
+                var result = new
+                {
+                    Posts = posts,
+                    TotalPages = totalPages,
+                    CurrentPage = page
+                };
+
+                return Ok(result);
+            }
+
+
+            else
+            {
+                throw new Exception("Jogo não encontrado");
+            }
+        }
+
         [HttpPost]
         public async Task<Post> PostPost(Post post)
         {

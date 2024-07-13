@@ -18,12 +18,19 @@ interface Community {
     id: string;
     creator: string;
     name: string;
-    game: string;
     backgroundImageSrc: string;
     iconeImageSrc: string;
     description: string;
     post: string[];
     followers: string[];
+    game: SimplifiedGames;
+}
+
+interface SimplifiedGames {
+  gameId: string;
+  name: string;
+  imageUrl: string;
+  siteUrl: string;
 }
 
 interface SimplifiedUser {
@@ -226,7 +233,7 @@ const CommunityPage = () => {
                                             <div className={`${classes.paragraph} ${classes.game}`}>
                                                 <p className={classes.spanData}>Jogo Tema: 
                                                 {community.game ? (
-                                                    <Link to={`/`} className={classes.infoLink}>{community.game}</Link>
+                                                    <Link to={community.game.siteUrl} className={classes.infoLink}> {community.game.name}</Link>
                                                 ): (
                                                     <span className={classes.noRegistry}>Sem jogo </span>
                                                 )}

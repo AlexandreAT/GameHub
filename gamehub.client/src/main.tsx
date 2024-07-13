@@ -25,6 +25,7 @@ import IsolatedPost from './routes/IsolatedPost.tsx'
 import SearchList from './routes/SearchList.tsx'
 import Library from './routes/Library.tsx'
 import GamesPage from './routes/GamesPage.tsx'
+import ListPostsGame from './routes/ListPostsGame.tsx'
 
 
 const router = createBrowserRouter([
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
       {
         path: "gamesPage",
         element: <GamesPage />
+      },
+      {
+        path: "searchPostsByGame",
+        element: <ListPostsGame />
       },
       {
         path: "*",

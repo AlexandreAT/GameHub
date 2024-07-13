@@ -372,7 +372,7 @@
 
 .headerInfo .divInfoController .game .spanData{
     width: 100%;
-    word-break: break-all;
+    align-items: center;
 }
 
 .youSpan{

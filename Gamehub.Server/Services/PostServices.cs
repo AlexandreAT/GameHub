@@ -1,5 +1,6 @@
 ﻿using DnsClient;
 using Gamehub.Server.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -73,6 +74,27 @@ namespace Gamehub.Server.Services
             var filter = Builders<Post>.Filter.Eq(p => p.IdAuthor, userId);
             var skip = (page - 1) * _pageSize;
             return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetPostsByGame(string query, int page)
+        {
+            var filter = Builders<Post>.Filter.Regex(p => p.Game.name, new BsonRegularExpression(query, "i"));
+            var skip = (page - 1) * _pageSize;
+            return await _postCollection.Find(filter).SortByDescending(x => x.Date).Skip(skip).Limit(_pageSize).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetGamePostsRelevant(string query, int page)
+        {
+            var filter = Builders<Post>.Filter.Regex(p => p.Game.name, new BsonRegularExpression(query, "i"));
+            var posts = await _postCollection.Find(filter).ToListAsync();
+            var orderedPosts = posts.OrderByDescending(x => (x.Like ?? new List<LikeDisLike>()).Count).Skip((page - 1) * _pageSize).Take(_pageSize);
+            return orderedPosts.ToList();
+        }
+
+        public async Task<int> CountGamePosts(string query)
+        {
+            var filter = Builders<Post>.Filter.Regex(p => p.Game.name, new BsonRegularExpression(query, "i"));
+            return (int)await _postCollection.CountDocumentsAsync(filter);
         }
 
         public async Task<List<Post>> GetUserPosts(string userId)

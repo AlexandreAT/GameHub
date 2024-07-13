@@ -181,21 +181,25 @@ namespace Gamehub.Server.Controllers
                         }
                     }
 
-                    if(order != null){
-                        if (order == "rating") {
+                    if (order != null)
+                    {
+                        if (order == "rating")
+                        {
                             gamesList = gamesList.OrderByDescending(g => g.pin).ThenByDescending(g => g.userRating).ToList();
                         }
-                        else if(order == "name")
+                        else if (order == "name")
                         {
                             gamesList = gamesList.OrderByDescending(g => g.pin).ThenBy(g => g.name).ToList();
                         }
                     }
-                    else{
+                    else
+                    {
                         // Ordenar a lista de jogos com base no status de pin e nome
                         gamesList = gamesList.OrderByDescending(g => g.pin).ThenBy(g => g.name).ToList();
                     }
 
-                    if(filter != null){
+                    if (filter != null)
+                    {
                         gamesList = gamesList.Where(g => g.state == filter).ToList();
                     }
 
@@ -215,6 +219,59 @@ namespace Gamehub.Server.Controllers
                     };
 
                     return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("Nenhum jogo encontrado");
+                }
+            }
+            else
+            {
+                return BadRequest("Erro ao buscar jogos");
+            }
+        }
+
+        [HttpPost("getSimplifiedGame")]
+        public async Task<IActionResult> GetSimplifiedGame([FromBody] string query)
+        {
+            var clientId = "d3ykuhzdgly8hq7c5iy1dxckg6tbvd";
+            var clientSecret = "63lpytvy9kow17vypjt55i1y439x5q";
+
+            var igdbClient = new IGDBClient(clientId, clientSecret);
+
+            var searchQuery = $"fields id, name, cover.image_id, url; " +
+                              $"search \"{query}\"; " +
+                              $"where version_parent = null & cover.image_id != null; " +
+                              $"limit 5;";
+            var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
+            List<SimplifiedGame> gamesList = new List<SimplifiedGame>();
+
+            if (games != null)
+            {
+                if (games.Any())
+                {
+                    foreach (var game in games)
+                    {
+                        var gameModel = new SimplifiedGame
+                        {
+                            gameId = game.Id,
+                            name = game.Name,
+                            siteUrl = game.Url
+                        };
+
+                        if (game.Cover != null && game.Cover.Value != null)
+                        {
+                            var coverImageId = game.Cover.Value.ImageId;
+                            var thumb = IGDB.ImageHelper.GetImageUrl(imageId: coverImageId, size: ImageSize.CoverBig, retina: false);
+                            gameModel.imageUrl = thumb;
+                        }
+
+                        gamesList.Add(gameModel);
+                    }
+
+                    gamesList = gamesList.OrderBy(g => g.name).ToList();
+
+                    return Ok(gamesList);
                 }
                 else
                 {

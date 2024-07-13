@@ -89,6 +89,8 @@ const GamesPage = () => {
             })));
         } catch (error) {
             console.error(error);
+            setSearchResults(null);
+            alert('Jogo não encontrado');
         }
     };
 
