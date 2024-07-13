@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { axios } from '../axios-config';
 import { useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
 
 import classes from './UpdateCommunity.module.css'
 import LoadingAnimation from './LoadingAnimation';
+import { FaSearch } from 'react-icons/fa';
 
 interface Props {
     user: User | null;
@@ -15,12 +16,19 @@ interface Community {
     id: string;
     creator: string;
     name: string;
-    game: string;
     backgroundImageSrc: string;
     iconeImageSrc: string;
     description: string;
     post: string[];
     followers: string[];
+    game: SimplifiedGames;
+}
+
+interface SimplifiedGames {
+    gameId: string;
+    name: string;
+    imageUrl: string;
+    siteUrl: string;
 }
 
 interface User {
@@ -42,6 +50,9 @@ function UpdateCommunity({ user, community }: Props) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [showDescription, setShowDescription] = useState(false);
+    const [games, setGames] = useState<SimplifiedGames[]>([]);
+    const [searchGames, setSearchGames] = useState('');
+    const [chosenGame, setChosenGame] = useState<SimplifiedGames | null>(null);
 
     const navigate = useNavigate();
 
@@ -138,7 +149,7 @@ function UpdateCommunity({ user, community }: Props) {
     }
 
     const deleteCommunity = async () => {
-        try{
+        try {
             await axios.delete(`/Community/${community.id}`, {
                 params: {
                     id: community.id,
@@ -147,13 +158,13 @@ function UpdateCommunity({ user, community }: Props) {
             })
 
             navigate(`/listCommunities/${user.id}/${"created"}`);
-        } catch(error){
+        } catch (error) {
             console.clear();
             console.error(error);
         }
     }
 
-    const putData =  async (url: string, data: any) => {
+    const putData = async (url: string, data: any) => {
         try {
             const response = await axios.put(url, qs.stringify(data), {
                 headers: {
@@ -187,12 +198,13 @@ function UpdateCommunity({ user, community }: Props) {
             alert("A descrição deve ter no máximo 1000 caracteres");
             return;
         }
-        else{
-            try{
+        else {
+            try {
                 const response = await putData(`/Community/${community.id}`, {
                     id: community.id,
                     name: name,
-                    description: description
+                    description: description,
+                    game: chosenGame
                 })
                 if (response.error) {
                     console.log('Error from the backend:', response.error);
@@ -204,6 +216,26 @@ function UpdateCommunity({ user, community }: Props) {
                 console.clear();
                 console.error('Erro ao atualizar comunidade:', error);
             }
+        }
+    }
+
+    const clearGames = async () => {
+        setGames([]);
+        setSearchGames('');
+        setChosenGame(null);
+    }
+
+    const handleSearchGames = async (e: FormEvent) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('/Igdb/getSimplifiedGame', searchGames);
+            const data = response.data;
+            setGames(data.map((game: SimplifiedGames) => ({
+                ...game,
+                gameId: game.gameId.toString()
+            })));
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -266,8 +298,27 @@ function UpdateCommunity({ user, community }: Props) {
                             )}
                         </div>
                     </div>
+                    <div className={classes.searchGamesDiv}>
+                        <label htmlFor='searchGame' className={classes.gameLabel}>Caso queira referenciar um jogo, pesquise-o abaixo</label>
+                        <div className={classes.searchBar}>
+                            <FaSearch className={classes.icon} />
+                            <input type='text' name="searchGame" id="searchGame" placeholder='Procurar jogo...' onChange={(e) => setSearchGames(e.target.value)} value={searchGames} />
+                            <button className={classes.btnSearch} onClick={handleSearchGames}>Pesquisar</button>
+                        </div>
+                        {games && games.length > 0 && (
+                            <div className={classes.searchResult}>
+                                <span>Escolha o jogo</span>
+                                <div className={classes.gamesDiv}>
+                                    {games.map((game: SimplifiedGames) => (
+                                        <button onClick={() => setChosenGame(game)} type="button" className={`${classes.gameOptions} ${chosenGame?.gameId === game.gameId && classes.select}`}><img src={game.imageUrl} className={classes.gameCover}></img> {game.name}</button>
+                                    ))}
+                                </div>
+                                <button className={classes.btnClear} onClick={clearGames}>Limpar</button>
+                            </div>
+                        )}
+                    </div>
                     <div className={classes.divBtn}>
-                        <button onClick={updateCommunity} className='btnTransparent'>Atualizar os dados (descrição ou nome)</button>
+                        <button onClick={updateCommunity} className='btnTransparent'>Atualizar os dados (descrição ou nome ou jogo)</button>
                     </div>
                     <div className={classes.divBtn}>
                         <button onClick={deleteCommunity} className='btnTransparent'>Deletar comunidade</button>

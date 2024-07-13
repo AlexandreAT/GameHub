@@ -37,6 +37,14 @@ interface Post {
     dislike: LikeDisLike[];
     imageSrc: string;
     communityId: string;
+    game: SimplifiedGames;
+}
+
+interface SimplifiedGames {
+    gameId: string;
+    name: string;
+    imageUrl: string;
+    siteUrl: string;
 }
 
 interface LikeDisLike {
@@ -361,8 +369,15 @@ const IsolatedPost = () => {
                                     )}
                                 </div>
                             </div>
-
-                            <div className={classes.divPost}>
+                            {post.game && (
+                                <div className={classes.divGame}>
+                                    <p>Jogo do post: <span className={classes.gameName}>{post.game.name}</span></p>
+                                    <Link to={post.game.siteUrl} className={classes.linkGame}>
+                                        <img src={post.game.imageUrl} alt={post.game.name} className={classes.imgGame}/>
+                                    </Link>
+                                </div>
+                            )}
+                            <div className={`${classes.divPost} ${post.game && classes.divPostWithGame}`}>
                                 {post.communityId && (
                                     <Link to={`/communityPage/${post.communityId}`} className={classes.communityLink}><p onMouseOver={() => getCommunity(post.communityId)}>Post de comunidade <span className={classes.community}><img src={community?.iconeImageSrc}></img> {community?.name}</span></p></Link>
                                 )}

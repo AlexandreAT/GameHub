@@ -1261,6 +1261,7 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .divSearchBar{
+        margin-top: -30px;
     }
     
     .searchBar{

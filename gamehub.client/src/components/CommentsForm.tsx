@@ -242,11 +242,9 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
           <button type='submit'>Enviar</button>
         </div>
       </form>
-      {comments === null ? (
-        <p>Sem comentários</p>
-      ) : (
-        comments.length === 0 ? (
-          <LoadingAnimation opt='small' />
+      {comments ? (
+        comments.length <= 0 ? (
+          <p>Sem comentários</p>
         ) : (
           <div className={classes.divCommentsList}>
             {comments && comments.map((comment: Comments) => (
@@ -318,7 +316,10 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
             ))}
           </div>
         )
+      ) : (
+        <LoadingAnimation opt='small' />
       )}
+
     </div>
   )
 }

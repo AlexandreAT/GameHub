@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import classes from './MakePostForm.module.css'
 import { axios } from '../axios-config';
 import LoadingAnimation from './LoadingAnimation';
+import { FaSearch } from 'react-icons/fa';
 
 interface Props {
   user: User | null;
@@ -14,6 +15,13 @@ interface User {
   imageSrc: string;
 }
 
+interface SimplifiedGames{
+  gameId: string;
+  name: string;
+  imageUrl: string;
+  siteUrl: string;
+}
+
 const MakePostForm = ({ user, community }: Props) => {
 
   const [title, setTitle] = useState('');
@@ -21,6 +29,9 @@ const MakePostForm = ({ user, community }: Props) => {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isPosting, setIsPosting] = useState(false);
+  const [games, setGames] = useState<SimplifiedGames[]>([]);
+  const [searchGames, setSearchGames] = useState('');
+  const [chosenGame, setChosenGame] = useState<SimplifiedGames | null>(null);
 
   if (!user) {
     return <LoadingAnimation opt='small' />
@@ -35,6 +46,7 @@ const MakePostForm = ({ user, community }: Props) => {
         Title: data.title,
         Content: data.content,
         ImageSrc: data.imageSrc,
+        Game: data.game,
         CommunityId: data.communityId
       };
 
@@ -69,6 +81,7 @@ const MakePostForm = ({ user, community }: Props) => {
 
     const author = user.nickname;
     const idAuthor = user.id;
+    const game = chosenGame;
     let imageSrc = null;
 
     if (image) {
@@ -84,6 +97,7 @@ const MakePostForm = ({ user, community }: Props) => {
           title,
           content,
           imageSrc,
+          game
         })
 
         if (response.error) {
@@ -124,7 +138,8 @@ const MakePostForm = ({ user, community }: Props) => {
           title,
           content,
           imageSrc,
-          communityId,
+          game,
+          communityId
         });
 
         if (response.error) {
@@ -181,6 +196,26 @@ const MakePostForm = ({ user, community }: Props) => {
     }
   };
 
+  const handleSearchGames = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('/Igdb/getSimplifiedGame', searchGames);
+      const data = response.data;
+      setGames(data.map((game: SimplifiedGames) => ({
+        ...game,
+        gameId: game.gameId.toString()
+    })));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const clearGames = async () => {
+    setGames([]);
+    setSearchGames('');
+    setChosenGame(null);
+  }
+
   return (
     <div className={classes.containerPost}>
       <h2>Fazer postagem</h2>
@@ -201,6 +236,25 @@ const MakePostForm = ({ user, community }: Props) => {
               <img src={imagePreview} alt='Preview da imagem' />
             )}
           </div>
+        </div>
+        <div className={classes.searchGamesDiv}>
+          <label htmlFor='searchGame' className={classes.gameLabel}>Caso queira referenciar um jogo, pesquise-o abaixo</label>
+          <div className={classes.searchBar}>
+            <FaSearch className={classes.icon} />
+            <input type='text' name="searchGame" id="searchGame" placeholder='Procurar jogo...' onChange={(e) => setSearchGames(e.target.value)} value={searchGames} />
+            <button className={classes.btnSearch} onClick={handleSearchGames}>Pesquisar</button>
+          </div>
+          {games && games.length > 0 && (
+            <div className={classes.searchResult}>
+              <span>Escolha o jogo</span>
+              <div className={classes.gamesDiv}>
+                {games.map((game: SimplifiedGames) => (
+                  <button onClick={() => setChosenGame(game)} type="button" className={`${classes.gameOptions} ${chosenGame?.gameId === game.gameId && classes.select}`}><img src={game.imageUrl} className={classes.gameCover}></img> {game.name}</button>
+                ))}
+              </div>
+              <button className={classes.btnClear} onClick={clearGames}>Limpar</button>
+            </div>
+          )}
         </div>
         <div className={classes.divButton}>
           <button className={classes.button} type='submit' disabled={isPosting}>Postar</button>

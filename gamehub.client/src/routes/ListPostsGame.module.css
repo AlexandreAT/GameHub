@@ -1,0 +1,107 @@
+.divMain{
+    display: flex;
+    flex-direction: column;
+}
+
+.divCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-top: 95px;
+    gap: 2rem;
+}
+
+.divContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 70%;
+}
+
+.divSearchBar{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchBar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.searchBar .icon{
+    position: absolute;
+    fill: var(--grey);
+    left: 10px;
+    transition: all 0.3s ease;
+}
+
+.searchBar input{
+    width: 100%;
+    height: 100%;
+    padding: 10px 35px;
+    border: 2px solid var(--grey);
+    border-radius: 10px;
+    font-size: 16px;
+    color: var(--whitesmoke);
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.searchBar input:focus,
+.searchBar:focus-within .icon{
+    color: var(--turquoise);
+    border-color: var(--turquoise);
+    fill: var(--turquoise);
+}
+
+.searchBar input::placeholder{
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    .divCenter{
+        margin-top: 45px;
+    }
+    .divContent{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        width: 75%;
+        margin-top: -2rem;
+    }
+    
+    .searchBar{
+        width: 60%;
+        height: 25px;
+    }
+    
+    .searchBar .icon{
+        font-size: 12px;
+    }
+    
+    .searchBar input{
+        width: 100%;
+        height: 100%;
+        padding: 0px 25px;
+        font-size: 14px;
+    }
+    
+    .searchBar input::placeholder{
+        font-size: 12px;
+    }
+}

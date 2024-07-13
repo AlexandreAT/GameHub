@@ -11,6 +11,7 @@ import UpdateUserComponnent from '../components/UpdateUserComponnent';
 import Sidebar from '../components/Sidebar';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 import LoadingAnimation from '../components/LoadingAnimation';
+import { IoLibrarySharp } from 'react-icons/io5';
 
 interface SimplifiedCommunity {
   id: string;
@@ -258,7 +259,7 @@ function Profile() {
       });
       if (opt === "following") {
         setSimplifiedFollowingCommunity(response.data.slice(0, 5));
-      }  else if (opt === "created") {
+      } else if (opt === "created") {
         setSimplifiedCommunity(response.data.slice(0, 5));
       }
     } catch (error) {
@@ -293,7 +294,7 @@ function Profile() {
 
   return (
     <div className={classes.divProfileMain}>
-      <div className='navbar'>{<Navbar user={user}/>}</div>
+      <div className='navbar'>{<Navbar user={user} />}</div>
       {!showEditForm ? (
         <div className={classes.divUser}>
 
@@ -302,7 +303,7 @@ function Profile() {
           <div className={classes.divUserInfo}>
             <div className={classes.background}>
               {backgroundImagePreview ? (
-                <img src={backgroundImagePreview} alt='Preview do background' className={classes.imgBackground}/>
+                <img src={backgroundImagePreview} alt='Preview do background' className={classes.imgBackground} />
               ) : (
                 user.backgroundImage ? (
                   <img src={user.backgroundImage} alt={user.nickname} className={classes.imgBackground} />
@@ -320,12 +321,12 @@ function Profile() {
               <div className={classes.userImg}>
                 <div className={classes.imgController}>
                   {imagePreview ? (
-                    <img src={imagePreview} alt='Preview da imagem' className={classes.img}/>
+                    <img src={imagePreview} alt='Preview da imagem' className={classes.img} />
                   ) : (
                     user.imageSrc ? (
-                      <img src={user.imageSrc} alt={user.nickname} className={classes.img}/>
+                      <img src={user.imageSrc} alt={user.nickname} className={classes.img} />
                     ) : (
-                      <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' className={classes.img}/>
+                      <img src="https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png" alt='Sem imagem' className={classes.img} />
                     )
                   )}
                   <label htmlFor='file'><span className={classes.spanImg}>Clique aqui</span> e escolha uma imagem nova</label>
@@ -477,7 +478,10 @@ function Profile() {
               </div>
             </div>
           </div>
-
+          <Link to={`/library/${user.id}`} className={classes.libraryLink}>
+            <IoLibrarySharp className={classes.libraryIcon} />
+            Acessar sua biblioteca
+          </Link>
           {<UserPostsComponent user={user} />}
         </div>
       ) : (

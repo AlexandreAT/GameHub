@@ -81,7 +81,6 @@ const Library = () => {
         try {
             const response = await axios.get<User>('/Users/current');
             setUser(response.data);
-            console.log(user?.gamesLibrary);
             
         } catch (error) {
             console.error('Error fetching user:', error);
@@ -322,6 +321,9 @@ const Library = () => {
 
     const handleRating = async (rating: number, gameId: string, e: FormEvent) => {
         e.preventDefault();
+        if (isNaN(rating)) {
+            rating = 0;
+        }
         try {
             await postLibrary("/Users/handleRating", {
                 rating: rating,

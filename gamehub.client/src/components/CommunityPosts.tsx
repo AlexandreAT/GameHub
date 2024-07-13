@@ -39,6 +39,14 @@ interface Post {
     like: LikeDisLike[];
     dislike: LikeDisLike[];
     imageSrc: string;
+    game: SimplifiedGames;
+}
+
+interface SimplifiedGames{
+    gameId: string;
+    name: string;
+    imageUrl: string;
+    siteUrl: string;
 }
 
 interface LikeDisLike {
@@ -339,6 +347,9 @@ const CommunityPosts = ({ user, communityId }: Props) => {
                                     </div>
                                 )}
                             </div>
+                            {post.game && (
+                                <Link to={post.game.siteUrl} className={classes.postGame}><img src={post.game.imageUrl} className={classes.gameCover}/>{post.game.name} <span>(jogo referenciado)</span></Link>
+                            )}
                             <div className={classes.postContent}>
                                 <h3 className={classes.title}>{post.title}</h3>
                                 <div
