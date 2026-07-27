@@ -75,7 +75,11 @@ namespace Gamehub.Server.Controllers
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("getPost/{id}")]
-        public async Task<Post> GetPost(string id) => await _postServices.GetAsync(id);
+        public async Task<ActionResult<Post>> GetPost(string id)
+        {
+            var post = await _postServices.GetAsync(id);
+            return post is null ? NotFound() : Ok(post);
+        }
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("communityPosts/{id}")]

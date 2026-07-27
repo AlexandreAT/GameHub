@@ -309,3 +309,5 @@ static string ReadPassword(string prompt)
             password.Append(key.KeyChar);
     }
 }
+
+public partial class Program;

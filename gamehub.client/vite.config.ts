@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
@@ -38,24 +38,33 @@ const getDevelopmentHttps = () => {
     };
 };
 
-export default defineConfig(({ command }) => ({
-    plugins: [plugin()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
-    },
-    build: {
-        emptyOutDir: true
-    },
-    server: {
-        proxy: {
-            '/api': {
-                target: 'https://localhost:7045',
-                secure: false
+export default defineConfig(({ command, mode }) => {
+    const environment = loadEnv(mode, process.cwd(), '');
+    const apiTarget = environment.GAMEHUB_DEV_API_TARGET?.trim()
+        || 'https://localhost:7045';
+
+    return {
+        plugins: [plugin()],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url))
             }
         },
-        port: 5173,
-        https: command === 'serve' ? getDevelopmentHttps() : undefined
-    }
-}));
+        build: {
+            emptyOutDir: true
+        },
+        server: {
+            proxy: {
+                '/api': {
+                    target: apiTarget,
+                    secure: false,
+                    headers: {
+                        'X-Forwarded-Proto': 'https'
+                    }
+                }
+            },
+            port: 5173,
+            https: command === 'serve' ? getDevelopmentHttps() : undefined
+        }
+    };
+});
