@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import * as qs from 'qs';
 
 import classes from './AnotherUserProfile.module.css'
@@ -68,7 +67,7 @@ const AnotherUserProfile = () => {
         console.clear();
         console.error('Error fetching user:', error);
 
-        const token = Cookies.get('.AspNetCore.Application.Authorization');
+        const token = getAuthToken();
 
         if (!token) {
           navigate('/');
@@ -127,7 +126,7 @@ const AnotherUserProfile = () => {
     window.location.reload();
   }
 
-  const getFollowersOrFollowing = async (url: string, data: any) => {
+  const getFollowersOrFollowing = async (url: string, data: Record<string, unknown>) => {
     try {
       const response = await axios.post(url, qs.stringify(data), {
         headers: {
@@ -153,7 +152,7 @@ const AnotherUserProfile = () => {
     }
   }
 
-  const getCreatedOrFollowingCommunities = async (url: string, data: any, opt: string) => {
+  const getCreatedOrFollowingCommunities = async (url: string, data: Record<string, unknown>, opt: string) => {
     try {
       const response = await axios.post(url, qs.stringify(data), {
         headers: {

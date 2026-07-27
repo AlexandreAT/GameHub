@@ -1,7 +1,7 @@
-import React, { useState, FormEvent, useEffect } from 'react';
-import { axios } from '../axios-config';
+import React, { useState, FormEvent, useEffect, useCallback } from 'react';
+import { isAxiosError } from 'axios';
+import { axios, getAuthToken } from '../axios-config';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
-import Cookies from 'js-cookie';
 
 import classes from "./Register.module.css";
 import { cleanPhoneNumber } from '../utils/clearPhoneNumber';
@@ -9,16 +9,19 @@ import { Link, Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import { TbAlertSquareRounded } from "react-icons/tb";
 
+interface RegisterFormData {
+  name: string;
+  lastName: string;
+  clearPhone: string;
+  email: string;
+  password: string;
+  nickname: string;
+}
+
 const Cadastro = () => {
 
   const [formTouched, setFormTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const token = Cookies.get('.AspNetCore.Application.Authorization')
-
-  if (token) {
-    return <Navigate to="/logado" replace />
-  }
-
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +46,7 @@ const Cadastro = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  const postData = async (url: string, data: any) => {
+  const postData = async (url: string, data: RegisterFormData) => {
     try {
       // Converte as propriedades do objeto User para PascalCase
       const userPascalCase = {
@@ -61,11 +64,11 @@ const Cadastro = () => {
         }
       });
       return { data: response.data, error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error posting data:', error);
-      if (error.response) {
+      if (isAxiosError(error) && error.response) {
         return { data: null, error: error.response.data };
-      } else if (error.request) {
+      } else if (isAxiosError(error) && error.request) {
         return { data: null, error: { message: 'No response received from the server.' } };
       } else {
         return { data: null, error: { message: 'Error making the request.' } };
@@ -73,7 +76,7 @@ const Cadastro = () => {
     }
   };
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     let inputError = {
       phone: "",
       email: "",
@@ -149,7 +152,7 @@ const Cadastro = () => {
 
     setFormError(inputError);
     setFormTouched(true);
-  }
+  }, [confirmPassword, email, lastName, name, nickname, password, termsOfCondition])
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -245,7 +248,11 @@ const Cadastro = () => {
 
   useEffect(() => {
     validateForm();
-  }, [termsOfCondition, name, lastName, nickname, phone, email, password, confirmPassword])
+  }, [validateForm])
+
+  if (getAuthToken()) {
+    return <Navigate to="/logado" replace />
+  }
 
   return (
     <div className="form">

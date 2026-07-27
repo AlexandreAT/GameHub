@@ -1,9 +1,8 @@
 import { useNavigate} from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
 
-import Cookies from 'js-cookie';
 import classes from "./Logado.module.css";
 
 import Navbar from '../components/Navbar'
@@ -37,7 +36,7 @@ const Logado = () => {
         console.clear();
         console.error('Error fetching user:', error);
 
-        const token = Cookies.get('.AspNetCore.Application.Authorization');
+        const token = getAuthToken();
 
         if (!token) {
           navigate('/');

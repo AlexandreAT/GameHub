@@ -1,8 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useNavigate } from 'react-router-dom';
 
-import Cookies from 'js-cookie';
 import classes from './ListPostsGame.module.css';
 
 import Navbar from '../components/Navbar';
@@ -37,7 +36,7 @@ const ListPostsGame = () => {
                 console.clear();
                 console.error('Error fetching user:', error);
 
-                const token = Cookies.get('.AspNetCore.Application.Authorization');
+                const token = getAuthToken();
 
                 if (!token) {
                     navigate('/');

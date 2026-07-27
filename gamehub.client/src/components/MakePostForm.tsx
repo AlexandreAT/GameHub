@@ -1,4 +1,5 @@
-import { FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { isAxiosError } from 'axios';
 import classes from './MakePostForm.module.css'
 import { axios } from '../axios-config';
 import LoadingAnimation from './LoadingAnimation';
@@ -8,6 +9,14 @@ import { uploadImage } from '../services/uploadImage';
 interface Props {
   user: User | null;
   community?: string | null;
+}
+
+interface PostFormData {
+  title: string;
+  content: string;
+  imageSrc: string | null;
+  game: SimplifiedGames | null;
+  communityId?: string;
 }
 
 interface User {
@@ -38,7 +47,7 @@ const MakePostForm = ({ user, community }: Props) => {
     return <LoadingAnimation opt='small' />
   }
 
-  const postData = async (url: string, data: any) => {
+  const postData = async (url: string, data: PostFormData) => {
     try {
       // Converte as propriedades do objeto Post para PascalCase
       const postPascalCase = {
@@ -55,11 +64,11 @@ const MakePostForm = ({ user, community }: Props) => {
         }
       });
       return { data: response.data, error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error posting data:', error);
-      if (error.response) {
+      if (isAxiosError(error) && error.response) {
         return { data: null, error: error.response.data };
-      } else if (error.request) {
+      } else if (isAxiosError(error) && error.request) {
         return { data: null, error: { message: 'No response received from the server.' } };
       } else {
         return { data: null, error: { message: 'Error making the request.' } };
@@ -164,19 +173,18 @@ const MakePostForm = ({ user, community }: Props) => {
     }
   }
 
-  const handleFile = (event: any) => {
-    setImage(event.target.files[0]);
-    setImagePreview(URL.createObjectURL(event.target.files[0]));
+  const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedImage = event.target.files?.[0];
+    if (!selectedImage) return;
+
+    setImage(selectedImage);
+    setImagePreview(URL.createObjectURL(selectedImage));
   }
 
-  const handleUploadImage = async () => {
-    if (!image) return;
+  const handleUploadImage = async (): Promise<string> => {
+    if (!image) throw new Error('Nenhuma imagem foi selecionada.');
 
-    try {
-      return await uploadImage(image);
-    } catch (error) {
-      console.error(error);
-    }
+    return uploadImage(image);
   };
 
   const handleSearchGames = async (e: FormEvent) => {

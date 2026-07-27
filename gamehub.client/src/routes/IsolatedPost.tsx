@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import * as qs from 'qs';
 
 import { FaRegComment } from "react-icons/fa";
@@ -90,7 +89,7 @@ const IsolatedPost = () => {
                 console.clear();
                 console.error('Error fetching user:', error);
 
-                const token = Cookies.get('.AspNetCore.Application.Authorization');
+                const token = getAuthToken();
 
                 if (!token) {
                     navigate('/');
@@ -105,7 +104,7 @@ const IsolatedPost = () => {
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
         return !isNaN(date.getTime());
-    };
+    }
 
     const GetPost = async () => {
         try {

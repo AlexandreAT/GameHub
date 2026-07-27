@@ -5,6 +5,7 @@ import { SlDislike, SlLike } from "react-icons/sl";
 import { IoTrashBin } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import * as qs from 'qs';
+import { isAxiosError } from 'axios';
 import LoadingAnimation from './LoadingAnimation';
 
 interface CommentProps {
@@ -127,7 +128,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
     checksFeedback();
   }, [comments])
 
-  const postData = async (url: string, data: any) => {
+  const postData = async (url: string, data: Record<string, unknown>) => {
     try {
       const response = await axios.post(url, qs.stringify(data), {
         headers: {
@@ -135,11 +136,11 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
         }
       });
       return { data: response.data, error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error posting data:', error);
-      if (error.response) {
+      if (isAxiosError(error) && error.response) {
         return { data: null, error: error.response.data };
-      } else if (error.request) {
+      } else if (isAxiosError(error) && error.request) {
         return { data: null, error: { message: 'No response received from the server.' } };
       } else {
         return { data: null, error: { message: 'Error making the request.' } };

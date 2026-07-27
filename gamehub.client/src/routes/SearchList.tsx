@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
 import classes from "./SearchList.module.css";
 import Navbar from '../components/Navbar';
@@ -51,7 +50,7 @@ const SearchList = () => {
                 console.clear();
                 console.error('Error fetching user:', error);
 
-                const token = Cookies.get('.AspNetCore.Application.Authorization');
+                const token = getAuthToken();
 
                 if (!token) {
                     navigate('/');
@@ -83,7 +82,7 @@ const SearchList = () => {
             });
             setSimplifiedUsers(response.data);
         } catch (error) {
-
+            console.error('Não foi possível buscar usuários.', error);
         }
     }
 
@@ -96,7 +95,7 @@ const SearchList = () => {
             });
             setSimplifiedCommunities(response.data);
         } catch (error) {
-
+            console.error('Não foi possível buscar comunidades.', error);
         }
     }
 

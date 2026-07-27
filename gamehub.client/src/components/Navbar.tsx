@@ -1,11 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 
 import { FaSearch } from "react-icons/fa";
 
 import classes from "./Navbar.module.css";
-import { axios } from '../axios-config';
+import { axios, clearAuthToken } from '../axios-config';
 
 interface Props {
   user?: User;
@@ -40,7 +39,7 @@ function Navbar({ user }: Props) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    Cookies.remove('.AspNetCore.Application.Authorization');
+    clearAuthToken();
     navigate('/');
   }
 
@@ -57,7 +56,7 @@ function Navbar({ user }: Props) {
       });
       setSimplifiedUsers(response.data);
     } catch (error) {
-
+      console.error('Não foi possível buscar usuários.', error);
     }
   }
 
@@ -70,7 +69,7 @@ function Navbar({ user }: Props) {
       });
       setSimplifiedCommunities(response.data);
     } catch (error) {
-
+      console.error('Não foi possível buscar comunidades.', error);
     }
   }
 

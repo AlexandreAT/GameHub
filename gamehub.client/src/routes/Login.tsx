@@ -2,8 +2,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'
-import { axios, setAuthToken } from '../axios-config';
-import Cookies from 'js-cookie';
+import { axios, getAuthToken, setAuthToken } from '../axios-config';
 
 import { FormEvent, useState } from 'react'
 
@@ -15,7 +14,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const token = Cookies.get('.AspNetCore.Application.Authorization')
+    const token = getAuthToken();
 
     if (token) {
         return <Navigate to="/logado" replace />
@@ -75,10 +74,6 @@ const Login = () => {
                         </div>
                     </div>
                     <div className={classes.bottomDiv}>
-                        <div className={classes.formRemember}>
-                            <input type="checkbox" name='login-check' />
-                            <label htmlFor="login-chek">Lembre-se de mim</label>
-                        </div>
                         <div>
                             <Link to="/forgotPassword" className='link'>Esqueceu a senha?</Link>
                         </div>

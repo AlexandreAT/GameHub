@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar'
-import { useEffect, useState } from 'react';
-import { axios } from '../axios-config';
-import Cookies from 'js-cookie';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { isAxiosError } from 'axios';
+import { axios, getAuthToken } from '../axios-config';
 import { useNavigate, Link } from 'react-router-dom';
 import * as qs from 'qs';
 
@@ -72,7 +72,7 @@ function Profile() {
         console.clear();
         console.error('Error fetching user:', error);
 
-        const token = Cookies.get('.AspNetCore.Application.Authorization');
+        const token = getAuthToken();
 
         if (!token) {
           navigate('/');
@@ -88,9 +88,12 @@ function Profile() {
     return <LoadingAnimation opt='user' />
   }
 
-  const handleImageChange = (event: any) => {
-    setImage(event.target.files[0]);
-    setImagePreview(URL.createObjectURL(event.target.files[0]));
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedImage = event.target.files?.[0];
+    if (!selectedImage) return;
+
+    setImage(selectedImage);
+    setImagePreview(URL.createObjectURL(selectedImage));
   };
 
   const handleUploadImage = async () => {
@@ -114,9 +117,12 @@ function Profile() {
     }
   };
 
-  const handleBackgroundChange = (event: any) => {
-    setBackground(event.target.files[0]);
-    setBackgroundImagePreview(URL.createObjectURL(event.target.files[0]));
+  const handleBackgroundChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedBackground = event.target.files?.[0];
+    if (!selectedBackground) return;
+
+    setBackground(selectedBackground);
+    setBackgroundImagePreview(URL.createObjectURL(selectedBackground));
   };
 
   const handleUploadBackground = async () => {
@@ -149,7 +155,7 @@ function Profile() {
     setShowBiographyForm(!showBiographyForm);
   }
 
-  const putData = async (url: string, data: any) => {
+  const putData = async (url: string, data: Record<string, unknown> & { biography?: string }) => {
     try {
       const response = await axios.put(url, qs.stringify(data), {
         headers: {
@@ -158,14 +164,14 @@ function Profile() {
       });
 
       // Atualizar o estado do usuário com a biografia
-      setUser({ ...user, biography: data.biography });
+      setUser({ ...user, biography: data.biography ?? '' });
       return { data: response.data, error: null };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error posting data:', error);
-      if (error.response) {
+      if (isAxiosError(error) && error.response) {
         return { data: null, error: error.response.data };
-      } else if (error.request) {
+      } else if (isAxiosError(error) && error.request) {
         return { data: null, error: { message: 'No response received from the server.' } };
       } else {
         return { data: null, error: { message: 'Error making the request.' } };
@@ -194,7 +200,7 @@ function Profile() {
 
   }
 
-  const getFollowersOrFollowing = async (url: string, data: any, opt: string) => {
+  const getFollowersOrFollowing = async (url: string, data: Record<string, unknown>, opt: string) => {
     try {
       const response = await axios.post(url, qs.stringify(data), {
         headers: {
@@ -228,7 +234,7 @@ function Profile() {
     }
   }
 
-  const getCreatedOrFollowingCommunities = async (url: string, data: any, opt: string) => {
+  const getCreatedOrFollowingCommunities = async (url: string, data: Record<string, unknown>, opt: string) => {
     try {
       const response = await axios.post(url, qs.stringify(data), {
         headers: {

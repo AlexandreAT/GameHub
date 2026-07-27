@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react'
+import { isAxiosError } from 'axios';
 
 import classes from "./RegisterCommunity.module.css"
 import { axios } from '../axios-config';
@@ -7,7 +8,7 @@ const RegisterCommunity = () => {
 
     const [name, setName] = useState('');
 
-    const postData = async (url: string, data: any) => {
+    const postData = async (url: string, data: { name: string }) => {
         try {
 
             const communityPascalCase = {
@@ -20,11 +21,11 @@ const RegisterCommunity = () => {
                 }
             });
             return { data: response.data, error: null };
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error posting data:', error);
-            if (error.response) {
+            if (isAxiosError(error) && error.response) {
                 return { data: null, error: error.response.data };
-            } else if (error.request) {
+            } else if (isAxiosError(error) && error.request) {
                 return { data: null, error: { message: 'No response received from the server.' } };
             } else {
                 return { data: null, error: { message: 'Error making the request.' } };

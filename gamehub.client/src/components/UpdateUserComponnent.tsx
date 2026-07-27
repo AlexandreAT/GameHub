@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { isAxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { axios } from '../axios-config';
+import { axios, clearAuthToken } from '../axios-config';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 import { cleanPhoneNumber } from '../utils/clearPhoneNumber';
 import * as qs from 'qs';
@@ -65,8 +65,10 @@ const UpdateUserComponnent = ({ user }: Props) => {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
             window.location.reload();
-        } catch (requestError: any) {
-            setError(requestError.response?.data ?? 'Não foi possível atualizar o perfil.');
+        } catch (requestError: unknown) {
+            setError(isAxiosError(requestError)
+                ? requestError.response?.data ?? 'Não foi possível atualizar o perfil.'
+                : 'Não foi possível atualizar o perfil.');
         }
     };
 
@@ -88,15 +90,17 @@ const UpdateUserComponnent = ({ user }: Props) => {
             setNewPassword('');
             setConfirmPassword('');
             setError('Senha alterada com sucesso.');
-        } catch (requestError: any) {
-            setError(requestError.response?.data ?? 'Não foi possível alterar a senha.');
+        } catch (requestError: unknown) {
+            setError(isAxiosError(requestError)
+                ? requestError.response?.data ?? 'Não foi possível alterar a senha.'
+                : 'Não foi possível alterar a senha.');
         }
     };
 
     const deleteUser = async () => {
         try {
             await axios.delete('/Users/current');
-            Cookies.remove('.AspNetCore.Application.Authorization');
+            clearAuthToken();
             navigate('/');
         } catch {
             setError('Não foi possível excluir a conta.');

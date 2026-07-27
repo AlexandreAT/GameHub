@@ -89,7 +89,7 @@ const ListUsersPostsComponnent = ({ user }: Props) => {
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
         return !isNaN(date.getTime());
-    };
+    }
 
     const getUsersPosts = async (url: string) => {
         try {

@@ -1,19 +1,17 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import Axios from 'axios';
+import { clearAuthToken, getAuthToken, setAuthToken } from './auth-storage';
 
 const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
-axios.defaults.baseURL = configuredApiUrl
-  ? configuredApiUrl.replace(/\/$/, '')
-  : '/api';
+const axios = Axios.create({
+  baseURL: configuredApiUrl ? configuredApiUrl.replace(/\/$/, '') : '/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-axios.defaults.headers.post['Content-Type'] = "application/json";
-
-axios.defaults.timeout = 10000;
-
-// Interceptor de solicitação que verifica se um token JWT está presente nos cookies
-// e o define no cabeçalho da autorização para cada solicitação HTTP
 axios.interceptors.request.use((config) => {
-  const token = Cookies.get('.AspNetCore.Application.Authorization');
+  const token = getAuthToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -24,25 +22,10 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      Cookies.remove('.AspNetCore.Application.Authorization');
+      clearAuthToken();
     }
     return Promise.reject(error);
   }
 );
 
-const setAuthToken = (token: string) => {
-    if (token) {
-      // Define o token no cookie
-      Cookies.set('.AspNetCore.Application.Authorization', token, {
-        expires: 1 / 48,
-        secure: true,
-        sameSite: 'strict'
-      });
-      
-    } else {
-      // Limpa o cookie
-      Cookies.remove('.AspNetCore.Application.Authorization');
-    }
-  };
-
-export { axios, setAuthToken };
+export { axios, clearAuthToken, getAuthToken, setAuthToken };

@@ -1,8 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react';
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
-import Cookies from 'js-cookie';
 import * as qs from 'qs';
 
 import Navbar from '../components/Navbar';
@@ -85,7 +84,7 @@ const Library = () => {
         } catch (error) {
             console.error('Error fetching user:', error);
 
-            const token = Cookies.get('.AspNetCore.Application.Authorization');
+            const token = getAuthToken();
 
             if (!token) {
                 navigate('/');
@@ -231,7 +230,7 @@ const Library = () => {
         });
     };
 
-    const postLibrary = async (url: string, data: any) => {
+    const postLibrary = async (url: string, data: Record<string, unknown>) => {
         try {
             await axios.post(url, qs.stringify(data), {
                 headers: {

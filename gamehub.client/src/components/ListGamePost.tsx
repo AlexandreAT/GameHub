@@ -91,7 +91,7 @@ const ListGamePost = ({ user, query }: Props) => {
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
         return !isNaN(date.getTime());
-    };
+    }
 
     const getGamePosts = async (url: string) => {
         try {

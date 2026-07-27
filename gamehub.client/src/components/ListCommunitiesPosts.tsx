@@ -91,7 +91,7 @@ const ListCommunitiesPosts = ({ user }: Props) => {
     function isValidDateString(dateString: Date): boolean {
         const date = new Date(dateString);
         return !isNaN(date.getTime());
-    };
+    }
 
     const getCommunitiesPosts = async (url: string) => {
         try {

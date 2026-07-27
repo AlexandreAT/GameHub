@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useNavigate } from 'react-router-dom';
 
-import Cookies from 'js-cookie';
 import classes from './FollowingCommunitiesPost.module.css';
 
 import Navbar from '../components/Navbar';
@@ -34,7 +33,7 @@ const FollowingCommunitiesPost = () => {
                 console.clear();
                 console.error('Error fetching user:', error);
 
-                const token = Cookies.get('.AspNetCore.Application.Authorization');
+                const token = getAuthToken();
 
                 if (!token) {
                     navigate('/');

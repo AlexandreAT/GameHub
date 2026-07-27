@@ -96,7 +96,7 @@ function UserPostsComponent({ user, anotherUser }: PostProps) {
   function isValidDateString(dateString: Date): boolean {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
-  };
+  }
 
   const getUserPosts = async (url: string, userId?: string) => {
     if (userId) {

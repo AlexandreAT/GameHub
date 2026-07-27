@@ -1,4 +1,5 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { isAxiosError } from 'axios';
 import { axios } from '../axios-config';
 import { useNavigate } from 'react-router-dom';
 import * as qs from 'qs';
@@ -57,6 +58,15 @@ function UpdateCommunity({ user, community }: Props) {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!community) return;
+
+        setName(community.name);
+        setDescription(community.description);
+        setImagePreview(community.iconeImageSrc);
+        setBackgroundImagePreview(community.backgroundImageSrc);
+    }, [community])
+
     if (!user) {
         return <LoadingAnimation opt='user' />
     }
@@ -65,16 +75,12 @@ function UpdateCommunity({ user, community }: Props) {
         return <LoadingAnimation opt='generic' />
     }
 
-    useEffect(() => {
-        setName(community.name);
-        setDescription(community.description);
-        setImagePreview(community.iconeImageSrc);
-        setBackgroundImagePreview(community.backgroundImageSrc);
-    }, [])
+    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const selectedImage = event.target.files?.[0];
+        if (!selectedImage) return;
 
-    const handleImageChange = (event: any) => {
-        setImage(event.target.files[0]);
-        setImagePreview(URL.createObjectURL(event.target.files[0]));
+        setImage(selectedImage);
+        setImagePreview(URL.createObjectURL(selectedImage));
     };
 
     const handleUploadImage = async () => {
@@ -100,9 +106,12 @@ function UpdateCommunity({ user, community }: Props) {
         }
     };
 
-    const handleBackgroundChange = (event: any) => {
-        setBackground(event.target.files[0]);
-        setBackgroundImagePreview(URL.createObjectURL(event.target.files[0]));
+    const handleBackgroundChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const selectedBackground = event.target.files?.[0];
+        if (!selectedBackground) return;
+
+        setBackground(selectedBackground);
+        setBackgroundImagePreview(URL.createObjectURL(selectedBackground));
     };
 
     const handleUploadBackground = async () => {
@@ -144,7 +153,7 @@ function UpdateCommunity({ user, community }: Props) {
         }
     }
 
-    const putData = async (url: string, data: any) => {
+    const putData = async (url: string, data: Record<string, unknown>) => {
         try {
             const response = await axios.put(url, qs.stringify(data), {
                 headers: {
@@ -153,11 +162,11 @@ function UpdateCommunity({ user, community }: Props) {
             });
             return { data: response.data, error: null };
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error posting data:', error);
-            if (error.response) {
+            if (isAxiosError(error) && error.response) {
                 return { data: null, error: error.response.data };
-            } else if (error.request) {
+            } else if (isAxiosError(error) && error.request) {
                 return { data: null, error: { message: 'No response received from the server.' } };
             } else {
                 return { data: null, error: { message: 'Error making the request.' } };
@@ -290,7 +299,7 @@ function UpdateCommunity({ user, community }: Props) {
                                 <span>Escolha o jogo</span>
                                 <div className={classes.gamesDiv}>
                                     {games.map((game: SimplifiedGames) => (
-                                        <button onClick={() => setChosenGame(game)} type="button" className={`${classes.gameOptions} ${chosenGame?.gameId === game.gameId && classes.select}`}><img src={game.imageUrl} className={classes.gameCover}></img> {game.name}</button>
+                                        <button key={game.gameId} onClick={() => setChosenGame(game)} type="button" className={`${classes.gameOptions} ${chosenGame?.gameId === game.gameId && classes.select}`}><img src={game.imageUrl} className={classes.gameCover}></img> {game.name}</button>
                                     ))}
                                 </div>
                                 <button className={classes.btnClear} onClick={clearGames}>Limpar</button>

@@ -45,6 +45,9 @@ export default defineConfig(({ command }) => ({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
+    build: {
+        emptyOutDir: true
+    },
     server: {
         proxy: {
             '/api': {

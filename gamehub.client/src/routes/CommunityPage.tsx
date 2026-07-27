@@ -1,8 +1,7 @@
 import { useEffect, useState, FormEvent } from 'react';
-import { axios } from '../axios-config';
+import { axios, getAuthToken } from '../axios-config';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { TbPencilPlus, TbPencilX } from "react-icons/tb";
-import Cookies from 'js-cookie';
 import * as qs from 'qs';
 
 import classes from "./CommunityPage.module.css";
@@ -68,7 +67,7 @@ const CommunityPage = () => {
                 console.clear();
                 console.error('Error fetching user:', error);
 
-                const token = Cookies.get('.AspNetCore.Application.Authorization');
+                const token = getAuthToken();
 
                 if (!token) {
                     navigate('/');
@@ -148,7 +147,7 @@ const CommunityPage = () => {
         setShowEditForm(!showEditForm);
     }
 
-    const getFollowers = async (url: string, data: any) => {
+    const getFollowers = async (url: string, data: Record<string, unknown>) => {
         try {
             const response = await axios.post(url, qs.stringify(data), {
                 headers: {
