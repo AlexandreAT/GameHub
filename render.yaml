@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: gamehub-api
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Gamehub.Server/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: DOTNET_EnableDiagnostics
+        value: "0"
+      - key: Proxy__ForwardedHeadersEnabled
+        value: "true"
+      - key: Cors__AllowedOrigins__0
+        value: https://projectgamehub.netlify.app
+      - key: Jwt__SecretKey
+        generateValue: true
+      - key: Jwt__Issuer
+        value: GameHub.Api
+      - key: Jwt__Audience
+        value: GameHub.Client
+      - key: Jwt__ExpirationMinutes
+        value: "30"
+      - key: DevNetStoreDatabase__ConnectionString
+        sync: false
+      - key: DevNetStoreDatabase__DatabaseName
+        value: GameHub
+      - key: DevNetStoreDatabase__UserCollectionName
+        value: Users
+      - key: DevNetStoreDatabase__PostCollectionName
+        value: Posts
+      - key: DevNetStoreDatabase__CommunityCollectionName
+        value: Communities
+      - key: Igdb__ClientId
+        sync: false
+      - key: Igdb__ClientSecret
+        sync: false
+      - key: ImgBb__ApiKey
+        sync: false

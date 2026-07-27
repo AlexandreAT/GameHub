@@ -6,10 +6,20 @@ using Gamehub.Server.Security;
 using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var renderPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(renderPort))
+{
+    if (!int.TryParse(renderPort, out var port) || port is < 1 or > 65535)
+        throw new InvalidOperationException("PORT deve ser um número entre 1 e 65535.");
+
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 builder.Services.AddOptions<JwtSettings>()
     .BindConfiguration(JwtSettings.SectionName)
@@ -26,6 +36,15 @@ builder.Services.AddOptions<IgdbSettings>()
 builder.Services.AddOptions<ImgBbSettings>()
     .BindConfiguration(ImgBbSettings.SectionName)
     .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<CorsSettings>()
+    .BindConfiguration(CorsSettings.SectionName)
+    .ValidateDataAnnotations()
+    .Validate(settings => settings.AllowedOrigins.All(origin =>
+        Uri.TryCreate(origin, UriKind.Absolute, out var uri) &&
+        (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)),
+        "Cors:AllowedOrigins deve conter apenas URLs HTTP ou HTTPS absolutas.")
     .ValidateOnStart();
 
 builder.Services.AddOptions<UserDatabaseSetting>()
@@ -59,15 +78,37 @@ builder.Services.AddHttpClient<ImageHostingService>(client =>
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+var allowedOrigins = builder.Configuration
+    .GetSection($"{CorsSettings.SectionName}:AllowedOrigins")
+    .Get<string[]>()?
+    .Select(origin => origin.Trim().TrimEnd('/'))
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .ToArray() ?? [];
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
+    options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("https://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
+
+var forwardedHeadersEnabled = builder.Configuration.GetValue<bool>("Proxy:ForwardedHeadersEnabled");
+if (forwardedHeadersEnabled)
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        options.ForwardLimit = 1;
+
+        // O container do Render recebe tráfego público somente pelo proxy da plataforma.
+        options.KnownNetworks.Clear();
+        options.KnownProxies.Clear();
+    });
+}
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -77,6 +118,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -217,9 +259,6 @@ if (resetUserPasswordIndex >= 0)
     return;
 }
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -230,15 +269,18 @@ else
     app.UseExceptionHandler();
 }
 
+if (forwardedHeadersEnabled)
+    app.UseForwardedHeaders();
+
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("CorsPolicy");
+app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();
 
+app.MapHealthChecks("/health").AllowAnonymous();
 app.MapControllers();
-app.MapFallbackToFile("/index.html").AllowAnonymous();
 
 app.Run();
 

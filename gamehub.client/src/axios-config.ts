@@ -1,7 +1,10 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-axios.defaults.baseURL = 'https://localhost:7045/api';
+const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+axios.defaults.baseURL = configuredApiUrl
+  ? configuredApiUrl.replace(/\/$/, '')
+  : '/api';
 
 axios.defaults.headers.post['Content-Type'] = "application/json";
 

@@ -37,3 +37,11 @@ public sealed class ImgBbSettings
     [Required]
     public string ApiKey { get; init; } = string.Empty;
 }
+
+public sealed class CorsSettings
+{
+    public const string SectionName = "Cors";
+
+    [MinLength(1)]
+    public string[] AllowedOrigins { get; init; } = [];
+}
