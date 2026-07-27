@@ -30,7 +30,7 @@ Frontend e backend são aplicações independentes. Em desenvolvimento, o Vite e
 ## Requisitos
 
 - .NET SDK 8;
-- Node.js 20 ou superior;
+- Node.js 24;
 - npm;
 - acesso a um projeto MongoDB Atlas;
 - credenciais da IGDB/Twitch e ImgBB;
@@ -91,6 +91,8 @@ npm run dev
 
 Abra `https://localhost:5173`. Nenhuma variável é necessária para o fluxo local padrão: o Vite envia `/api` para `https://localhost:7045`.
 
+Após o login, o JWT fica no `sessionStorage` da aba atual. O Axios adiciona o Bearer automaticamente, remove tokens expirados ou rejeitados e o logout encerra a sessão. Fechar a aba também remove o token.
+
 Para apontar o frontend a outro backend, copie `gamehub.client/.env.example` para `gamehub.client/.env.local` e altere:
 
 ```dotenv
@@ -119,11 +121,12 @@ dotnet list Gamehub.Server/Gamehub.Server.csproj package --vulnerable --include-
 
 cd gamehub.client
 npm ci
+npm run lint
 npm run build
 npm audit --omit=dev
 ```
 
-O lint legado ainda possui débitos conhecidos e está listado em [DEPLOY.md](./DEPLOY.md).
+O lint comum não possui erros, mas ainda informa dependências legadas de `useEffect`. Use `npm run lint:strict` para acompanhar esse débito até não restar nenhum aviso. A exceção atual do `npm audit --omit=dev` é restrita ao modo RSC do React Router, que não é utilizado por esta SPA, e está registrada em [DEPLOY.md](./DEPLOY.md).
 
 ## Docker
 
@@ -138,9 +141,11 @@ O container usa a porta `8080` por padrão. No Render, a aplicação lê `PORT` 
 ## Deploy
 
 - Backend: o [render.yaml](./render.yaml) cria um Web Service Docker com `/health`, região `virginia` e auto-deploy inicialmente desligado;
-- Frontend: Netlify, com `VITE_API_BASE_URL=https://URL-DO-RENDER/api`;
+- Frontend: o [netlify.toml](./netlify.toml) define base, build, publicação, Node 24, fallback SPA, cache e headers de segurança;
 - Banco: MongoDB Atlas;
 - Segredos: variáveis protegidas nos painéis de cada provedor.
+
+No Netlify, a única configuração manual do frontend é `VITE_API_BASE_URL=https://URL-DO-RENDER/api`. Essa URL é pública; não coloque nenhum segredo em variáveis `VITE_*`.
 
 O passo a passo de publicação e todas as variáveis estão em [DEPLOY.md](./DEPLOY.md).
 

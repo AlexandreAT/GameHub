@@ -148,7 +148,7 @@ Swagger existe somente em desenvolvimento.
 - ownership deve ser verificado em toda mutação de recurso existente;
 - login, APIs externas e uploads possuem rate limiting.
 
-O token ainda é mantido em cookie acessível pelo JavaScript porque frontend e backend vivem em domínios diferentes. Por isso, conteúdo de usuário nunca deve ser inserido com `dangerouslySetInnerHTML`.
+O backend autentica exclusivamente por JWT Bearer. O frontend mantém o token no `sessionStorage` da aba, centralizado em `auth-storage.ts`; tokens ausentes, inválidos, expirados ou rejeitados com `401` são removidos. O armazenamento continua acessível ao JavaScript, portanto conteúdo de usuário nunca deve ser inserido com `dangerouslySetInnerHTML`.
 
 ## 10. Configuração
 
@@ -175,6 +175,8 @@ Cors__AllowedOrigins__0
 Valores não secretos, como issuer, nomes das collections e duração do token, podem ter defaults versionados.
 
 No frontend, somente dados públicos podem usar `VITE_*`. Atualmente existe apenas `VITE_API_BASE_URL`.
+
+O `netlify.toml` na raiz define `gamehub.client` como base, executa o build Vite com Node 24, publica `dist`, aplica fallback para a SPA e adiciona headers básicos de segurança e cache para assets versionados.
 
 ## 11. Ambientes
 
@@ -274,13 +276,13 @@ Depois:
 ## 18. Débitos técnicos conhecidos
 
 - warnings de nulabilidade em models e services legados;
-- erros antigos de lint e Hooks no frontend;
+- dependências ausentes em `useEffect` ainda geram avisos no lint estrito;
 - ausência de testes automatizados;
 - bundle principal do frontend acima de 500 kB;
 - recuperação pública por e-mail ainda não implementada;
 - token do navegador ainda acessível ao JavaScript;
 - operações antigas fazem loops e substituições completas no MongoDB;
-- frontend ainda precisa do manifesto final do Netlify e testes de refresh de rotas.
+- fallback e manifesto do Netlify estão configurados, mas o refresh de rotas ainda precisa ser confirmado no domínio publicado.
 
 Esses pontos devem ser resolvidos incrementalmente, sem reescrita total do projeto.
 
