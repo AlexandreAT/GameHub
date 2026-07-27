@@ -345,8 +345,9 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 ### Fase D — qualidade e publicação
 
-- [ ] Testes unitários e de integração para login, autorização e ownership.
+- [x] Testes unitários e de integração para login, autorização e ownership.
 - [x] Corrigir Hooks condicionais e erros de lint.
+- [x] Atualizar e auditar a cadeia local de build do frontend.
 - [ ] Eliminar os avisos restantes de dependências de `useEffect` no lint estrito.
 - [ ] CI com restore, build, test, lint e auditoria de dependências.
 - [ ] Deploy privado/controlado no Render.
@@ -360,14 +361,14 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 - [x] Nenhum segredo ativo aparece na árvore atual, build output, imagem Docker ou bundle do Vite.
 - [x] `npm ci && npm run build` passa em ambiente limpo.
 - [x] `npm run lint` passa sem erro e mantém 39 avisos visíveis; `npm run lint:strict` acompanha a quitação deles.
-- [x] `dotnet restore` e `dotnet build` passam; o projeto ainda não possui testes automatizados.
+- [x] `dotnet restore`, `dotnet build` e a suíte de testes passam.
 - [x] `dotnet list package --vulnerable --include-transitive` não retorna vulnerabilidades conhecidas.
 - [x] Container escuta em `0.0.0.0:$PORT`.
 - [ ] `/health` retorna 200 no Render.
 - [ ] Atlas aceita o Render e rejeita origens fora do IP Access List.
-- [ ] Usuário não autenticado não altera dados.
-- [ ] Usuário autenticado não altera recursos de outra conta.
-- [ ] APIs nunca retornam senha, hash, CPF desnecessário ou segredo.
+- [x] Usuário não autenticado não altera dados.
+- [x] Usuário autenticado não altera recursos de outra conta.
+- [x] APIs nunca retornam senha, hash, CPF desnecessário ou segredo.
 - [ ] Rotas do React abrem diretamente e após refresh no Netlify.
 - [ ] Login, logout, expiração e renovação de sessão têm comportamento coerente.
 - [ ] Integrações IGDB e imagens têm timeout, erro tratado e limites.
@@ -375,13 +376,16 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 ## 11. Evidências da auditoria local
 
 - Backend: build isolado concluído com 0 erros e 79 warnings legados.
-- Frontend: TypeScript e build Vite de produção concluídos com sucesso.
+- Testes: 7/7 passaram contra um MongoDB Docker temporário; login, autorização, DTO público e ownership foram cobertos.
+- Frontend: `npm ci`, TypeScript e build Vite 8 de produção concluídos com sucesso.
 - Execução local: frontend respondeu em `5173`, API em `7045`, proxy `/api`, CORS local e `/health` foram validados.
 - Docker: imagem multi-stage construída; container não root escutou na porta dinâmica e respondeu `/health` com 200.
+- Integração: o frontend chamou a API Docker pelo proxy com 200; `/register` respondeu 200.
+- Atlas: a API Docker realizou leitura controlada dos 31 usuários e não alterou dados.
 - CORS de produção: a origem exata do Netlify foi aceita e uma origem desconhecida não recebeu permissão.
 - Lint: 0 erros e 39 avisos de dependências em `useEffect`.
 - NuGet: nenhuma vulnerabilidade conhecida após a atualização dos pacotes.
-- npm produção: dois registros do mesmo alerta de RSC do React Router, modo que não existe nesta SPA; a alternativa sugerida reintroduz alertas aplicáveis ao navegador.
+- npm completo: ferramentas de desenvolvimento atualizadas e somente dois registros do mesmo alerta de RSC do React Router permanecem; esse modo não existe nesta SPA.
 - Git: nenhum `node_modules`, `.vs`, `bin`, `obj` ou `dist` no índice.
 - Segredos: removidos da árvore atual; as versões antigas permanecem no histórico até a limpeza planejada.
 - Alterações locais preexistentes do usuário foram preservadas.
@@ -482,3 +486,29 @@ Validações concluídas:
 - frontend local, rota direta `/register`, proxy `/api` e health da API responderam 200;
 - busca no frontend não encontrou chave ImgBB, segredo ou acesso direto ao serviço externo;
 - tentativa de downgrade do React Router foi rejeitada por introduzir alertas aplicáveis à SPA; a exceção atual afeta somente RSC e permanece documentada.
+
+## 16. Registro da Tarefa 5 — testes locais e integração
+
+Concluído em 27/07/2026:
+
+- foi criado `Gamehub.Server.Tests` com xUnit e `WebApplicationFactory`;
+- login válido e inválido, autorização, privacidade de DTOs e ownership de posts ganharam testes HTTP;
+- o hash de senha ganhou teste unitário;
+- `scripts/test-integration.ps1` passou a iniciar MongoDB 8 isolado, usar um banco aleatório e remover tudo ao finalizar;
+- `scripts/test-docker.ps1` passou a carregar User Secrets somente em memória, iniciar a API Docker e validar health, Atlas e proxy do Vite;
+- `GAMEHUB_DEV_API_TARGET` permite apontar apenas o proxy de desenvolvimento para uma API Docker;
+- Vite, ESLint, TypeScript e plugins de lint foram atualizados em conjunto;
+- a rota pública de post agora responde 404 quando o documento não existe.
+
+Validações concluídas:
+
+- 7/7 testes aprovados no MongoDB temporário, sem usar dados oficiais;
+- imagem Docker reproduzível construída com sucesso;
+- `/health` do container respondeu 200;
+- consulta controlada encontrou os 31 usuários do Atlas sem escrita;
+- frontend para API Docker e rota SPA `/register` responderam 200;
+- `npm ci`, lint e build de produção passaram após a atualização das ferramentas;
+- auditorias dos dois projetos .NET ficaram limpas;
+- auditoria npm completa caiu de 19 para 2 registros, ambos da exceção RSC já documentada.
+
+A configuração manual do Render, da allowlist do Atlas para o Render e do Netlify foi deliberadamente adiada para depois da Tarefa 6. Nenhuma publicação foi feita nesta etapa.

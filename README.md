@@ -18,7 +18,9 @@ O frontend é uma SPA React hospedada separadamente no Netlify. A API ASP.NET Co
 ```text
 GameHub/
 ├── Gamehub.Server/       API, domínio, serviços e Dockerfile
+├── Gamehub.Server.Tests/ testes unitários e de integração da API
 ├── gamehub.client/       SPA React/Vite
+├── scripts/              testes locais reproduzíveis com Docker
 ├── render.yaml           infraestrutura do backend no Render
 ├── DEPLOY.md             auditoria, decisões e checklist de deploy
 ├── PROJECT_GUIDE.md      guia técnico e arquitetural
@@ -112,31 +114,44 @@ dotnet run --project Gamehub.Server/Gamehub.Server.csproj -- --reset-user-passwo
 
 A senha é digitada sem aparecer no terminal, e tokens anteriores são revogados.
 
+## Testes
+
+Os testes de segurança usam um MongoDB temporário em Docker, nunca as coleções oficiais do Atlas. Na raiz:
+
+```powershell
+./scripts/test-integration.ps1
+```
+
+O script cria um banco com nome aleatório, testa hash de senha, login, autorização, DTO público e ownership de posts e remove o container e o banco ao terminar. `dotnet test` sozinho executa os testes rápidos e ignora os que exigem MongoDB quando `GAMEHUB_TEST_MONGODB_URI` não está definida.
+
 ## Build e verificações
 
 ```powershell
-dotnet restore Gamehub.Server/Gamehub.Server.csproj
-dotnet build Gamehub.Server/Gamehub.Server.csproj --no-restore
+dotnet restore Gamehub.sln
+dotnet build Gamehub.sln --no-restore
+dotnet test Gamehub.Server.Tests/Gamehub.Server.Tests.csproj --no-build
 dotnet list Gamehub.Server/Gamehub.Server.csproj package --vulnerable --include-transitive
+dotnet list Gamehub.Server.Tests/Gamehub.Server.Tests.csproj package --vulnerable --include-transitive
 
 cd gamehub.client
 npm ci
 npm run lint
 npm run build
-npm audit --omit=dev
+npm audit
 ```
 
-O lint comum não possui erros, mas ainda informa dependências legadas de `useEffect`. Use `npm run lint:strict` para acompanhar esse débito até não restar nenhum aviso. A exceção atual do `npm audit --omit=dev` é restrita ao modo RSC do React Router, que não é utilizado por esta SPA, e está registrada em [DEPLOY.md](./DEPLOY.md).
+O lint comum não possui erros, mas ainda informa dependências legadas de `useEffect`. Use `npm run lint:strict` para acompanhar esse débito até não restar nenhum aviso. A auditoria completa possui apenas os dois registros da exceção de RSC do React Router, modo que não é utilizado por esta SPA; a decisão está registrada em [DEPLOY.md](./DEPLOY.md).
 
 ## Docker
 
 A imagem contém somente a API:
 
 ```powershell
-docker build -f Gamehub.Server/Dockerfile -t gamehub-api .
+docker build -f Gamehub.Server/Dockerfile -t gamehub-api:local .
+./scripts/test-docker.ps1
 ```
 
-O container usa a porta `8080` por padrão. No Render, a aplicação lê `PORT` e passa a escutar automaticamente em `0.0.0.0:$PORT`.
+O segundo comando lê os segredos já protegidos no User Secrets, inicia a API em uma porta aleatória, consulta o Atlas sem alterar dados e valida o frontend contra o container. Nenhum segredo é gravado em arquivo ou exibido. O container usa a porta `8080` por padrão; no Render, a aplicação lê `PORT` e escuta em `0.0.0.0:$PORT`.
 
 ## Deploy
 
@@ -155,5 +170,7 @@ O passo a passo de publicação e todas as variáveis estão em [DEPLOY.md](./DE
 - Autenticação, claims e ownership protegidos;
 - API e SPA desacopladas;
 - Desenvolvimento local preservado;
+- testes de autenticação, autorização e ownership reproduzíveis;
+- integração local validada entre frontend, API Docker e Atlas;
 - Backend preparado para build Docker e Render;
 - Deploy público ainda deve seguir o checklist controlado do `DEPLOY.md`.

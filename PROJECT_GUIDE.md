@@ -87,6 +87,15 @@ gamehub.client/
 ├── src/utils/      utilitários puros
 ├── src/axios-config.ts
 └── vite.config.ts
+
+Gamehub.Server.Tests/
+├── SecurityFlowTests.cs   login, autorização, privacidade e ownership
+├── PasswordHasherTests.cs hash e validação de senha
+└── GameHubApiFactory.cs   API real contra MongoDB temporário
+
+scripts/
+├── test-integration.ps1   inicia e remove o MongoDB isolado
+└── test-docker.ps1        valida API Docker, Atlas e proxy do Vite
 ```
 
 ## 6. Responsabilidades
@@ -176,6 +185,8 @@ Valores não secretos, como issuer, nomes das collections e duração do token, 
 
 No frontend, somente dados públicos podem usar `VITE_*`. Atualmente existe apenas `VITE_API_BASE_URL`.
 
+`GAMEHUB_DEV_API_TARGET` é uma opção local lida somente pelo `vite.config.ts`. Ela permite encaminhar `/api` para um container HTTP durante testes e não é incorporada ao bundle do navegador.
+
 O `netlify.toml` na raiz define `gamehub.client` como base, executa o build Vite com Node 24, publica `dist`, aplica fallback para a SPA e adiciona headers básicos de segurança e cache para assets versionados.
 
 ## 11. Ambientes
@@ -240,7 +251,15 @@ Recebe imagens por serviço autenticado. Chave somente no backend. Uploads devem
 
 Armazena `Users`, `Posts` e `Communities` no banco `GameHub`. A connection string nunca pode aparecer na árvore Git. Mudanças de dados em lote exigem backup antes da execução.
 
-## 16. Princípios de desenvolvimento
+## 16. Testes locais e integração
+
+- `dotnet test` sempre executa testes unitários sem depender de serviços externos;
+- `scripts/test-integration.ps1` cria um MongoDB Docker isolado e executa os testes HTTP completos;
+- cada execução usa um banco `GameHubTests_<id>` e o remove no encerramento;
+- `scripts/test-docker.ps1` usa os User Secrets somente em memória, testa `/health`, faz uma leitura controlada do Atlas e chama a API Docker pelo proxy do Vite;
+- testes nunca devem criar fixtures nas coleções `Users`, `Posts` ou `Communities` oficiais.
+
+## 17. Princípios de desenvolvimento
 
 - Preserve funcionamento local e de produção;
 - não introduza acoplamento entre SPA e API;
@@ -254,7 +273,7 @@ Armazena `Users`, `Posts` e `Communities` no banco `GameHub`. A connection strin
 - não versionar segredos nem artefatos gerados;
 - atualize README, guia e deploy quando o fluxo mudar.
 
-## 17. Procedimento para mudanças
+## 18. Procedimento para mudanças
 
 Antes:
 
@@ -273,11 +292,10 @@ Depois:
 6. atualizar documentação;
 7. criar commits pequenos, naturais e coerentes.
 
-## 18. Débitos técnicos conhecidos
+## 19. Débitos técnicos conhecidos
 
 - warnings de nulabilidade em models e services legados;
 - dependências ausentes em `useEffect` ainda geram avisos no lint estrito;
-- ausência de testes automatizados;
 - bundle principal do frontend acima de 500 kB;
 - recuperação pública por e-mail ainda não implementada;
 - token do navegador ainda acessível ao JavaScript;
@@ -286,7 +304,7 @@ Depois:
 
 Esses pontos devem ser resolvidos incrementalmente, sem reescrita total do projeto.
 
-## 19. Definition of Done
+## 20. Definition of Done
 
 Uma tarefa está concluída quando os itens aplicáveis forem atendidos:
 
