@@ -4,7 +4,7 @@ Data da auditoria: 26/07/2026.
 
 Este documento descreve o estado encontrado no repositório final, compara a pasta histórica `GameHub Deploy` e define o caminho recomendado para publicar o frontend no Netlify, o backend no Render e manter os dados no MongoDB Atlas.
 
-> Status atual: **Tarefa 1 concluída no código; ainda não publicar**. Os segredos foram retirados da árvore atual, mas as credenciais externas precisam ser rotacionadas e os bloqueadores de autenticação das próximas tarefas ainda precisam ser corrigidos.
+> Status atual: **Tarefas 1, 2 e 3 concluídas; publicação controlada ainda pendente**. Segredos foram rotacionados, a API foi protegida e o backend está reproduzível em Docker para o Render. O próximo passo é configurar as plataformas e executar os testes ponta a ponta.
 
 ## 1. Arquitetura encontrada
 
@@ -15,19 +15,19 @@ Este documento descreve o estado encontrado no repositório final, compara a pas
 - React Router 6, Axios, `js-cookie`, `qs`, React Icons e React Input Mask.
 - SPA com páginas de login, cadastro, perfis, comunidades, posts, comentários, busca, biblioteca e integração com jogos.
 - Cliente HTTP centralizado em `gamehub.client/src/axios-config.ts`.
-- A URL da API está fixa em `https://localhost:7045/api` no repositório final.
+- A URL da API vem de `VITE_API_BASE_URL`; no desenvolvimento, o fallback `/api` usa o proxy do Vite.
 - Uploads de imagem passam pelo backend; a chave do ImgBB não é mais entregue ao navegador.
 
 ### Backend
 
 - ASP.NET Core Web API em .NET 8.
-- MongoDB.Driver 2.24.
+- MongoDB.Driver 3.10.0.
 - JWT Bearer.
 - Integração com IGDB/Twitch.
 - Swagger em ambiente de desenvolvimento.
 - Controllers: usuários, posts, comunidades e IGDB.
 - Services acessam diretamente as coleções `Users`, `Posts` e `Communities`.
-- O projeto ainda mantém acoplamento de template SPA com o frontend por `SpaProxy`, `SpaRoot` e `ProjectReference`, embora o frontend seja publicado separadamente.
+- A API está desacoplada da SPA e possui build, execução e imagem Docker independentes.
 
 ### Dados e serviços externos
 
@@ -41,7 +41,7 @@ Este documento descreve o estado encontrado no repositório final, compara a pas
 - Remote: `AlexandreAT/GameHub` no GitHub.
 - Existe um `.gitignore` único na raiz para frontend, backend, IDEs e segredos locais.
 - O workflow antigo de Azure App Service foi removido na Tarefa 1.
-- Não existem `Dockerfile`, `render.yaml` ou `netlify.toml` no repositório final.
+- Existem `Dockerfile`, `.dockerignore` e `render.yaml` para o backend; a configuração final do Netlify ainda será criada.
 - Não foram encontrados testes automatizados.
 
 ## 2. Conclusão sobre Render + Atlas
@@ -125,48 +125,44 @@ O Render publica as faixas de saída de cada serviço em **Connect > Outbound**.
 - `MongoDB.Driver` foi atualizado para 3.10.0, `IGDB` para 6.1.0 e `Newtonsoft.Json` foi fixado em 13.0.4. A auditoria NuGet não encontra mais pacotes vulneráveis.
 - As dependências de produção do frontend foram atualizadas. O único alerta restante do `npm audit --omit=dev` afeta exclusivamente o modo RSC do React Router, que não é usado por esta SPA; não há versão estável corrigida disponível em 27/07/2026.
 
-### P1 — bloqueia o deploy confiável
+### P1 — bloqueadores de infraestrutura resolvidos em 27/07/2026
 
 1. **Build do frontend quebra em CI**
 
    `npm run build` executa o TypeScript, mas o `vite.config.ts` tenta criar e ler certificado HTTPS de desenvolvimento durante qualquer build. Isso falhou localmente e tende a falhar no Netlify.
 
-   Ação: criar certificado somente quando o Vite estiver no comando `serve`, ou simplificar o desenvolvimento local para HTTP. O build de produção não pode depender de `dotnet dev-certs`.
+   Resolvido: o certificado é preparado somente no comando `serve`; o build de produção não depende de `dotnet dev-certs`.
 
 2. **URL do backend fixa no código**
 
-   Ação: trocar por `import.meta.env.VITE_API_BASE_URL`, com fallback apenas para desenvolvimento. Variáveis `VITE_*` ficam públicas no bundle; somente a URL da API pode ficar nelas, nunca segredos.
+   Resolvido: o Axios usa `VITE_API_BASE_URL` e o fallback `/api` é encaminhado à API local pelo Vite. Variáveis `VITE_*` continuam restritas a dados públicos.
 
 3. **CORS aceita apenas localhost**
 
-   Ação: ler a lista de origens da configuração e liberar exatamente a URL de produção do Netlify e, se necessário, o domínio customizado. Não copiar o middleware manual de preflight da pasta histórica.
+   Resolvido: a política lê `Cors:AllowedOrigins`, libera origens exatas por ambiente e rejeita origens desconhecidas.
 
 4. **Backend não escuta a porta do Render**
 
-   O `Program.cs` atual não usa `PORT`. O Render exige bind em `0.0.0.0`; recomenda a porta da variável `PORT` e usa `10000` como padrão.
-
-   Ação: configurar Kestrel/`UseUrls` para `http://0.0.0.0:${PORT}` em produção ou definir configuração equivalente segura no container.
+   Resolvido: quando `PORT` existe, o Kestrel escuta em `http://0.0.0.0:$PORT`; o valor também é validado antes da inicialização.
 
 5. **Ausência de health check**
 
-   Ação: adicionar `GET /health` e configurar `healthCheckPath: /health` no Render. Um liveness check simples deve subir mesmo durante uma indisponibilidade temporária do Atlas; a conectividade do banco pode ser verificada separadamente como readiness.
+   Resolvido: `GET /health` é público, não depende do Atlas e está configurado como `healthCheckPath` no Blueprint.
 
 6. **Acoplamento desnecessário entre API e SPA**
 
-   `SpaProxy`, `UseStaticFiles`, `MapFallbackToFile` e a referência ao `.esproj` não são necessários no backend quando o frontend vive no Netlify.
-
-   Ação: desacoplar o `.csproj` da SPA e publicar somente a API no container.
+   Resolvido: `SpaProxy`, arquivos estáticos, fallback da SPA e referência ao `.esproj` foram removidos do backend.
 
 7. **Configuração antiga do Azure ainda ativa**
 
-   Ação: remover/desabilitar o workflow ao migrar. Caso contrário, todo push em `main` continuará tentando executar o deploy antigo, usando actions obsoletas e possivelmente falhando em paralelo.
+   Resolvido na Tarefa 1: o workflow antigo foi removido.
 
 ### P2 — qualidade, manutenção e portfólio
 
 - O backend compila com **0 erros e 79 warnings** de nulabilidade legados.
 - O lint do frontend acusa **79 erros e 42 avisos**, inclusive Hooks condicionais.
 - As vulnerabilidades NuGet inicialmente encontradas em `Newtonsoft.Json`, `Snappier` e `SharpCompress` foram eliminadas pela atualização dos pacotes principais.
-- A auditoria de produção do npm ainda relata o aviso de CSRF do modo RSC do React Router. O GameHub usa apenas o modo SPA, sem RSC, actions ou loaders de servidor; acompanhar a publicação de uma versão estável corrigida.
+- A auditoria das dependências de produção do npm não relata vulnerabilidades conhecidas.
 - A auditoria completa do npm também aponta vulnerabilidades no toolchain legado de desenvolvimento (ESLint e dependências relacionadas). Elas não entram no bundle de produção e devem ser tratadas junto da modernização de lint/CI.
 - .NET 8 entra em fim de suporte em 10/11/2026. Planejar a migração para .NET 10 LTS antes do lançamento definitivo.
 - Não há testes automatizados nem CI de build/test/lint para o fluxo novo.
@@ -213,25 +209,24 @@ Itens que não devem ser copiados diretamente:
 
 O repositório `GameHub` deve continuar sendo a fonte oficial. A pasta histórica é apenas referência.
 
-## 6. Estrutura-alvo de deploy
+## 6. Estrutura de deploy
 
-Arquivos a criar/alterar na fase de implementação:
+Arquivos implementados para o backend e pendentes para o frontend:
 
 ```text
 GameHub/
 ├── .gitignore
-├── .env.example
-├── netlify.toml
+├── .dockerignore
 ├── render.yaml
 ├── DEPLOY.md
 ├── gamehub.client/
 │   ├── package.json
+│   ├── .env.example
 │   ├── vite.config.ts
 │   └── src/
 │       └── axios-config.ts
 └── Gamehub.Server/
     ├── Dockerfile
-    ├── .dockerignore
     ├── Program.cs
     ├── appsettings.json
     └── Gamehub.Server.csproj
@@ -245,14 +240,14 @@ Navegador -> Netlify (React/Vite) -> Render (ASP.NET API) -> MongoDB Atlas
                                       |-> serviço de imagens, se movido para o backend
 ```
 
-## 7. Variáveis planejadas
+## 7. Variáveis configuradas
 
 ### Render — backend
 
 | Nome | Tipo | Observação |
 |---|---|---|
 | `ASPNETCORE_ENVIRONMENT` | comum | `Production` |
-| `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | comum | `true`, pois o TLS termina no proxy do Render |
+| `Proxy__ForwardedHeadersEnabled` | comum | `true`, pois o TLS termina no proxy do Render |
 | `DevNetStoreDatabase__ConnectionString` | secret | URI nova do Atlas |
 | `DevNetStoreDatabase__DatabaseName` | comum | `GameHub` |
 | `DevNetStoreDatabase__UserCollectionName` | comum | `Users` |
@@ -318,7 +313,8 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 - [x] Rotacionar JWT local e retirar MongoDB, IGDB e ImgBB da árvore atual.
 - [x] Rotacionar MongoDB, IGDB e ImgBB nos painéis dos provedores.
-- [ ] Verificar se existem dados reais no Atlas; remover contas/dados de teste sensíveis.
+- [x] Verificar os dados restaurados no Atlas e criar backup local.
+- [ ] Revisar e remover contas ou dados de teste sensíveis antes da publicação.
 - [x] Impedir novos deploys do workflow Azure antigo.
 
 ### Fase B — segurança do backend
@@ -335,11 +331,12 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 - [x] `.gitignore` raiz e limpeza do índice.
 - [x] Corrigir `vite.config.ts` para builds sem certificado.
-- [ ] Tornar a URL da API configurável.
-- [ ] CORS por configuração.
-- [ ] Remover acoplamento SPA do backend.
-- [ ] Adicionar health check, bind de `PORT`, Dockerfile e `.dockerignore`.
-- [ ] Adicionar `render.yaml` e `netlify.toml`.
+- [x] Tornar a URL da API configurável.
+- [x] CORS por configuração.
+- [x] Remover acoplamento SPA do backend.
+- [x] Adicionar health check, bind de `PORT`, Dockerfile e `.dockerignore`.
+- [x] Adicionar `render.yaml`.
+- [ ] Adicionar a configuração final do Netlify.
 - [x] Atualizar dependências vulneráveis do backend e as dependências de produção aplicáveis do frontend.
 
 ### Fase D — qualidade e publicação
@@ -355,12 +352,12 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 ## 10. Checklist de aceite
 
-- [ ] Nenhum segredo aparece em `git grep`, build output, imagem Docker ou bundle do Vite.
+- [x] Nenhum segredo ativo aparece na árvore atual, build output, imagem Docker ou bundle do Vite.
 - [x] `npm ci && npm run build` passa em ambiente limpo.
 - [ ] `npm run lint` passa sem erro.
-- [ ] `dotnet restore`, `dotnet build` e `dotnet test` passam.
-- [ ] `dotnet list package --vulnerable --include-transitive` não retorna vulnerabilidades conhecidas.
-- [ ] Container escuta em `0.0.0.0:$PORT`.
+- [x] `dotnet restore` e `dotnet build` passam; o projeto ainda não possui testes automatizados.
+- [x] `dotnet list package --vulnerable --include-transitive` não retorna vulnerabilidades conhecidas.
+- [x] Container escuta em `0.0.0.0:$PORT`.
 - [ ] `/health` retorna 200 no Render.
 - [ ] Atlas aceita o Render e rejeita origens fora do IP Access List.
 - [ ] Usuário não autenticado não altera dados.
@@ -374,8 +371,12 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 - Backend: build isolado concluído com 0 erros e 79 warnings legados.
 - Frontend: TypeScript e build Vite de produção concluídos com sucesso.
+- Execução local: frontend respondeu em `5173`, API em `7045`, proxy `/api`, CORS local e `/health` foram validados.
+- Docker: imagem multi-stage construída; container não root escutou na porta dinâmica e respondeu `/health` com 200.
+- CORS de produção: a origem exata do Netlify foi aceita e uma origem desconhecida não recebeu permissão.
 - Lint: 79 erros e 42 warnings.
 - NuGet: nenhuma vulnerabilidade conhecida após a atualização dos pacotes.
+- npm produção: nenhuma vulnerabilidade conhecida em `npm audit --omit=dev`.
 - Git: 131 arquivos rastreados e nenhum `node_modules`, `.vs`, `bin` ou `obj` no índice.
 - Segredos: removidos da árvore atual; as versões antigas permanecem no histórico até a limpeza planejada.
 - Alterações locais preexistentes do usuário foram preservadas.
@@ -430,3 +431,26 @@ Validações concluídas em 27/07/2026:
 5. apagar clones e backups antigos que ainda contenham as credenciais.
 
 Até essa execução, qualquer credencial que já apareceu em commits deve ser considerada comprometida, mesmo não estando mais nos arquivos atuais.
+
+## 14. Registro da Tarefa 3 — backend para Render
+
+Concluído em 27/07/2026:
+
+- API e SPA passaram a ter builds independentes;
+- a URL pública do backend ficou configurável por `VITE_API_BASE_URL`, com proxy `/api` no desenvolvimento;
+- CORS passou a usar listas diferentes para Development e Production;
+- o backend passou a respeitar `PORT` e escutar em todas as interfaces dentro do container;
+- forwarded headers ficaram condicionados ao ambiente atrás do proxy do Render;
+- foi criado o liveness público `GET /health`;
+- dependências do backend foram atualizadas e auditadas;
+- foram criados `Dockerfile` multi-stage, `.dockerignore` e `render.yaml` sem segredos;
+- README e guia técnico passaram a documentar arquitetura, configuração segura e execução local.
+
+Validações concluídas:
+
+- restore e build do backend com 0 erros;
+- build de produção do frontend concluído;
+- auditorias de produção do NuGet e npm sem vulnerabilidades conhecidas;
+- imagem Docker construída e iniciada com usuário não root;
+- bind em `0.0.0.0:$PORT`, `/health`, forwarded headers e CORS testados no container;
+- frontend, backend e proxy do Vite testados localmente.
