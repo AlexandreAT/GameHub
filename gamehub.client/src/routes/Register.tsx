@@ -166,8 +166,7 @@ const Cadastro = () => {
     if (formTouched) {
       setFormSubmitted(true);
 
-      let hasErrors = false;
-      hasErrors = Object.values(formError).some(error => error !== '')
+      const hasErrors = Object.values(formError).some(error => error !== '')
 
       if (!hasErrors) {
         const clearPhone = cleanPhoneNumber(phone);

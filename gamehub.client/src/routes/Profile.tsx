@@ -194,7 +194,6 @@ function Profile() {
       setShowBiographyForm(!showBiographyForm);
 
     } catch (error) {
-      console.clear;
       console.error(error);
     }
 
