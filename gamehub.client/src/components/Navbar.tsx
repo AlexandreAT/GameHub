@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { FaSearch } from "react-icons/fa";
 
 import classes from "./Navbar.module.css";
-import axios from 'axios';
+import { axios } from '../axios-config';
 
 interface Props {
   user?: User;

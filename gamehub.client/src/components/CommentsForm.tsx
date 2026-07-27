@@ -189,7 +189,6 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
     try {
       await axios.post("Posts/like", qs.stringify({
         postId,
-        userId: userId,
         commentId: commentId,
       }), {
         headers: {
@@ -207,7 +206,6 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
     try {
       await axios.post("Posts/dislike", qs.stringify({
         postId,
-        userId: userId,
         commentId: commentId,
       }), {
         headers: {
@@ -274,7 +272,7 @@ const CommentsForm = ({ postId, userId }: CommentProps) => {
                   </div>
                 )}
                 <div className={classes.commentContent}>
-                  <p className={classes.content} dangerouslySetInnerHTML={{ __html: comment.content.replace(/\n/g, '<br/>') }}></p>
+                  <p className={classes.content} style={{ whiteSpace: 'pre-wrap' }}>{comment.content}</p>
                 </div>
                 <div className={classes.commentFooter}>
                   <button onClick={() => handleOpinionButtonClick(comment.id, 'like')}>

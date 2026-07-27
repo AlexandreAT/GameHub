@@ -32,10 +32,8 @@ interface User {
   name: string;
   surname: string;
   nickname: string;
-  cpf: string;
   phone: string;
   email: string;
-  password: string;
   imageSrc: string;
   following: string[];
   followers: string[];
@@ -103,7 +101,6 @@ function Profile() {
     try {
       const imageUrl = await uploadImage(image);
       formData.append('image', imageUrl);
-      formData.append('id', user.id);
       const response = await axios.post('/Users/upload-image', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -130,7 +127,6 @@ function Profile() {
     try {
       const backgroundUrl = await uploadImage(background);
       formData.append('background', backgroundUrl);
-      formData.append('id', user.id);
       const response = await axios.post('/Users/upload-background', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -138,7 +134,7 @@ function Profile() {
       });
 
       // Atualizar o estado do usuário com a nova imagem
-      setUser({ ...user, backgroundImage: response.data.imageSrc });
+      setUser({ ...user, backgroundImage: response.data.backgroundImage });
     } catch (error) {
       console.error(error);
     }
@@ -181,13 +177,11 @@ function Profile() {
 
     try {
 
-      await putData(`/Users/${user.id}`, {
-        id: user.id,
+      await putData('/Users/current', {
         nickname: user.nickname,
         phone: user.phone,
         city: user.city,
         state: user.state,
-        password: user.password,
         biography: biography,
       });
 
@@ -227,8 +221,7 @@ function Profile() {
     }
     try {
       await getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
-        opt: opt,
-        userId: user.id
+        opt: opt
       }, opt);
     } catch (error) {
       console.error(error);
@@ -263,18 +256,13 @@ function Profile() {
     if (user) {
       try {
         await getCreatedOrFollowingCommunities("/Users/getFollowingCommunityOrCreatedCommunity", {
-          opt: opt,
-          userId: user.id
+          opt: opt
         }, opt);
       } catch (error) {
         console.clear();
         console.error(error);
       }
     }
-  }
-
-  function formatCPF(cpf: string): string {
-    return cpf.replace(/\D/g, '').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   }
 
   return (
@@ -416,7 +404,6 @@ function Profile() {
                     <p><span className={classes.spanPublic}>(info publica)</span>Sobrenome: <span className={classes.spanData}>{user.surname}</span></p>
                   </div>
                   <div>
-                    <p><span className={classes.spanPublic}>(info privada)</span>CPF: <span className={classes.spanData}>{formatCPF(user.cpf)}</span></p>
                     <p><span className={classes.spanPublic}>(info privada)</span>Telefone: {user.phone ? (
                       <span className={classes.spanData}>{insertMaskInPhone(user.phone)}</span>
                     ) : (
@@ -438,9 +425,6 @@ function Profile() {
                   <div>
                     <p className={classes.emailParagraph}><span className={classes.spanPublic}>(info privada)</span>Email: <span className={classes.spanData}>{user.email}</span></p>
                   </div>
-                  <div>
-                    <p><span className={classes.spanPublic}>(info privada)</span>Senha: <input type="password" value={user.password} disabled /></p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -449,7 +433,7 @@ function Profile() {
                 <p><span className={classes.spanPublic}>(info publica)</span>Biografia: {!user.biography ? (
                   <span className={classes.noRegistry}>Sem biografia</span>
                 ) :
-                  <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: user.biography.replace(/\n/g, '<br/>') }}></span>
+                  <span className={classes.spanData} style={{ whiteSpace: 'pre-wrap' }}>{user.biography}</span>
                 }</p>
                 <button onClick={handleBiography}>Editar biografia</button>
                 {showBiographyForm && (

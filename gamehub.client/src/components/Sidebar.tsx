@@ -49,8 +49,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
         if (user) {
             try {
                 const response = await axios.post("/Users/getFollowersOrFollowing", qs.stringify({
-                    opt: opt,
-                    userId: user.id
+                    opt: opt
                 }), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -80,8 +79,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
         if (user.userCreatedCommunities.length > 0) {
             try {
                 const response = await axios.post("/Users/getFollowingCommunityOrCreatedCommunity", qs.stringify({
-                    opt: opt,
-                    userId: user.id
+                    opt: opt
                 }), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -99,8 +97,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
         if (user.userCommunities.length > 0) {
             try {
                 const response = await axios.post("/Users/getFollowingCommunityOrCreatedCommunity", qs.stringify({
-                    opt: opt,
-                    userId: user.id
+                    opt: opt
                 }), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -176,7 +173,7 @@ const Sidebar = ({ user }: { user: User | null }) => {
                     </div>
                     <div className={classes.sideFooter}>
                         <GoPlusCircle className={classes.sideIcon} onClick={() => setShowFormCommunity(!showFormCommunity)} />
-                        {showFormCommunity && (<div className={classes.formCommunity}><RegisterCommunity user={user} /></div>)}
+                        {showFormCommunity && (<div className={classes.formCommunity}><RegisterCommunity /></div>)}
                     </div>
                 </div>
                 <div className={classes.sideDivContainer}>

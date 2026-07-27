@@ -1,43 +1,44 @@
 import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
-import child_process from 'child_process';
+import childProcess from 'child_process';
 
-const baseFolder =
-    process.env.APPDATA !== undefined && process.env.APPDATA !== ''
+const getDevelopmentHttps = () => {
+    const baseFolder = process.env.APPDATA
         ? `${process.env.APPDATA}/ASP.NET/https`
-        : `${process.env.HOME}/.aspnet/https`;
+        : `${process.env.USERPROFILE}/.aspnet/https`;
 
-const certificateArg = process.argv.map(arg => arg.match(/--name=(?<value>.+)/i)).filter(Boolean)[0];
-const certificateName = certificateArg ? certificateArg.groups.value : "gamehub.client";
+    const certificateName = 'gamehub.client';
+    const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
+    const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
-if (!certificateName) {
-    console.error('Invalid certificate name. Run this script in the context of an npm/yarn script or pass --name=<<app>> explicitly.')
-    process.exit(-1);
-}
+    fs.mkdirSync(baseFolder, { recursive: true });
 
-const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
-const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
+    if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+        const result = childProcess.spawnSync('dotnet', [
+            'dev-certs',
+            'https',
+            '--export-path',
+            certFilePath,
+            '--format',
+            'Pem',
+            '--no-password'
+        ], { stdio: 'inherit' });
 
-if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
-    if (0 !== child_process.spawnSync('dotnet', [
-        'dev-certs',
-        'https',
-        '--export-path',
-        certFilePath,
-        '--format',
-        'Pem',
-        '--no-password',
-    ], { stdio: 'inherit', }).status) {
-        throw new Error("Could not create certificate.");
+        if (result.status !== 0) {
+            throw new Error('Não foi possível criar o certificado HTTPS de desenvolvimento.');
+        }
     }
-}
 
-// https://vitejs.dev/config/
-export default defineConfig({
+    return {
+        key: fs.readFileSync(keyFilePath),
+        cert: fs.readFileSync(certFilePath)
+    };
+};
+
+export default defineConfig(({ command }) => ({
     plugins: [plugin()],
     resolve: {
         alias: {
@@ -52,9 +53,6 @@ export default defineConfig({
             }
         },
         port: 5173,
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
-        }
+        https: command === 'serve' ? getDevelopmentHttps() : undefined
     }
-})
+}));

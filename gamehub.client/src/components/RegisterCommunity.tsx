@@ -1,19 +1,9 @@
 import { FormEvent, useState } from 'react'
 
 import classes from "./RegisterCommunity.module.css"
-import axios from 'axios';
+import { axios } from '../axios-config';
 
-interface Props {
-    user: User;
-}
-
-interface User {
-    id: string;
-    nickname: string;
-    imageSrc: string;
-}
-
-const RegisterCommunity = ({ user }: Props) => {
+const RegisterCommunity = () => {
 
     const [name, setName] = useState('');
 
@@ -21,10 +11,7 @@ const RegisterCommunity = ({ user }: Props) => {
         try {
 
             const communityPascalCase = {
-                Creator: data.creator,
-                CreatorImageSrc: data.creatorImageSrc,
                 Name: data.name,
-                IconeImageSrc: data.iconeImageSrc,
             };
 
             const response = await axios.post(url, communityPascalCase, {
@@ -48,10 +35,6 @@ const RegisterCommunity = ({ user }: Props) => {
     const submitCommunity = async (e: FormEvent) => {
         e.preventDefault();
 
-        const creator = user.id;
-        const creatorImageSrc = user.imageSrc;
-        const iconeImageSrc = "https://cdn-icons-png.flaticon.com/512/326/326003.png";
-
         if (name.length > 25) {
             alert("O nome da comunidade deve ter no máximo 25 caracteres");
             return;
@@ -63,10 +46,7 @@ const RegisterCommunity = ({ user }: Props) => {
         else {
             try {
                 const response = await postData('/Community', {
-                    creator,
-                    creatorImageSrc,
                     name: name,
-                    iconeImageSrc,
                 })
 
                 if (response.error) {

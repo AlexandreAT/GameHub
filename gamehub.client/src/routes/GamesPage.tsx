@@ -110,8 +110,7 @@ const GamesPage = () => {
     const addGameLibrary = async (gameId: string) => {
         try {
             await postLibrary("/Users/handleGameLibrary", {
-                gameId: gameId,
-                userId: user.id
+                gameId: gameId
             });
         } catch (error) {
             console.error(error);

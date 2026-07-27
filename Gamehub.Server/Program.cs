@@ -1,11 +1,13 @@
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Gamehub.Server.Models;
+using Gamehub.Server.Security;
 using Gamehub.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Cors;
-using System.Text;
-using Microsoft.AspNetCore.CookiePolicy;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,15 +37,11 @@ builder.Services.AddOptions<UserDatabaseSetting>()
         "A configuração da coleção de usuários do MongoDB está incompleta.")
     .ValidateOnStart();
 
-builder.Services.AddSingleton<UserServices>();
-
 builder.Services.AddOptions<PostDatabaseSettings>()
     .BindConfiguration("DevNetStoreDatabase")
     .Validate(settings => !string.IsNullOrWhiteSpace(settings.PostCollectionName),
         "A configuração da coleção de posts do MongoDB está incompleta.")
     .ValidateOnStart();
-
-builder.Services.AddSingleton<PostServices>();
 
 builder.Services.AddOptions<CommunityDatabaseSettings>()
     .BindConfiguration("DevNetStoreDatabase")
@@ -51,6 +49,8 @@ builder.Services.AddOptions<CommunityDatabaseSettings>()
         "A configuração da coleção de comunidades do MongoDB está incompleta.")
     .ValidateOnStart();
 
+builder.Services.AddSingleton<UserServices>();
+builder.Services.AddSingleton<PostServices>();
 builder.Services.AddSingleton<CommunityServices>();
 
 builder.Services.AddHttpClient();
@@ -61,33 +61,63 @@ builder.Services.AddHttpClient<ImageHostingService>(client =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", builder =>
+    options.AddPolicy("CorsPolicy", policy =>
     {
-        builder.WithOrigins("https://localhost:5173")
+        policy.WithOrigins("https://localhost:5173")
             .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
+            .AllowAnyHeader();
     });
 });
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    options.JsonSerializerOptions.IgnoreNullValues = true;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddProblemDetails();
 
-// Configura a política de cookies
-builder.Services.Configure<CookiePolicyOptions>(options =>
+builder.Services.AddRateLimiter(options =>
 {
-    // Define as políticas de cookies
-    options.MinimumSameSitePolicy = SameSiteMode.Strict;
-    options.HttpOnly = HttpOnlyPolicy.None;
-    options.Secure = CookieSecurePolicy.Always;
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddPolicy("authentication", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+
+    options.AddPolicy("external-api", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.User.GetUserId() ??
+            httpContext.Connection.RemoteIpAddress?.ToString() ??
+            "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+
+    options.AddPolicy("upload", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.User.GetUserId() ?? "anonymous",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
 });
 
-//aqui é onde estou configurando o jwt
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -98,8 +128,12 @@ builder.Services.AddAuthentication(options =>
         .GetRequiredSection(JwtSettings.SectionName)
         .Get<JwtSettings>() ?? throw new InvalidOperationException("Configuração JWT não encontrada.");
 
+    options.MapInboundClaims = false;
+    options.SaveToken = false;
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        RequireExpirationTime = true,
+        RequireSignedTokens = true,
         ValidateLifetime = true,
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -107,34 +141,71 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+        NameClaimType = "sub",
         ClockSkew = TimeSpan.Zero
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var userId = context.Principal?.GetUserId();
+            var versionClaim = context.Principal?.FindFirst(JwtClaimNames.TokenVersion)?.Value;
+
+            if (userId is null || !int.TryParse(versionClaim, out var tokenVersion))
+            {
+                context.Fail("Token sem identificação válida.");
+                return;
+            }
+
+            var userServices = context.HttpContext.RequestServices.GetRequiredService<UserServices>();
+            var user = await userServices.GetAsync(userId);
+            if (user is null || user.PasswordResetRequired || user.TokenVersion != tokenVersion)
+                context.Fail("Token revogado.");
+        }
+    };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
 });
 
 var app = builder.Build();
 
-// Aplica a política de cookies
-app.UseCookiePolicy();
+if (args.Contains("--reset-legacy-passwords", StringComparer.OrdinalIgnoreCase))
+{
+    var userServices = app.Services.GetRequiredService<UserServices>();
+    var migrated = await userServices.ResetLegacyPasswordsAsync();
+    app.Logger.LogInformation(
+        "Migração concluída: {MigratedUsers} senha(s) antiga(s) foram invalidadas.",
+        migrated);
+    return;
+}
 
-app.UseCors("CorsPolicy");
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler();
+}
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
-
+app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.MapFallbackToFile("/index.html");
+app.MapFallbackToFile("/index.html").AllowAnonymous();
 
 app.Run();

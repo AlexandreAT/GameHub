@@ -135,12 +135,7 @@ function UpdateCommunity({ user, community }: Props) {
 
     const deleteCommunity = async () => {
         try {
-            await axios.delete(`/Community/${community.id}`, {
-                params: {
-                    id: community.id,
-                    userId: community.creator
-                }
-            })
+            await axios.delete(`/Community/${community.id}`)
 
             navigate(`/listCommunities/${user.id}/${"created"}`);
         } catch (error) {
@@ -273,7 +268,7 @@ function UpdateCommunity({ user, community }: Props) {
                             <p><span className={classes.title}>Descrição: </span>{!community.description ? (
                                 <span className={classes.noRegistry}>Sem descrição</span>
                             ) :
-                                <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: community.description.replace(/\n/g, '<br/>') }}></span>
+                                <span className={classes.spanData} style={{ whiteSpace: 'pre-wrap' }}>{community.description}</span>
                             }</p>
                             <button onClick={handleBiography} className='btnTransparent'>Editar descrição</button>
                             {showDescription && (

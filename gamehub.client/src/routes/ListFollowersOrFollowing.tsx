@@ -76,11 +76,7 @@ const ListFollowersOrFollowing = () => {
         if (user?.id !== id) {
             const fetchAnotherUser = async () => {
                 try {
-                    const response = await axios.get(`/Users/anotherUser/${id}`, {
-                        params: {
-                            userId: id,
-                        }
-                    });
+                    const response = await axios.get(`/Users/anotherUser/${id}`);
                     setAnotherUser(response.data);
                 } catch (error) {
                     console.clear();
@@ -115,7 +111,7 @@ const ListFollowersOrFollowing = () => {
         try {
             await getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
                 opt: opt,
-                userId: id
+                profileId: id
             });
         }
         catch (error) {

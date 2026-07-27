@@ -1,6 +1,7 @@
 ﻿using Gamehub.Server.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Gamehub.Server.Services
@@ -22,7 +23,13 @@ namespace Gamehub.Server.Services
 
         public async Task<List<Community>> GetAsync() => await _communityCollection.Find(x => true).ToListAsync();
 
-        public async Task<Community> GetAsync(string id) => await _communityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<Community> GetAsync(string id)
+        {
+            if (!ObjectId.TryParse(id, out _))
+                return null!;
+
+            return await _communityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        }
 
         public async Task<List<SimplifiedCommunity>> SearchCommunitiesAsync(string query)
         {

@@ -42,8 +42,6 @@ const MakePostForm = ({ user, community }: Props) => {
     try {
       // Converte as propriedades do objeto Post para PascalCase
       const postPascalCase = {
-        Author: data.author,
-        IdAuthor: data.idAuthor,
         Title: data.title,
         Content: data.content,
         ImageSrc: data.imageSrc,
@@ -80,8 +78,6 @@ const MakePostForm = ({ user, community }: Props) => {
     e.preventDefault();
     setIsPosting(true);
 
-    const author = user.nickname;
-    const idAuthor = user.id;
     const game = chosenGame;
     let imageSrc = null;
 
@@ -92,8 +88,6 @@ const MakePostForm = ({ user, community }: Props) => {
     if (!community) {
       try {
         const response = await postData('/Posts', {
-          author,
-          idAuthor,
           title,
           content,
           imageSrc,
@@ -133,8 +127,6 @@ const MakePostForm = ({ user, community }: Props) => {
       try {
         const communityId = community;
         const response = await postData('/Posts', {
-          author,
-          idAuthor,
           title,
           content,
           imageSrc,

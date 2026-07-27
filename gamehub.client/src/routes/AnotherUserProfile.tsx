@@ -83,11 +83,7 @@ const AnotherUserProfile = () => {
   useEffect(() => {
     const fetchAnotherUser = async () => {
       try {
-        const response = await axios.get(`/Users/anotherUser/${id}`, {
-          params: {
-            userId: id,
-          }
-        });
+        const response = await axios.get(`/Users/anotherUser/${id}`);
         setAnotherUser(response.data);
       } catch (error) {
         console.clear();
@@ -110,7 +106,6 @@ const AnotherUserProfile = () => {
 
     const data = {
       followingId: anotherUser.id,
-      userId: user.id,
     };
 
     try {
@@ -150,7 +145,7 @@ const AnotherUserProfile = () => {
     try {
       getFollowersOrFollowing("/Users/getFollowersOrFollowing", {
         opt: opt,
-        userId: anotherUser.id
+        profileId: anotherUser.id
       });
     }
     catch (error) {
@@ -188,7 +183,7 @@ const AnotherUserProfile = () => {
       try {
         await getCreatedOrFollowingCommunities("/Users/getFollowingCommunityOrCreatedCommunity", {
           opt: opt,
-          userId: anotherUser.id
+          profileId: anotherUser.id
         }, opt);
       } catch (error) {
         console.clear();
@@ -322,7 +317,7 @@ const AnotherUserProfile = () => {
               <p>Biografia: <br />{!anotherUser.biography ? (
                 <span className={classes.noRegistry}>Sem biografia</span>
               ) :
-                <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: anotherUser.biography.replace(/\n/g, '<br/>') }}></span>
+                <span className={classes.spanData} style={{ whiteSpace: 'pre-wrap' }}>{anotherUser.biography}</span>
               }</p>
             </div>
           </div>

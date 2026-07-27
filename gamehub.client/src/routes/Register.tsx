@@ -1,9 +1,6 @@
 import React, { useState, FormEvent, useEffect } from 'react';
-import axios from 'axios';
-import MaskInput from '../components/MaskInput';
-import { validateCpf } from '../utils/validateCpf';
+import { axios } from '../axios-config';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
-import { generateCpf } from '../utils/generateCpf';
 import Cookies from 'js-cookie';
 
 import classes from "./Register.module.css";
@@ -22,7 +19,6 @@ const Cadastro = () => {
     return <Navigate to="/logado" replace />
   }
 
-  const [cpf, setCpf] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,12 +27,9 @@ const Cadastro = () => {
   const [lastName, setLastName] = useState('');
   const [termsOfCondition, setTermsOfCondition] = useState(false);
   const [nickname, setNickname] = useState('');
-  const [cpfGenerated, setCpfGenerated] = useState('');
-  const [showAlertCpf, setShowAlertCpf] = useState(false);
   const [showAlertEmail, setShowAlertEmail] = useState(false);
 
   const [formError, setFormError] = useState({
-    cpf: "",
     phone: "",
     email: "",
     password: "",
@@ -56,13 +49,10 @@ const Cadastro = () => {
       const userPascalCase = {
         Name: data.name,
         Surname: data.lastName,
-        Cpf: data.cpf,
         Phone: data.clearPhone,
         Email: data.email,
         Password: data.password,
-        Nickname: data.nickname,
-        ImageSrc: 'https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png',
-        BackgroundImage: 'https://i.ibb.co/zZFcRW4/background3-jpg.jpg'
+        Nickname: data.nickname
       };
 
       const response = await axios.post(url, userPascalCase, {
@@ -85,7 +75,6 @@ const Cadastro = () => {
 
   const validateForm = () => {
     let inputError = {
-      cpf: "",
       phone: "",
       email: "",
       password: "",
@@ -125,17 +114,16 @@ const Cadastro = () => {
       };
     }
 
-    if (password.length < 6 || password.length > 20) {
+    if (password.length < 8 || password.length > 72) {
       inputError = {
         ...inputError,
-        password: "A senha deve ter entre 6 e 20 caracteres"
+        password: "A senha deve ter entre 8 e 72 caracteres"
       }
     }
 
-    if (!cpf || !email || !password || !confirmPassword || !name || !lastName || !nickname) {
+    if (!email || !password || !confirmPassword || !name || !lastName || !nickname) {
       inputError = {
         ...inputError,
-        cpf: !cpf ? "Campo obrigatório!" : "",
         email: !email ? "Campo obrigatório!" : "",
         password: !password ? "Campo obrigatório!" : "",
         confirmPassword: !confirmPassword ? "Campo obrigatório!" : "",
@@ -152,20 +140,6 @@ const Cadastro = () => {
       }
     }
 
-    const isValidCpf = validateCpf(cpf);
-    if (cpf !== "" && !isValidCpf) {
-      inputError = {
-        ...inputError,
-        cpf: !isValidCpf ? "CPF inválido!" : ""
-      }
-    }
-    else if (cpf.length < 11) {
-      inputError = {
-        ...inputError,
-        cpf: !isValidCpf ? "Tamanho do CPF inválido!" : ""
-      }
-    }
-    
     if (!termsOfCondition) {
       inputError = {
         ...inputError,
@@ -194,22 +168,12 @@ const Cadastro = () => {
 
       if (!hasErrors) {
         const clearPhone = cleanPhoneNumber(phone);
-        console.log("Formulário submetido!");
-        console.log(name);
-        console.log(lastName);
-        console.log(nickname);
-        console.log(cpf);
-        console.log(clearPhone);
-        console.log(email);
-        console.log(password);
-
         try {
           setIsSubmitting(true);
           const response = await postData('/Users', {
             name,
             lastName,
             nickname,
-            cpf,
             clearPhone,
             email,
             password,
@@ -237,7 +201,6 @@ const Cadastro = () => {
 
   const clearForm = (e: FormEvent) => {
     e.preventDefault();
-    setCpf("");
     setPhone("");
     setEmail("");
     setPassword("");
@@ -258,11 +221,6 @@ const Cadastro = () => {
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
     validateForm();
-  }
-  const handleCPFChange = (e: any) => {
-    setCpf(e.target.value.toString());
-    validateForm();
-    // (e: any) => setCpf(e.target.value)
   }
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(e.target.value.toString());
@@ -287,12 +245,7 @@ const Cadastro = () => {
 
   useEffect(() => {
     validateForm();
-  }, [termsOfCondition, name, lastName, nickname, cpf, phone, email, password, confirmPassword])
-
-  const handleGenerateCpf = () => {
-    const cpf = generateCpf();
-    setCpfGenerated(cpf);
-  };
+  }, [termsOfCondition, name, lastName, nickname, phone, email, password, confirmPassword])
 
   return (
     <div className="form">
@@ -318,16 +271,6 @@ const Cadastro = () => {
             {formSubmitted && (<p className='errorMessage'>{formError.nickname}</p>)}
           </div>
           <div className={classes.fieldsSideBySide}>
-            <div>
-              <label htmlFor="cpf">CPF<span className={classes.required}>*</span> <span className={classes.iconBtn} onClick={() => setShowAlertCpf(!showAlertCpf)}><TbAlertSquareRounded className={classes.icon}/></span></label>
-              {showAlertCpf && (
-                <div className={classes.divAlert}>
-                  <span>Como este é um site feito apenas para praticar/estudar programação, esse campo não precisa ser preenchido com uma informação real.</span>
-                </div>
-              )}
-              <MaskInput value={cpf} onChange={handleCPFChange} onBlur={validateForm} />
-              {formSubmitted && (<p className='errorMessage'>{formError.cpf}</p>)}
-            </div>
             <div>
               <label htmlFor="phone">Número de telefone</label>
               <input type="tel" name='phone' placeholder='Digite o seu telefone...' onChange={handlePhoneChange} value={insertMaskInPhone(phone)} onBlur={validateForm} />
@@ -371,10 +314,6 @@ const Cadastro = () => {
             <Link to="/" className='link'>Já tem uma conta?</Link>
           </div>
         </form>
-        <div className={classes.divGenCpf}>
-          <input type='button' value="Clique aqui para gerar um CPF válido " className={classes.btnCpf} onClick={handleGenerateCpf} />
-          <span className={classes.cpfGenerated} onClick={() => navigator.clipboard.writeText(cpfGenerated)}>{cpfGenerated}</span>
-        </div>
       </div>
     </div>
   )

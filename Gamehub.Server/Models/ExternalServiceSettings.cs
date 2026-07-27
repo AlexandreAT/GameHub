@@ -14,6 +14,9 @@ public sealed class JwtSettings
 
     [Required]
     public string Audience { get; init; } = string.Empty;
+
+    [Range(5, 1440)]
+    public int ExpirationMinutes { get; init; } = 30;
 }
 
 public sealed class IgdbSettings

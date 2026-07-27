@@ -17,15 +17,27 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      Cookies.remove('.AspNetCore.Application.Authorization');
+    }
+    return Promise.reject(error);
+  }
+);
+
 const setAuthToken = (token: string) => {
     if (token) {
       // Define o token no cookie
-      Cookies.set('.AspNetCore.Application.Authorization', token, { expires: 7 });
+      Cookies.set('.AspNetCore.Application.Authorization', token, {
+        expires: 1 / 48,
+        secure: true,
+        sameSite: 'strict'
+      });
       
     } else {
       // Limpa o cookie
-      console.log("token removido: "+ token);
-      
       Cookies.remove('.AspNetCore.Application.Authorization');
     }
   };

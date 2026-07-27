@@ -127,7 +127,6 @@ const CommunityPage = () => {
     const followCommunity = async () => {
 
         const data = {
-            userId: user.id,
             communityId: community.id,
         };
 
@@ -262,7 +261,7 @@ const CommunityPage = () => {
                                     <p><span className={classes.title}>Descrição: </span>{!community.description ? (
                                         <span className={classes.noRegistry}>Sem descrição</span>
                                     ) :
-                                        <span className={classes.spanData} dangerouslySetInnerHTML={{ __html: community.description.replace(/\n/g, '<br/>') }}></span>
+                                        <span className={classes.spanData} style={{ whiteSpace: 'pre-wrap' }}>{community.description}</span>
                                     }</p>
                                 </div>
                                 <div className={classes.createPost}>

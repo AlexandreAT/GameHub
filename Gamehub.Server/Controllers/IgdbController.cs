@@ -14,6 +14,8 @@ namespace Gamehub.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("external-api")]
     public class IgdbController : ControllerBase
     {
         private readonly UserServices _userServices;
@@ -30,10 +32,14 @@ namespace Gamehub.Server.Controllers
         [HttpPost("search")]
         public async Task<IActionResult> SearchGames([FromBody] string query)
         {
+            var safeQuery = NormalizeSearchQuery(query);
+            if (safeQuery is null)
+                return BadRequest("A busca deve ter entre 1 e 100 caracteres.");
+
             var igdbClient = CreateClient();
 
             var searchQuery = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url, summary; " +
-                              $"search \"{query}\"; " +
+                              $"search \"{safeQuery}\"; " +
                               $"where version_parent = null & cover.image_id != null; " +
                               $"limit 12;";
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
@@ -97,9 +103,21 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("getLibrary")]
-        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page, string userId, string? order, string? filter, string? searchQuery)
+        public async Task<IActionResult> GetLibrary([FromBody] string[] libraryIds, int page, string? profileId, string? order, string? filter, string? searchQuery)
         {
-            User user = await _userServices.GetAsync(userId);
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
+
+            User user = await _userServices.GetAsync(profileId ?? userId);
+            if (user is null)
+                return Unauthorized();
+
+            if (libraryIds.Length == 0)
+                return Ok(new { Games = Array.Empty<GameModel>(), TotalPages = 0, CurrentPage = 1 });
+
+            if (libraryIds.Any(id => !long.TryParse(id, out _)))
+                return BadRequest("A biblioteca contém um identificador inválido.");
 
             if (page == 0)
             {
@@ -112,7 +130,6 @@ namespace Gamehub.Server.Controllers
                             $"sort name asc; " +
                             $"where id = ({idList}); " +
                             $"limit 500; ";
-            Console.WriteLine(searchIds);
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchIds);
             List<GameModel> gamesList = new List<GameModel>();
 
@@ -162,7 +179,7 @@ namespace Gamehub.Server.Controllers
                     // Verificar a lista de jogos da biblioteca do usuário
                     foreach (var gameModel in gamesList)
                     {
-                        var gameFound = user.GamesLibrary.FirstOrDefault(currentGame => currentGame.id == gameModel.id.ToString());
+                        var gameFound = user.GamesLibrary?.FirstOrDefault(currentGame => currentGame.id == gameModel.id.ToString());
                         if (gameFound != null)
                         {
                             gameModel.pin = gameFound.pin;
@@ -230,10 +247,14 @@ namespace Gamehub.Server.Controllers
         [HttpPost("getSimplifiedGame")]
         public async Task<IActionResult> GetSimplifiedGame([FromBody] string query)
         {
+            var safeQuery = NormalizeSearchQuery(query);
+            if (safeQuery is null)
+                return BadRequest("A busca deve ter entre 1 e 100 caracteres.");
+
             var igdbClient = CreateClient();
 
             var searchQuery = $"fields id, name, cover.image_id, url; " +
-                              $"search \"{query}\"; " +
+                              $"search \"{safeQuery}\"; " +
                               $"where version_parent = null & cover.image_id != null; " +
                               $"limit 5;";
             var games = await igdbClient.QueryAsync<Game>(IGDBClient.Endpoints.Games, query: searchQuery);
@@ -280,6 +301,14 @@ namespace Gamehub.Server.Controllers
         private IGDBClient CreateClient()
         {
             return new IGDBClient(_settings.ClientId, _settings.ClientSecret);
+        }
+
+        private static string? NormalizeSearchQuery(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query) || query.Length > 100)
+                return null;
+
+            return query.Trim().Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
     }
 }

@@ -106,7 +106,7 @@ const Library = () => {
                     const response = await axios.post('/Igdb/getLibrary', libraryIds, {
                         params: {
                             page: page,
-                            userId: id,
+                            profileId: id,
                             order: order,
                             filter: filter,
                             searchQuery: searchGames
@@ -132,7 +132,7 @@ const Library = () => {
                     const response = await axios.post('/Igdb/getLibrary', libraryIds, {
                         params: {
                             page: page,
-                            userId: id,
+                            profileId: id,
                             order: order,
                             filter: filter,
                             searchQuery: searchGames
@@ -157,11 +157,7 @@ const Library = () => {
     const fetchAnotherUser = async () => {
         if(user && id !== user.id){
             try {
-                const response = await axios.get(`/Users/anotherUser/${id}`, {
-                    params: {
-                        userId: id,
-                    }
-                });
+                const response = await axios.get(`/Users/anotherUser/${id}`);
                 setAnotherUser(response.data);
 
             } catch (error) {
@@ -250,8 +246,7 @@ const Library = () => {
     const addGameLibrary = async (gameId: string) => {
         try {
             await postLibrary("/Users/handleGameLibrary", {
-                gameId: gameId,
-                userId: user.id
+                gameId: gameId
             });
         } catch (error) {
             console.error(error);
@@ -285,8 +280,7 @@ const Library = () => {
         try {
             await postLibrary("/Users/handleStatus", {
                 status: status,
-                gameId: gameId,
-                userId: user.id
+                gameId: gameId
             });
             const updatedGamesLibrary = [...user.gamesLibrary];
             const gameIndex = updatedGamesLibrary.findIndex(game => game.id === gameId);
@@ -304,8 +298,7 @@ const Library = () => {
         try {
             await postLibrary("/Users/handlePin", {
                 pin: pin,
-                gameId: gameId,
-                userId: user.id
+                gameId: gameId
             });
             const updatedGamesLibrary = [...user.gamesLibrary];
             const gameIndex = updatedGamesLibrary.findIndex(game => game.id === gameId);
@@ -327,8 +320,7 @@ const Library = () => {
         try {
             await postLibrary("/Users/handleRating", {
                 rating: rating,
-                gameId: gameId,
-                userId: user.id
+                gameId: gameId
             });
             const updatedGamesLibrary = [...user.gamesLibrary];
             const gameIndex = updatedGamesLibrary.findIndex(game => game.id === gameId);

@@ -1,76 +1,71 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.ComponentModel.DataAnnotations;
 
-namespace Gamehub.Server.Models
+namespace Gamehub.Server.Models;
+
+public class User
 {
-    public class User
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set; }
 
-        [Required(ErrorMessage = "O nome deve ter entre 2 e 20 caracteres.")]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "O nome deve ter entre 2 e 20 caracteres.")]
-        [BsonElement("Nome")]
-        public string Name { get; set; } = null;
+    [BsonElement("Nome")]
+    public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O sobrenome deve ter entre 2 e 50 caracteres.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "O sobrenome deve ter entre 2 e 50 caracteres.")]
-        [BsonElement("Sobrenome")]
-        public string Surname { get; set; } = null;
+    [BsonElement("Sobrenome")]
+    public string Surname { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O usuário precisa de um apelido.")]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "O apelido deve ter entre 2 a 20 caracteres.")]
-        [BsonElement("Apelido")]
-        public string Nickname { get; set; } = null;
+    [BsonElement("Apelido")]
+    public string Nickname { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O CPF deve ser preenchido.")]
-        [BsonElement("CPF")]
-        public string Cpf { get; set; }
+    [BsonElement("CPF")]
+    [BsonIgnoreIfDefault]
+    public string Cpf { get; set; } = string.Empty;
 
-        [BsonElement("Número de telefone")]
-        public string? Phone { get; set; } = null;
+    [BsonElement("Número de telefone")]
+    public string? Phone { get; set; }
 
-        [Required(ErrorMessage = "O email deve ser preenchido.")]
-        [EmailAddress(ErrorMessage = "O email deve estar no formato válido.")]
-        [BsonElement("Email")]
-        public string Email { get; set; } = null;
+    [BsonElement("Email")]
+    public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "A senha deve ser preenchida e ter entre 6 e 20 caracteres.")]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 20 caracteres.")]
-        [BsonElement("Senha")]
-        public string Password { get; set; } = null;
+    [BsonElement("Senha")]
+    public string Password { get; set; } = string.Empty;
 
-        [BsonElement("Imagem")]
-        public string? ImageSrc { get; set; } = null;
+    [BsonElement("Redefinição de senha obrigatória")]
+    [BsonDefaultValue(false)]
+    public bool PasswordResetRequired { get; set; }
 
-        [BsonElement("Seguindo")]
-        public List<string>? Following { get; set; } = null;
+    [BsonElement("Versão do token")]
+    [BsonDefaultValue(0)]
+    public int TokenVersion { get; set; }
 
-        [BsonElement("Seguidores")]
-        public List<string>? Followers { get; set; } = null;
+    [BsonElement("Imagem")]
+    public string? ImageSrc { get; set; }
 
-        [BsonElement("Comunidades")]
-        public List<string>? UserCommunities { get; set; } = null;
+    [BsonElement("Seguindo")]
+    public List<string>? Following { get; set; }
 
-        [BsonElement("Comunidades criadas")]
-        public List<string>? UserCreatedCommunities { get; set; } = null;
+    [BsonElement("Seguidores")]
+    public List<string>? Followers { get; set; }
 
-        [BsonElement("Biografia")]
-        public string? Biography { get; set; } = null;
+    [BsonElement("Comunidades")]
+    public List<string>? UserCommunities { get; set; }
 
-        [BsonElement("Cidade")]
-        public string? City { get; set; } = null;
+    [BsonElement("Comunidades criadas")]
+    public List<string>? UserCreatedCommunities { get; set; }
 
-        [BsonElement("Estado")]
-        public string? State { get; set; } = null;
+    [BsonElement("Biografia")]
+    public string? Biography { get; set; }
 
-        [BsonElement("Background")]
-        public string? BackgroundImage {  get; set; } = null;
+    [BsonElement("Cidade")]
+    public string? City { get; set; }
 
-        [BsonElement("Biblioteca")]
-        public List<LibraryGame>? GamesLibrary { get; set; } = null;
-    }
+    [BsonElement("Estado")]
+    public string? State { get; set; }
+
+    [BsonElement("Background")]
+    public string? BackgroundImage { get; set; }
+
+    [BsonElement("Biblioteca")]
+    public List<LibraryGame>? GamesLibrary { get; set; }
 }

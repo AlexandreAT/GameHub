@@ -97,7 +97,6 @@ const ListCommunitiesPosts = ({ user }: Props) => {
         try {
             const response = await axios.get<PaginatedResult<Post>>(url, {
                 params: {
-                    userId: user.id,
                     page: page,
                     opt: opt
                 }
@@ -231,7 +230,6 @@ const ListCommunitiesPosts = ({ user }: Props) => {
         try {
             await axios.post("Posts/like", qs.stringify({
                 postId,
-                userId: user.id,
             }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -248,7 +246,6 @@ const ListCommunitiesPosts = ({ user }: Props) => {
         try {
             await axios.post("Posts/dislike", qs.stringify({
                 postId,
-                userId: user.id,
             }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -371,12 +368,8 @@ const ListCommunitiesPosts = ({ user }: Props) => {
                     )}
                     <div className={classes.postContent}>
                         <h3 className={classes.title}>{post.title}</h3>
-                        <div
-                            className={classes.content}
-                            dangerouslySetInnerHTML={{
-                                __html: truncateText(post.content, 600).replace(/\n/g, '<br/>')
-                            }}
-                        >
+                        <div className={classes.content} style={{ whiteSpace: 'pre-wrap' }}>
+                            {truncateText(post.content, 600)}
                         </div>
                         {post.imageSrc &&
                             <div className={classes.divBtnImage}>

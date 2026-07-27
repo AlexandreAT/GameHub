@@ -25,12 +25,15 @@ namespace Gamehub.Server.Services
         }
 
         public async Task<List<User>> GetAsync() => await _userCollection.Find(x => true).ToListAsync();
-        public async Task<User> GetAsync(string id) => await _userCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
-        public async Task<User> GetUserByEmailAndPassword(string email, string password)
+        public async Task<User> GetAsync(string id)
         {
-            var userFound = await _userCollection.Find(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
-            return userFound;
+            if (!ObjectId.TryParse(id, out _))
+                return null!;
+
+            return await _userCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
+        public async Task<User> GetByEmailAsync(string email) =>
+            await _userCollection.Find(x => x.Email == email.Trim().ToLowerInvariant()).FirstOrDefaultAsync();
 
         public async Task<List<SimplifiedUser>> SearchUsersAsync(string query)
         {
@@ -65,26 +68,17 @@ namespace Gamehub.Server.Services
 
         public async Task<User> CreateAsync(User user)
         {
-            if (user.Cpf.ToString().Length != 11)
-            {
-                throw new Exception("O CPF deve ter 11 dígitos.");
-            }
-
             user.Id = null;
             await _userCollection.InsertOneAsync(user);
             user.Id = user.Id ?? _userCollection.Find(x => x.Id == user.Id).FirstOrDefault()?.Id;
             return user;
         }
 
-        public async Task<bool> NicknameExistsAsync(string nickname)
+        public async Task<bool> NicknameExistsAsync(string nickname, string? exceptUserId = null)
         {
-            var user = await _userCollection.Find(x => x.Nickname == nickname).FirstOrDefaultAsync();
-            return user != null;
-        }
-
-        public async Task<bool> CpfExistsAsync(string cpf)
-        {
-            var user = await _userCollection.Find(x => x.Cpf == cpf).FirstOrDefaultAsync();
+            var user = await _userCollection
+                .Find(x => x.Nickname == nickname && (exceptUserId == null || x.Id != exceptUserId))
+                .FirstOrDefaultAsync();
             return user != null;
         }
 
@@ -264,14 +258,25 @@ namespace Gamehub.Server.Services
             }
         }
 
-        public async Task<string> GetPassword(string email, string nickname)
+        public async Task<int> ResetLegacyPasswordsAsync()
         {
-            var user = await _userCollection.Find(x => x.Email == email && x.Nickname == nickname).FirstOrDefaultAsync();
-            if (user == null)
+            var users = await _userCollection.Find(x => true).ToListAsync();
+            var migrated = 0;
+
+            foreach (var user in users.Where(user => !Security.PasswordHasher.IsHash(user.Password)))
             {
-                return null;
+                var invalidatedPassword = Convert.ToBase64String(
+                    System.Security.Cryptography.RandomNumberGenerator.GetBytes(48));
+
+                var update = Builders<User>.Update
+                    .Set(x => x.Password, Security.PasswordHasher.Hash(invalidatedPassword))
+                    .Set(x => x.PasswordResetRequired, true);
+
+                await _userCollection.UpdateOneAsync(x => x.Id == user.Id, update);
+                migrated++;
             }
-            return user.Password;
+
+            return migrated;
         }
 
         public async Task HandleGameLibrary(string gameId, User user)

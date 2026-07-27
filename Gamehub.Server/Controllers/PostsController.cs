@@ -24,9 +24,11 @@ namespace Gamehub.Server.Controllers
             _communityServices = communityServices;
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet]
         public async Task<List<Post>> GetPost() => await _postServices.GetAsync();
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("getPagePost/{page}")]
         public async Task<ActionResult<List<Post>>> GetPost(int page, string opt)
         {
@@ -71,12 +73,15 @@ namespace Gamehub.Server.Controllers
             }
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("getPost/{id}")]
         public async Task<Post> GetPost(string id) => await _postServices.GetAsync(id);
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("communityPosts/{id}")]
-        public async Task<ActionResult<List<Post>>> GetCommunityPosts(string communityId, int page, string opt)
+        public async Task<ActionResult<List<Post>>> GetCommunityPosts(string id, int page, string opt)
         {
+            var communityId = id;
             if (page == 0)
             {
                 page = 1;
@@ -119,8 +124,11 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpGet("GetListCommunitiesPosts")]
-        public async Task<ActionResult<List<Post>>> GetCommunitiesIsolatedPosts(string userId, int page, string opt)
+        public async Task<ActionResult<List<Post>>> GetCommunitiesIsolatedPosts(int page, string opt)
         {
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
             if (page == 0)
             {
                 page = 1;
@@ -197,8 +205,11 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpGet("GetListUsersPosts")]
-        public async Task<ActionResult<List<Post>>> GetUsersIsolatedPosts(string userId, int page, string opt)
+        public async Task<ActionResult<List<Post>>> GetUsersIsolatedPosts(int page, string opt)
         {
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
             if (page == 0)
             {
                 page = 1;
@@ -271,6 +282,7 @@ namespace Gamehub.Server.Controllers
             }
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("userPosts/{userId}")]
         public async Task<ActionResult<List<Post>>> GetUserPosts(string userId, int page, string opt)
         {
@@ -315,6 +327,7 @@ namespace Gamehub.Server.Controllers
             }
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("getPostsByGame")]
         public async Task<ActionResult<List<Post>>> GetPostsByGame(string query, int page, string? opt)
         {
@@ -361,19 +374,34 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<Post> PostPost(Post post)
+        public async Task<ActionResult<Post>> PostPost(Dtos.CreatePostRequest request)
         {
-            User user = await _userServices.GetAsync(post.IdAuthor);
-            post.AuthorImage = user.ImageSrc;
-            if (post.Title == null)
-            {
-                throw new Exception("O post deve conter um título!");
-            }
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
 
-            if (post.Content == null)
+            User user = await _userServices.GetAsync(userId);
+            if (user is null)
+                return Unauthorized();
+
+            if (request.CommunityId is not null && await _communityServices.GetAsync(request.CommunityId) is null)
+                return BadRequest("Comunidade não encontrada.");
+
+            var post = new Post
             {
-                throw new Exception("O post deve conter um conteúdo!");
-            }
+                Author = user.Nickname,
+                IdAuthor = user.Id,
+                AuthorImage = user.ImageSrc,
+                Title = request.Title.Trim(),
+                Content = request.Content.Trim(),
+                ImageSrc = request.ImageSrc,
+                Game = request.Game,
+                CommunityId = request.CommunityId,
+                Date = DateTimeOffset.UtcNow,
+                Comments = [],
+                Like = [],
+                Dislike = []
+            };
 
             await _postServices.CreateAsync(post);
 
@@ -382,27 +410,47 @@ namespace Gamehub.Server.Controllers
                 await _communityServices.AddPost(post, post.CommunityId);
             }
 
-            return post;
+            return CreatedAtAction(nameof(GetPost), new { id = post.Id }, post);
         }
 
         [HttpDelete("{id}")]
-        public async Task DeletePost(string postId) => await _postServices.RemoveAsync(postId);
+        public async Task<IActionResult> DeletePost(string id)
+        {
+            var post = await _postServices.GetAsync(id);
+            if (post is null)
+                return NotFound();
+
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            var isCommunityOwner = false;
+            if (post.CommunityId is not null)
+            {
+                var community = await _communityServices.GetAsync(post.CommunityId);
+                isCommunityOwner = community?.Creator == userId;
+            }
+
+            if (post.IdAuthor != userId && !isCommunityOwner)
+                return Forbid();
+
+            await _postServices.RemoveAsync(id);
+            return NoContent();
+        }
 
         [HttpPost("comment")]
-        public async Task PostComment([FromForm]string postId, [FromForm]string userId, [FromForm]string comment)
+        public async Task<IActionResult> PostComment([FromForm]string postId, [FromForm]string comment)
         {
             if (postId == null) 
             {
                 throw new Exception("O ID do post não pode ser nulo");
             }
 
-            if (userId == null)
-            {
-                throw new Exception("O ID do usuário não pode ser nulo");
-            }
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
 
             var userFound = await _userServices.GetAsync(userId);
             var postCommented = await _postServices.GetAsync(postId);
+            if (userFound is null || postCommented is null)
+                return NotFound();
 
             var userCommented = new SimplifiedUser
             {
@@ -419,8 +467,10 @@ namespace Gamehub.Server.Controllers
             };
 
             await _postServices.AddComment(commentary, postCommented);
+            return NoContent();
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("comments")]
         public async Task<List<Comment>> GetPostComments(string id)
         {
@@ -432,12 +482,26 @@ namespace Gamehub.Server.Controllers
         public async Task<IActionResult> RemoveComment(string postId, string commentId)
         {
             var post = await _postServices.GetAsync(postId);
-            var comment = post.Comments.Find(c => c.Id == commentId);
+            if (post is null)
+                return NotFound();
+
+            var comment = post.Comments?.Find(c => c.Id == commentId);
 
             if (comment != null)
             {
+                var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+                var canModerate = post.IdAuthor == userId;
+                if (!canModerate && post.CommunityId is not null)
+                {
+                    var community = await _communityServices.GetAsync(post.CommunityId);
+                    canModerate = community?.Creator == userId;
+                }
+
+                if (comment.User.UserId != userId && !canModerate)
+                    return Forbid();
+
                 await _postServices.RemoveAsyncComment(post, commentId);
-                return Ok("Comentário removido com sucesso!");
+                return NoContent();
             }
             else
             {
@@ -446,31 +510,41 @@ namespace Gamehub.Server.Controllers
         }
 
         [HttpPost("like")]
-        public async Task HandleLike([FromForm]string postId, [FromForm]string userId, [FromForm]string? commentId)
+        public async Task<IActionResult> HandleLike([FromForm]string postId, [FromForm]string? commentId)
         {
-
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
             User user = await _userServices.GetAsync(userId);
-            Post post = await _postServices.AddLike(postId, user, commentId);
-            User userOfPost = await _userServices.GetAsync(post.IdAuthor);
-            
+            if (user is null || await _postServices.GetAsync(postId) is null)
+                return NotFound();
+
+            await _postServices.AddLike(postId, user, commentId);
+            return NoContent();
         }
 
         [HttpPost("dislike")]
-        public async Task HandleDislike([FromForm] string postId, [FromForm] string userId, [FromForm] string? commentId)
+        public async Task<IActionResult> HandleDislike([FromForm] string postId, [FromForm] string? commentId)
         {
-
+            var userId = Security.ClaimsPrincipalExtensions.GetUserId(User);
+            if (userId is null)
+                return Unauthorized();
             User user = await _userServices.GetAsync(userId);
-            Post post = await _postServices.AddDislike(postId, user, commentId);
-            User userOfPost = await _userServices.GetAsync(post.IdAuthor);
+            if (user is null || await _postServices.GetAsync(postId) is null)
+                return NotFound();
 
+            await _postServices.AddDislike(postId, user, commentId);
+            return NoContent();
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("like")]
         public async Task<List<LikeDisLike>> GetLike(string postId)
         {
             return await _postServices.GetLikeAsync(postId);
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("dislike")]
         public async Task<List<LikeDisLike>> GetDislike(string postId)
         {

@@ -17,6 +17,7 @@ public sealed class ImagesController : ControllerBase
 
     [HttpPost("upload")]
     [Authorize]
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("upload")]
     [RequestSizeLimit(10 * 1024 * 1024)]
     public async Task<IActionResult> Upload(IFormFile? image, CancellationToken cancellationToken)
     {

@@ -250,7 +250,6 @@ const IsolatedPost = () => {
         try {
             await axios.post("Posts/like", qs.stringify({
                 postId,
-                userId: user.id,
             }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -267,7 +266,6 @@ const IsolatedPost = () => {
         try {
             await axios.post("Posts/dislike", qs.stringify({
                 postId,
-                userId: user.id,
             }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -386,7 +384,7 @@ const IsolatedPost = () => {
                                 </div>
                                 <div className={classes.postContent}>
                                     <h3 className={classes.title}>{post.title}</h3>
-                                    <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                                    <div className={classes.content} style={{ whiteSpace: 'pre-wrap' }}>{post.content}</div>
                                     {post.imageSrc &&
                                         <div className={classes.divBtnImage}>
                                             {activeImageButton[post.id] ? (

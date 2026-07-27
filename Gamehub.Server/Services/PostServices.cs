@@ -110,7 +110,13 @@ namespace Gamehub.Server.Services
             return orderedPosts.ToList();
         }
 
-        public async Task<Post> GetAsync(string id) => await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<Post> GetAsync(string id)
+        {
+            if (!ObjectId.TryParse(id, out _))
+                return null!;
+
+            return await _postCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        }
 
         public async Task<Post> CreateAsync(Post post)
         {
