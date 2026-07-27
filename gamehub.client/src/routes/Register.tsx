@@ -59,7 +59,6 @@ const Cadastro = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [termsOfCondition, setTermsOfCondition] = useState(false);
   const [nickname, setNickname] = useState('');
   const [showAlertEmail, setShowAlertEmail] = useState(false);
 
@@ -70,7 +69,6 @@ const Cadastro = () => {
     confirmPassword: "",
     name: "",
     lastName: "",
-    termsOfCondition: "",
     nickname: ""
   });
 
@@ -109,7 +107,6 @@ const Cadastro = () => {
       confirmPassword: "",
       name: "",
       lastName: "",
-      termsOfCondition: "",
       nickname: ""
     };
 
@@ -168,19 +165,14 @@ const Cadastro = () => {
       }
     }
 
-    if (!termsOfCondition) {
-      inputError = {
-        ...inputError,
-        termsOfCondition: !termsOfCondition ? "Para avançar é necessário aceitar os termos!" : ""
-      }
-    }
-
     setFormError(inputError);
     setFormTouched(true);
-  }, [confirmPassword, email, lastName, name, nickname, password, termsOfCondition])
+  }, [confirmPassword, email, lastName, name, nickname, password])
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
 
     validateForm();
 
@@ -209,14 +201,14 @@ const Cadastro = () => {
           if (response.error) {
             alert(response.error);
             console.log('Error from the backend:', response.error);
-            setIsSubmitting(false);
           } else {
-            setIsSubmitting(false);
             console.log('Usuário cadastrado com sucesso!', response.data);
             navigate("/");
           }
         } catch (error) {
           console.error('Erro ao cadastrar usuário:', error);
+        } finally {
+          setIsSubmitting(false);
         }
       } else {
         console.log('Há erros no formulário. Por favor, corrija-os antes de enviar.');
@@ -265,11 +257,6 @@ const Cadastro = () => {
     setConfirmPassword(e.target.value);
     validateForm();
   }
-  const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setTermsOfCondition(checked);  
-  }
-
   useEffect(() => {
     validateForm();
   }, [validateForm])
@@ -330,16 +317,18 @@ const Cadastro = () => {
               {formSubmitted && (<p className='errorMessage'>{formError.confirmPassword}</p>)}
             </div>
           </div>
-          <div className={classes.inputCheckbox}>
+          {/* <div className={classes.inputCheckbox}>
             <input type="checkbox" name='termsOfCondition' onChange={handleTermsChange} />
             <Link to="/termsOfCondition"><label htmlFor="termsOfCondition">Estou ciente e aceito os termos de condição.</label></Link>
-            <div className={classes.errorMessage}>
-              {formSubmitted && (<p className='errorMessage'>{formError.termsOfCondition}</p>)}
-            </div>
-          </div>
+          </div> */}
           <div className={classes.divButtons}>
-            <button className='btn' type='submit' disabled={isSubmitting}>Enviar</button>
-            <input type="button" value="Limpar" onClick={clearForm} className={classes.clearInput} />
+            <button className='btn' type='submit' disabled={isSubmitting} aria-busy={isSubmitting}>
+              <span className='btnContent'>
+                {isSubmitting && <span className='btnSpinner' aria-hidden="true" />}
+                {isSubmitting ? 'Cadastrando...' : 'Enviar'}
+              </span>
+            </button>
+            <input type="button" value="Limpar" onClick={clearForm} className={classes.clearInput} disabled={isSubmitting} />
           </div>
           <div className={classes.link}>
             <Link to="/" className='link'>Já tem uma conta?</Link>

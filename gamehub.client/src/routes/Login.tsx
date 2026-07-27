@@ -13,6 +13,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const token = getAuthToken();
 
@@ -20,29 +21,32 @@ const Login = () => {
         return <Navigate to="/logado" replace />
     }
 
-    const submitLogin = (e: FormEvent) => {
+    const submitLogin = async (e: FormEvent) => {
         e.preventDefault();
 
-        // Faz a chamada a API com os valores do formulário
-        axios.post('/Users/login', { email, password })
-        .then((response) => {
-            
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
+
+        try {
+            // Faz a chamada a API com os valores do formulário
+            const response = await axios.post('/Users/login', { email, password });
+
             // Verifica se o usuário foi encontrado
             if (response.data) {
-
                 // Define o token no cabeçalho
                 setAuthToken(response.data.token);
 
                 // Redireciona o usuário para a página depois do login
                 navigate("/Logado");
             }
-        })
-        .catch((error) => {
-            
+        } catch (error) {
             // Exibe uma mensagem de erro no front-end
             console.error(error);
             alert("Email ou senha incorretos.");
-        });
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
   return (
@@ -78,7 +82,12 @@ const Login = () => {
                             {/* <Link to="/forgotPassword" className='link'>Esqueceu a senha?</Link> */}
                         </div>
                     </div>
-                    <button type='submit' className='btn' >Entrar</button>
+                    <button type='submit' className='btn' disabled={isSubmitting} aria-busy={isSubmitting}>
+                        <span className='btnContent'>
+                            {isSubmitting && <span className='btnSpinner' aria-hidden="true" />}
+                            {isSubmitting ? 'Entrando...' : 'Entrar'}
+                        </span>
+                    </button>
                     <Link to="/register" className={classes.register}>Registrar-se</Link>
                 </form>
             </div>
