@@ -279,6 +279,19 @@ namespace Gamehub.Server.Services
             return migrated;
         }
 
+        public async Task<bool> ResetPasswordByEmailAsync(string email, string newPassword)
+        {
+            var user = await GetByEmailAsync(email);
+            if (user is null)
+                return false;
+
+            user.Password = Security.PasswordHasher.Hash(newPassword);
+            user.PasswordResetRequired = false;
+            user.TokenVersion++;
+            await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
+            return true;
+        }
+
         public async Task HandleGameLibrary(string gameId, User user)
         {
             if(gameId != null)

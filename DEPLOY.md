@@ -111,6 +111,7 @@ O Render publica as faixas de saída de cada serviço em **Connect > Outbound**.
 - Senhas novas usam BCrypt com salt e fator de trabalho 12.
 - As 31 contas legadas tiveram as senhas antigas invalidadas e foram marcadas para redefinição; nenhuma senha em texto puro foi preservada.
 - A migração administrativa é idempotente. Em PowerShell local, execute `$env:ASPNETCORE_ENVIRONMENT="Development"` e depois `dotnet run --project Gamehub.Server -- --reset-legacy-passwords`; a segunda execução deve migrar zero contas.
+- Para recuperar uma conta legada sem expor um endpoint, execute localmente `dotnet run --project Gamehub.Server -- --reset-user-password usuario@email.com` e digite a nova senha quando solicitado. A senha não aparece na tela nem na linha de comando e os tokens anteriores são revogados.
 - O endpoint `getPassword` e os modelos que carregavam senha/CPF foram removidos.
 - DTOs distintos controlam cadastro, login, atualização e perfis público/privado; senha e CPF nunca são serializados nas respostas.
 - O cadastro deixou de solicitar CPF e o gerador de CPF fictício foi removido. Os valores legados não são expostos, mas só devem ser apagados do Atlas em uma limpeza de dados aprovada separadamente.
@@ -120,7 +121,7 @@ O Render publica as faixas de saída de cada serviço em **Connect > Outbound**.
 - JWT valida assinatura, issuer, audience e expiração de 30 minutos, sem tolerância de relógio. A versão de segurança do usuário revoga tokens antigos após troca de senha.
 - Login/cadastro, IGDB e uploads possuem rate limiting e retornam `429` quando o limite é excedido.
 - Conteúdo de usuários não usa mais `dangerouslySetInnerHTML`, eliminando o vetor encontrado de XSS armazenado.
-- O fluxo inseguro de recuperação foi substituído por uma orientação temporária para criar uma nova conta, até existir recuperação por email com token descartável.
+- O fluxo público inseguro de recuperação foi desativado. Contas legadas podem ser recuperadas pelo comando administrativo local até existir recuperação por email com token descartável.
 - `MongoDB.Driver` foi atualizado para 3.10.0, `IGDB` para 6.1.0 e `Newtonsoft.Json` foi fixado em 13.0.4. A auditoria NuGet não encontra mais pacotes vulneráveis.
 - As dependências de produção do frontend foram atualizadas. O único alerta restante do `npm audit --omit=dev` afeta exclusivamente o modo RSC do React Router, que não é usado por esta SPA; não há versão estável corrigida disponível em 27/07/2026.
 

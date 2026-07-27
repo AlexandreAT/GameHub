@@ -185,6 +185,38 @@ if (args.Contains("--reset-legacy-passwords", StringComparer.OrdinalIgnoreCase))
     return;
 }
 
+var resetUserPasswordIndex = Array.FindIndex(
+    args,
+    argument => argument.Equals("--reset-user-password", StringComparison.OrdinalIgnoreCase));
+
+if (resetUserPasswordIndex >= 0)
+{
+    if (resetUserPasswordIndex + 1 >= args.Length)
+    {
+        Console.Error.WriteLine("Informe o email: --reset-user-password usuario@email.com");
+        return;
+    }
+
+    var password = ReadPassword("Nova senha: ");
+    var confirmation = ReadPassword("Confirme a nova senha: ");
+
+    if (password.Length is < 8 or > 72 || password != confirmation)
+    {
+        Console.Error.WriteLine("As senhas devem coincidir e possuir entre 8 e 72 caracteres.");
+        return;
+    }
+
+    var userServices = app.Services.GetRequiredService<UserServices>();
+    var reset = await userServices.ResetPasswordByEmailAsync(
+        args[resetUserPasswordIndex + 1],
+        password);
+
+    Console.WriteLine(reset
+        ? "Senha redefinida. Tokens anteriores foram revogados."
+        : "Usuário não encontrado.");
+    return;
+}
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -209,3 +241,29 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html").AllowAnonymous();
 
 app.Run();
+
+static string ReadPassword(string prompt)
+{
+    Console.Write(prompt);
+    var password = new StringBuilder();
+
+    while (true)
+    {
+        var key = Console.ReadKey(intercept: true);
+        if (key.Key == ConsoleKey.Enter)
+        {
+            Console.WriteLine();
+            return password.ToString();
+        }
+
+        if (key.Key == ConsoleKey.Backspace)
+        {
+            if (password.Length > 0)
+                password.Length--;
+            continue;
+        }
+
+        if (!char.IsControl(key.KeyChar))
+            password.Append(key.KeyChar);
+    }
+}
