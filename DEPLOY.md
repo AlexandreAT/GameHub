@@ -526,7 +526,7 @@ Preparado em 27/07/2026:
 - a criação dos recursos externos depende dos painéis autenticados do proprietário e permanece pendente;
 - o auto-deploy só poderá ser ativado depois que o smoke test público passar.
 
-## 18. Saneamento definitivo do histórico Git
+## 18. Saneamento do histórico Git
 
 Executado em 27/07/2026 após autorização explícita do proprietário:
 
@@ -537,5 +537,7 @@ Executado em 27/07/2026 após autorização explícita do proprietário:
 - uma nova varredura encontrou zero credenciais exclusivamente históricas;
 - a árvore do código atual permaneceu byte a byte idêntica antes deste registro;
 - a nova `main` foi publicada com force-push protegido pelo SHA remoto anterior.
+
+A `main`, as tags e as referências de pull requests não apontam mais para a história antiga. Uma visualização direta em cache de um SHA antigo ainda responde no GitHub; a solicitação ao GitHub Support para coleta dos objetos órfãos e remoção desse cache permanece como ação externa. Todas as credenciais encontradas já estão rotacionadas e inativas.
 
 Clones criados antes deste saneamento não devem fazer merge com a nova história. O procedimento seguro é clonar o repositório novamente.
