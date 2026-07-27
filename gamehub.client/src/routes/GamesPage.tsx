@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { axios } from '../axios-config';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import Cookies from 'js-cookie';
 import * as qs from 'qs';

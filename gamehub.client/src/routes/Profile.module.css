@@ -679,8 +679,6 @@ p:hover .spanPublic,
         gap: 10px;
     }
 
-    .userInfoContent {}
-
     .userData {
         margin: -90px 0px;
     }
@@ -734,8 +732,6 @@ p:hover .spanPublic,
         margin-top: 25px;
         gap: 10px;
     }
-
-    .userInfoContent {}
 
     .userData {
         margin: -90px 0px;

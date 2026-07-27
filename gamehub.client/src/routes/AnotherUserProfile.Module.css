@@ -490,9 +490,6 @@ p:hover .spanPublic,
         z-index: 2;
     }
 
-    .anotherUserData .anotherUserDataHeader button span{
-    }
-
     .anotherUserDataContent {
         margin-top: 10px;
         gap: 1rem;
