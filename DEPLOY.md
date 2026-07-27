@@ -300,7 +300,7 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 ### Fase A — contenção
 
 - [x] Rotacionar JWT local e retirar MongoDB, IGDB e ImgBB da árvore atual.
-- [ ] Rotacionar MongoDB, IGDB e ImgBB nos painéis dos provedores.
+- [x] Rotacionar MongoDB, IGDB e ImgBB nos painéis dos provedores.
 - [ ] Verificar se existem dados reais no Atlas; remover contas/dados de teste sensíveis.
 - [x] Impedir novos deploys do workflow Azure antigo.
 
@@ -392,6 +392,15 @@ Concluído em 27/07/2026:
 - IGDB e JWT passaram a usar configuração tipada e validada na inicialização;
 - o upload do ImgBB foi movido do frontend para o backend;
 - busca na árvore atual não encontrou URI MongoDB nem credenciais literais de JWT, IGDB ou ImgBB.
+
+Validações concluídas em 27/07/2026:
+
+- o Atlas restaurou o banco `GameHub` com 31 usuários, 13 posts e 5 comunidades;
+- um backup BSON compactado foi criado fora do repositório em `GameHub Database Backups`;
+- a nova senha do MongoDB foi aplicada e uma leitura autenticada confirmou os dados;
+- o novo segredo IGDB autenticou e concluiu uma consulta real;
+- a nova chave ImgBB concluiu um upload de teste;
+- o segredo IGDB antigo e a chave ImgBB antiga do GameHub foram testados e estão inválidos.
 
 ### Decisão sobre o histórico Git
 
