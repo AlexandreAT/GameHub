@@ -4,6 +4,7 @@ services:
     runtime: docker
     plan: free
     region: virginia
+    branch: main
     dockerfilePath: ./Gamehub.Server/Dockerfile
     dockerContext: .
     healthCheckPath: /health

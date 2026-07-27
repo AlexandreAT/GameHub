@@ -95,7 +95,9 @@ Gamehub.Server.Tests/
 
 scripts/
 ├── test-integration.ps1   inicia e remove o MongoDB isolado
-└── test-docker.ps1        valida API Docker, Atlas e proxy do Vite
+├── test-docker.ps1        valida API Docker, Atlas e proxy do Vite
+├── test-smoke-local.ps1   exercita o smoke test em ambiente descartável
+└── smoke-deploy.ps1       valida o ambiente público e limpa fixtures
 ```
 
 ## 6. Responsabilidades

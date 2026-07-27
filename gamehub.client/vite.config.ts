@@ -38,7 +38,7 @@ const getDevelopmentHttps = () => {
     };
 };
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command, mode, isPreview }) => {
     const environment = loadEnv(mode, process.cwd(), '');
     const apiTarget = environment.GAMEHUB_DEV_API_TARGET?.trim()
         || 'https://localhost:7045';
@@ -64,7 +64,9 @@ export default defineConfig(({ command, mode }) => {
                 }
             },
             port: 5173,
-            https: command === 'serve' ? getDevelopmentHttps() : undefined
+            https: command === 'serve' && !isPreview
+                ? getDevelopmentHttps()
+                : undefined
         }
     };
 });

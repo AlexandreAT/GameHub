@@ -512,3 +512,18 @@ Validações concluídas:
 - auditoria npm completa caiu de 19 para 2 registros, ambos da exceção RSC já documentada.
 
 A configuração manual do Render, da allowlist do Atlas para o Render e do Netlify foi deliberadamente adiada para depois da Tarefa 6. Nenhuma publicação foi feita nesta etapa.
+
+## 17. Preparação da Tarefa 6 — deploy e validação final
+
+Preparado em 27/07/2026:
+
+- o repositório público `AlexandreAT/GameHub` e a branch remota `main` estão sincronizados;
+- o site existente `https://projectgamehub.netlify.app` responde, mas ainda entrega o bundle antigo e não deve ser considerado validado;
+- `render.yaml` fixa a branch `main`, mantém o auto-deploy desligado e descreve o backend Docker sem segredos;
+- `DEPLOY_RUNBOOK.md` registra o procedimento curto para Atlas, Render, Netlify e Docker;
+- `scripts/smoke-deploy.ps1` valida frontend, bundle, health, CORS, Atlas, cadastro, login, JWT e post, removendo os dados temporários;
+- o mesmo smoke test passou localmente contra frontend, API Docker e MongoDB descartável;
+- a criação dos recursos externos depende dos painéis autenticados do proprietário e permanece pendente;
+- o auto-deploy só poderá ser ativado depois que o smoke test público passar.
+
+O histórico remoto ainda contém credenciais antigas, já rotacionadas e inativas. A reescrita continua recomendada para o portfólio, mas exige autorização explícita porque altera os 109 commits e requer force-push.

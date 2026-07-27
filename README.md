@@ -22,6 +22,7 @@ GameHub/
 ├── gamehub.client/       SPA React/Vite
 ├── scripts/              testes locais reproduzíveis com Docker
 ├── render.yaml           infraestrutura do backend no Render
+├── DEPLOY_RUNBOOK.md     passo a passo curto da publicação final
 ├── DEPLOY.md             auditoria, decisões e checklist de deploy
 ├── PROJECT_GUIDE.md      guia técnico e arquitetural
 └── Gamehub.sln           solução para desenvolvimento local
@@ -149,9 +150,10 @@ A imagem contém somente a API:
 ```powershell
 docker build -f Gamehub.Server/Dockerfile -t gamehub-api:local .
 ./scripts/test-docker.ps1
+./scripts/test-smoke-local.ps1
 ```
 
-O segundo comando lê os segredos já protegidos no User Secrets, inicia a API em uma porta aleatória, consulta o Atlas sem alterar dados e valida o frontend contra o container. Nenhum segredo é gravado em arquivo ou exibido. O container usa a porta `8080` por padrão; no Render, a aplicação lê `PORT` e escuta em `0.0.0.0:$PORT`.
+Mantenha o Docker Desktop aberto somente ao executar esses comandos. `test-docker.ps1` lê os segredos já protegidos no User Secrets, inicia a API em uma porta aleatória, consulta o Atlas sem alterar dados e valida o frontend contra o container. `test-smoke-local.ps1` cria MongoDB, API e frontend descartáveis e exercita o fluxo completo sem tocar no Atlas. Nenhum segredo é gravado em arquivo ou exibido. O container usa a porta `8080` por padrão; no Render, a aplicação lê `PORT` e escuta em `0.0.0.0:$PORT`.
 
 ## Deploy
 
@@ -162,7 +164,7 @@ O segundo comando lê os segredos já protegidos no User Secrets, inicia a API e
 
 No Netlify, a única configuração manual do frontend é `VITE_API_BASE_URL=https://URL-DO-RENDER/api`. Essa URL é pública; não coloque nenhum segredo em variáveis `VITE_*`.
 
-O passo a passo de publicação e todas as variáveis estão em [DEPLOY.md](./DEPLOY.md).
+O passo a passo curto da publicação está em [DEPLOY_RUNBOOK.md](./DEPLOY_RUNBOOK.md). A auditoria e o histórico das decisões permanecem em [DEPLOY.md](./DEPLOY.md).
 
 ## Estado atual
 
