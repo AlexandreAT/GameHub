@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.WebEncoders.Testing;
+using Microsoft.Extensions.Options;
 
 namespace Gamehub.Server.Controllers
 {
@@ -21,7 +22,7 @@ namespace Gamehub.Server.Controllers
         private readonly UserServices _userServices;
         private readonly PostServices _postServices;
         private readonly CommunityServices _communityServices;
-        private readonly IConfiguration _configuration;
+        private readonly JwtSettings _jwtSettings;
 
         public class LoginResponse
         {
@@ -29,10 +30,14 @@ namespace Gamehub.Server.Controllers
             public string Token { get; set; }
         }
 
-        public UsersController(UserServices userServices, IConfiguration configuration, PostServices postServices, CommunityServices communityServices)
+        public UsersController(
+            UserServices userServices,
+            IOptions<JwtSettings> jwtSettings,
+            PostServices postServices,
+            CommunityServices communityServices)
         {
             _userServices = userServices;
-            _configuration = configuration;
+            _jwtSettings = jwtSettings.Value;
             _postServices = postServices;
             _communityServices = communityServices;
         }
@@ -58,7 +63,7 @@ namespace Gamehub.Server.Controllers
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtToken = jwtHandler.ReadJwtToken(token);
 
-            if (jwtToken == null || jwtToken.Issuer != "your-issuer-url")
+            if (jwtToken == null || jwtToken.Issuer != _jwtSettings.Issuer)
                 return BadRequest();
 
             var user = await _userServices.GetAsync(id);
@@ -392,13 +397,15 @@ namespace Gamehub.Server.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:secretKey"]));
+            var privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
 
             var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);
 
             var expiration = DateTime.UtcNow.AddMinutes(10);
 
             JwtSecurityToken token = new JwtSecurityToken(
+                    issuer: _jwtSettings.Issuer,
+                    audience: _jwtSettings.Audience,
                     claims: claims,
                     expires: expiration,
                     signingCredentials: credentials

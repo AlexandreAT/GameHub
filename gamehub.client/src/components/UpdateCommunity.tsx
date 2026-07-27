@@ -6,6 +6,7 @@ import * as qs from 'qs';
 import classes from './UpdateCommunity.module.css'
 import LoadingAnimation from './LoadingAnimation';
 import { FaSearch } from 'react-icons/fa';
+import { uploadImage } from '../services/uploadImage';
 
 interface Props {
     user: User | null;
@@ -79,20 +80,12 @@ function UpdateCommunity({ user, community }: Props) {
     const handleUploadImage = async () => {
         if (!image) return;
 
-        const url = `https://api.imgbb.com/1/upload?key=***REMOVED***&name=${image.name}`;
         const formData = new FormData();
-        formData.append('image', image);
         const opt = "icone";
 
         try {
-            const responseJsonApi = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
-            const responseApi = await responseJsonApi.json();
-
-            formData.delete('image');
-            formData.append('image', responseApi.data.url);
+            const imageUrl = await uploadImage(image);
+            formData.append('image', imageUrl);
             formData.append('id', community.id);
             formData.append('opt', opt);
 
@@ -115,20 +108,12 @@ function UpdateCommunity({ user, community }: Props) {
     const handleUploadBackground = async () => {
         if (!background) return;
 
-        const url = `https://api.imgbb.com/1/upload?key=***REMOVED***&name=${background.name}`;
         const formData = new FormData();
-        formData.append('image', background);
         const opt = "background";
 
         try {
-            const responseJsonApi = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
-            const responseApi = await responseJsonApi.json();
-
-            formData.delete('image');
-            formData.append('image', responseApi.data.url);
+            const imageUrl = await uploadImage(background);
+            formData.append('image', imageUrl);
             formData.append('id', community.id);
             formData.append('opt', opt);
 

@@ -8,6 +8,7 @@
     <SpaRoot>..\gamehub.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
+    <UserSecretsId>GameHub.Server-6b868c52-a0ac-4c6e-b1bd-0d1d77ff57a7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

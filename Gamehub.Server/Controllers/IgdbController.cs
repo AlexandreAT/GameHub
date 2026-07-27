@@ -8,7 +8,7 @@ using IGDB;
 using IGDB.Models;
 using Gamehub.Server.Models;
 using Gamehub.Server.Services;
-using System.Net.NetworkInformation;
+using Microsoft.Extensions.Options;
 
 namespace Gamehub.Server.Controllers
 {
@@ -16,22 +16,21 @@ namespace Gamehub.Server.Controllers
     [ApiController]
     public class IgdbController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
         private readonly UserServices _userServices;
+        private readonly IgdbSettings _settings;
 
-        public IgdbController(IHttpClientFactory httpClientFactory, UserServices userServices)
+        public IgdbController(
+            UserServices userServices,
+            IOptions<IgdbSettings> settings)
         {
             _userServices = userServices;
-            _httpClient = httpClientFactory.CreateClient();
+            _settings = settings.Value;
         }
 
         [HttpPost("search")]
         public async Task<IActionResult> SearchGames([FromBody] string query)
         {
-            var clientId = "***REMOVED***";
-            var clientSecret = "***REMOVED***";
-
-            var igdbClient = new IGDBClient(clientId, clientSecret);
+            var igdbClient = CreateClient();
 
             var searchQuery = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url, summary; " +
                               $"search \"{query}\"; " +
@@ -107,10 +106,7 @@ namespace Gamehub.Server.Controllers
                 page = 1;
             }
 
-            var clientId = "***REMOVED***";
-            var clientSecret = "***REMOVED***";
-
-            var igdbClient = new IGDBClient(clientId, clientSecret);
+            var igdbClient = CreateClient();
             var idList = string.Join(",", libraryIds.Select(id => id.Trim()));
             var searchIds = $"fields id, name, rating, cover.image_id, genres.name, first_release_date, url, summary; " +
                             $"sort name asc; " +
@@ -234,10 +230,7 @@ namespace Gamehub.Server.Controllers
         [HttpPost("getSimplifiedGame")]
         public async Task<IActionResult> GetSimplifiedGame([FromBody] string query)
         {
-            var clientId = "***REMOVED***";
-            var clientSecret = "***REMOVED***";
-
-            var igdbClient = new IGDBClient(clientId, clientSecret);
+            var igdbClient = CreateClient();
 
             var searchQuery = $"fields id, name, cover.image_id, url; " +
                               $"search \"{query}\"; " +
@@ -282,6 +275,11 @@ namespace Gamehub.Server.Controllers
             {
                 return BadRequest("Erro ao buscar jogos");
             }
+        }
+
+        private IGDBClient CreateClient()
+        {
+            return new IGDBClient(_settings.ClientId, _settings.ClientSecret);
         }
     }
 }

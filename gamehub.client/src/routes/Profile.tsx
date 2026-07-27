@@ -12,6 +12,7 @@ import Sidebar from '../components/Sidebar';
 import { insertMaskInPhone } from '../utils/insertMaskInPhone';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { IoLibrarySharp } from 'react-icons/io5';
+import { uploadImage } from '../services/uploadImage';
 
 interface SimplifiedCommunity {
   id: string;
@@ -97,19 +98,11 @@ function Profile() {
   const handleUploadImage = async () => {
     if (!image) return;
 
-    const url = `https://api.imgbb.com/1/upload?key=***REMOVED***&name=${image.name}`;
     const formData = new FormData();
-    formData.append('image', image);
 
     try {
-      const responseJsonApi = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      });
-      const responseApi = await responseJsonApi.json();
-
-      formData.delete('image');
-      formData.append('image', responseApi.data.url);
+      const imageUrl = await uploadImage(image);
+      formData.append('image', imageUrl);
       formData.append('id', user.id);
       const response = await axios.post('/Users/upload-image', formData, {
         headers: {
@@ -132,19 +125,11 @@ function Profile() {
   const handleUploadBackground = async () => {
     if (!background) return;
 
-    const url = `https://api.imgbb.com/1/upload?key=***REMOVED***&name=${background.name}`;
     const formData = new FormData();
-    formData.append('image', background);
 
     try {
-      const responseJsonApi = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      });
-      const responseApi = await responseJsonApi.json();
-
-      formData.delete('image');
-      formData.append('background', responseApi.data.url);
+      const backgroundUrl = await uploadImage(background);
+      formData.append('background', backgroundUrl);
       formData.append('id', user.id);
       const response = await axios.post('/Users/upload-background', formData, {
         headers: {

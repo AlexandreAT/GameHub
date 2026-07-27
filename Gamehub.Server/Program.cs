@@ -6,27 +6,58 @@ using Microsoft.AspNetCore.Cors;
 using System.Text;
 using Microsoft.AspNetCore.CookiePolicy;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
 
-builder.Services.Configure<UserDatabaseSetting>
-    (builder.Configuration.GetSection("DevNetStoreDatabase"));
+builder.Services.AddOptions<JwtSettings>()
+    .BindConfiguration(JwtSettings.SectionName)
+    .ValidateDataAnnotations()
+    .Validate(settings => Encoding.UTF8.GetByteCount(settings.SecretKey) >= 32,
+        "Jwt:SecretKey deve possuir pelo menos 32 bytes.")
+    .ValidateOnStart();
+
+builder.Services.AddOptions<IgdbSettings>()
+    .BindConfiguration(IgdbSettings.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<ImgBbSettings>()
+    .BindConfiguration(ImgBbSettings.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<UserDatabaseSetting>()
+    .BindConfiguration("DevNetStoreDatabase")
+    .Validate(settings =>
+        !string.IsNullOrWhiteSpace(settings.ConnectionString) &&
+        !string.IsNullOrWhiteSpace(settings.DatabaseName) &&
+        !string.IsNullOrWhiteSpace(settings.UserCollectionName),
+        "A configuração da coleção de usuários do MongoDB está incompleta.")
+    .ValidateOnStart();
 
 builder.Services.AddSingleton<UserServices>();
 
-builder.Services.Configure<PostDatabaseSettings>
-    (builder.Configuration.GetSection("DevNetStoreDatabase"));
+builder.Services.AddOptions<PostDatabaseSettings>()
+    .BindConfiguration("DevNetStoreDatabase")
+    .Validate(settings => !string.IsNullOrWhiteSpace(settings.PostCollectionName),
+        "A configuração da coleção de posts do MongoDB está incompleta.")
+    .ValidateOnStart();
 
 builder.Services.AddSingleton<PostServices>();
 
-builder.Services.Configure<CommunityDatabaseSettings>
-    (builder.Configuration.GetSection("DevNetStoreDatabase"));
+builder.Services.AddOptions<CommunityDatabaseSettings>()
+    .BindConfiguration("DevNetStoreDatabase")
+    .Validate(settings => !string.IsNullOrWhiteSpace(settings.CommunityCollectionName),
+        "A configuração da coleção de comunidades do MongoDB está incompleta.")
+    .ValidateOnStart();
 
 builder.Services.AddSingleton<CommunityServices>();
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<ImageHostingService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 builder.Services.AddCors(options =>
 {
@@ -47,34 +78,42 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configura a pol�tica de cookies
+// Configura a política de cookies
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    // Define as pol�ticas de cookies
+    // Define as políticas de cookies
     options.MinimumSameSitePolicy = SameSiteMode.Strict;
     options.HttpOnly = HttpOnlyPolicy.None;
     options.Secure = CookieSecurePolicy.Always;
 });
 
-//aqui � onde estou configurando o jwt
+//aqui é onde estou configurando o jwt
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    var jwtSettings = builder.Configuration
+        .GetRequiredSection(JwtSettings.SectionName)
+        .Get<JwtSettings>() ?? throw new InvalidOperationException("Configuração JWT não encontrada.");
+
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateLifetime = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:secretKey"])),
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
         ClockSkew = TimeSpan.Zero
     };
 });
 
 var app = builder.Build();
 
-// Aplica a pol�tica de cookies
+// Aplica a política de cookies
 app.UseCookiePolicy();
 
 app.UseCors("CorsPolicy");

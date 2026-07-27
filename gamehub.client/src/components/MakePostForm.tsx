@@ -3,6 +3,7 @@ import classes from './MakePostForm.module.css'
 import { axios } from '../axios-config';
 import LoadingAnimation from './LoadingAnimation';
 import { FaSearch } from 'react-icons/fa';
+import { uploadImage } from '../services/uploadImage';
 
 interface Props {
   user: User | null;
@@ -85,8 +86,7 @@ const MakePostForm = ({ user, community }: Props) => {
     let imageSrc = null;
 
     if (image) {
-      const response = await handleUploadImage();
-      imageSrc = response.data.url;
+      imageSrc = await handleUploadImage();
     }
 
     if (!community) {
@@ -180,17 +180,8 @@ const MakePostForm = ({ user, community }: Props) => {
   const handleUploadImage = async () => {
     if (!image) return;
 
-    const url = `https://api.imgbb.com/1/upload?key=***REMOVED***&name=${image}`;
-    const formData = new FormData();
-    formData.append('image', image);
-
     try {
-      const responseJsonApi = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      });
-      const responseApi = await responseJsonApi.json();
-      return responseApi;
+      return await uploadImage(image);
     } catch (error) {
       console.error(error);
     }
