@@ -4,7 +4,7 @@ Data da auditoria: 26/07/2026.
 
 Este documento descreve o estado encontrado no repositório final, compara a pasta histórica `GameHub Deploy` e define o caminho recomendado para publicar o frontend no Netlify, o backend no Render e manter os dados no MongoDB Atlas.
 
-> Status atual: **não publicar a API como está**. Render e MongoDB Atlas são compatíveis, mas o projeto possui bloqueadores de segurança, segredos expostos e problemas de build que devem ser corrigidos antes de um deploy público.
+> Status atual: **Tarefa 1 concluída no código; ainda não publicar**. Os segredos foram retirados da árvore atual, mas as credenciais externas precisam ser rotacionadas e os bloqueadores de autenticação das próximas tarefas ainda precisam ser corrigidos.
 
 ## 1. Arquitetura encontrada
 
@@ -16,7 +16,7 @@ Este documento descreve o estado encontrado no repositório final, compara a pas
 - SPA com páginas de login, cadastro, perfis, comunidades, posts, comentários, busca, biblioteca e integração com jogos.
 - Cliente HTTP centralizado em `gamehub.client/src/axios-config.ts`.
 - A URL da API está fixa em `https://localhost:7045/api` no repositório final.
-- Uploads de imagem são enviados diretamente do navegador ao ImgBB.
+- Uploads de imagem passam pelo backend; a chave do ImgBB não é mais entregue ao navegador.
 
 ### Backend
 
@@ -32,15 +32,15 @@ Este documento descreve o estado encontrado no repositório final, compara a pas
 ### Dados e serviços externos
 
 - MongoDB Atlas: banco `GameHub` e três coleções configuradas em `appsettings.json`.
-- IGDB: credenciais atualmente escritas diretamente no controller.
-- ImgBB: chave incluída em cinco URLs do frontend.
+- IGDB: credenciais lidas da configuração privada do backend.
+- ImgBB: chave lida da configuração privada e usada pelo serviço de upload do backend.
 
 ### Repositório e automação
 
 - Branch principal: `main`.
 - Remote: `AlexandreAT/GameHub` no GitHub.
-- Não existe `.gitignore` na raiz; existe somente `gamehub.client/.gitignore`.
-- Existe um workflow antigo de Azure App Service em `.github/workflows/main_gamehubproject.yml`.
+- Existe um `.gitignore` único na raiz para frontend, backend, IDEs e segredos locais.
+- O workflow antigo de Azure App Service foi removido na Tarefa 1.
 - Não existem `Dockerfile`, `render.yaml` ou `netlify.toml` no repositório final.
 - Não foram encontrados testes automatizados.
 
@@ -244,9 +244,10 @@ Navegador -> Netlify (React/Vite) -> Render (ASP.NET API) -> MongoDB Atlas
 | `DevNetStoreDatabase__CommunityCollectionName` | comum | `Communities` |
 | `Jwt__SecretKey` | secret gerado | mínimo de 256 bits; rotacionar o atual |
 | `Jwt__Issuer` | comum | por exemplo `GameHub.Api` |
-| `Jwt__Audience` | comum | por exemplo `GameHub.Web` |
+| `Jwt__Audience` | comum | `GameHub.Client` |
 | `Igdb__ClientId` | secret/config | novo Client ID, conforme política do provedor |
 | `Igdb__ClientSecret` | secret | novo segredo IGDB |
+| `ImgBb__ApiKey` | secret | nova chave ImgBB |
 | `Cors__AllowedOrigins__0` | comum | URL exata do site Netlify |
 
 `PORT` é fornecida pelo Render. O ASP.NET Core converte `__` em `:` nas chaves de configuração.
@@ -298,9 +299,10 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 ### Fase A — contenção
 
-- [ ] Rotacionar MongoDB, IGDB, ImgBB e JWT.
+- [x] Rotacionar JWT local e retirar MongoDB, IGDB e ImgBB da árvore atual.
+- [ ] Rotacionar MongoDB, IGDB e ImgBB nos painéis dos provedores.
 - [ ] Verificar se existem dados reais no Atlas; remover contas/dados de teste sensíveis.
-- [ ] Impedir novos deploys do workflow Azure antigo.
+- [x] Impedir novos deploys do workflow Azure antigo.
 
 ### Fase B — segurança do backend
 
@@ -358,7 +360,7 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 - Lint: 79 erros e 42 warnings.
 - NuGet: 3 vulnerabilidades transitivas conhecidas.
 - Git: 2.354 arquivos rastreados; 2.224 deles são `node_modules`, `.vs`, `bin` ou `obj`.
-- Segredos: MongoDB, JWT, IGDB e ImgBB aparecem no commit atual e/ou histórico.
+- Segredos: removidos da árvore atual; as versões antigas permanecem no histórico até a limpeza planejada.
 - Alterações locais preexistentes do usuário foram preservadas.
 
 ## 12. Referências oficiais
@@ -370,6 +372,35 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 - Netlify em monorepos: <https://docs.netlify.com/build/configure-builds/monorepos/>
 - Rewrites/proxy no Netlify: <https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/>
 - MongoDB Atlas — conexão e troubleshooting: <https://www.mongodb.com/docs/atlas/troubleshoot-connection/>
+- MongoDB Atlas — usuários do banco: <https://www.mongodb.com/docs/atlas/security-add-mongodb-users/>
+- Twitch/IGDB — cadastro e novo client secret: <https://dev.twitch.tv/docs/authentication/register-app>
+- ImgBB — API e chave de upload: <https://api.imgbb.com/>
 - ASP.NET Core — configuração por ambiente: <https://learn.microsoft.com/aspnet/core/fundamentals/configuration/>
 - ASP.NET Core atrás de proxy: <https://learn.microsoft.com/aspnet/core/host-and-deploy/proxy-load-balancer/>
 - Ciclo de suporte do .NET: <https://dotnet.microsoft.com/platform/support/policy>
+
+## 13. Registro da Tarefa 1 — consolidação e segredos
+
+Concluído em 27/07/2026:
+
+- os metadados Git de `gamehub.client` e `Gamehub.Server` foram removidos do projeto e guardados em `GameHub Git Metadata Backup 20260727-131513`, ao lado da pasta do projeto;
+- somente o repositório Git da raiz permanece como fonte oficial;
+- o workflow antigo do Azure foi removido;
+- o `appsettings.json` passou a conter somente nomes e valores públicos, sem credenciais;
+- os valores locais foram migrados para o User Secrets do .NET, fora do repositório;
+- um novo segredo JWT local, aleatório e com 512 bits, foi gerado;
+- IGDB e JWT passaram a usar configuração tipada e validada na inicialização;
+- o upload do ImgBB foi movido do frontend para o backend;
+- busca na árvore atual não encontrou URI MongoDB nem credenciais literais de JWT, IGDB ou ImgBB.
+
+### Decisão sobre o histórico Git
+
+**Decisão: reescrever o histórico, mas somente após a rotação externa.** Como este será um repositório público de portfólio, a limpeza removerá segredos e artefatos antigos dos commits. A ordem obrigatória é:
+
+1. rotacionar MongoDB, IGDB e ImgBB;
+2. confirmar que os novos valores funcionam no User Secrets;
+3. criar um backup final do repositório;
+4. executar `git filter-repo` e fazer force-push coordenado;
+5. apagar clones e backups antigos que ainda contenham as credenciais.
+
+Até essa execução, qualquer credencial que já apareceu em commits deve ser considerada comprometida, mesmo não estando mais nos arquivos atuais.
