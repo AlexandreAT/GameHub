@@ -106,6 +106,24 @@ O Render publica as faixas de saída de cada serviço em **Connect > Outbound**.
 
    Ação: mover `ClientId` e `ClientSecret` para configuração segura, centralizar o cliente e aplicar validação, timeout, cache e limite de requisições.
 
+### Segurança da API implementada em 27/07/2026
+
+- Senhas novas usam BCrypt com salt e fator de trabalho 12.
+- As 31 contas legadas tiveram as senhas antigas invalidadas e foram marcadas para redefinição; nenhuma senha em texto puro foi preservada.
+- A migração administrativa é idempotente. Em PowerShell local, execute `$env:ASPNETCORE_ENVIRONMENT="Development"` e depois `dotnet run --project Gamehub.Server -- --reset-legacy-passwords`; a segunda execução deve migrar zero contas.
+- O endpoint `getPassword` e os modelos que carregavam senha/CPF foram removidos.
+- DTOs distintos controlam cadastro, login, atualização e perfis público/privado; senha e CPF nunca são serializados nas respostas.
+- O cadastro deixou de solicitar CPF e o gerador de CPF fictício foi removido. Os valores legados não são expostos, mas só devem ser apagados do Atlas em uma limpeza de dados aprovada separadamente.
+- Autenticação passou a ser obrigatória por padrão. Somente actions explicitamente marcadas com `[AllowAnonymous]` são públicas.
+- O usuário autenticado é obtido da claim `sub`; IDs enviados pelo frontend não autorizam mutações.
+- Alteração/exclusão de usuários, posts, comentários e comunidades verifica ownership no servidor.
+- JWT valida assinatura, issuer, audience e expiração de 30 minutos, sem tolerância de relógio. A versão de segurança do usuário revoga tokens antigos após troca de senha.
+- Login/cadastro, IGDB e uploads possuem rate limiting e retornam `429` quando o limite é excedido.
+- Conteúdo de usuários não usa mais `dangerouslySetInnerHTML`, eliminando o vetor encontrado de XSS armazenado.
+- O fluxo inseguro de recuperação foi substituído por uma orientação temporária para criar uma nova conta, até existir recuperação por email com token descartável.
+- `MongoDB.Driver` foi atualizado para 3.10.0, `IGDB` para 6.1.0 e `Newtonsoft.Json` foi fixado em 13.0.4. A auditoria NuGet não encontra mais pacotes vulneráveis.
+- As dependências de produção do frontend foram atualizadas. O único alerta restante do `npm audit --omit=dev` afeta exclusivamente o modo RSC do React Router, que não é usado por esta SPA; não há versão estável corrigida disponível em 27/07/2026.
+
 ### P1 — bloqueia o deploy confiável
 
 1. **Build do frontend quebra em CI**
@@ -144,14 +162,11 @@ O Render publica as faixas de saída de cada serviço em **Connect > Outbound**.
 
 ### P2 — qualidade, manutenção e portfólio
 
-- O backend compila com **0 erros e 121 warnings** de nulabilidade e uso de APIs obsoletas.
+- O backend compila com **0 erros e 79 warnings** de nulabilidade legados.
 - O lint do frontend acusa **79 erros e 42 avisos**, inclusive Hooks condicionais.
-- Foram detectadas dependências transitivas NuGet vulneráveis:
-  - `Newtonsoft.Json 11.0.1` — alta;
-  - `Snappier 1.0.0` — alta;
-  - `SharpCompress 0.30.1` — moderada.
-- Pacotes principais estão defasados: IGDB 5.1, MongoDB.Driver 2.24, Swagger 6.4 e dependências antigas do frontend.
-- O `npm audit` não pôde concluir porque o endpoint do registro devolveu uma resposta comprimida inválida; repetir em CI/ambiente limpo.
+- As vulnerabilidades NuGet inicialmente encontradas em `Newtonsoft.Json`, `Snappier` e `SharpCompress` foram eliminadas pela atualização dos pacotes principais.
+- A auditoria de produção do npm ainda relata o aviso de CSRF do modo RSC do React Router. O GameHub usa apenas o modo SPA, sem RSC, actions ou loaders de servidor; acompanhar a publicação de uma versão estável corrigida.
+- A auditoria completa do npm também aponta vulnerabilidades no toolchain legado de desenvolvimento (ESLint e dependências relacionadas). Elas não entram no bundle de produção e devem ser tratadas junto da modernização de lint/CI.
 - .NET 8 entra em fim de suporte em 10/11/2026. Planejar a migração para .NET 10 LTS antes do lançamento definitivo.
 - Não há testes automatizados nem CI de build/test/lint para o fluxo novo.
 - Consultas e atualizações executam muitos loops e substituições de documentos completos; isso merece revisão após segurança/deploy.
@@ -245,6 +260,7 @@ Navegador -> Netlify (React/Vite) -> Render (ASP.NET API) -> MongoDB Atlas
 | `Jwt__SecretKey` | secret gerado | mínimo de 256 bits; rotacionar o atual |
 | `Jwt__Issuer` | comum | por exemplo `GameHub.Api` |
 | `Jwt__Audience` | comum | `GameHub.Client` |
+| `Jwt__ExpirationMinutes` | comum | `30` |
 | `Igdb__ClientId` | secret/config | novo Client ID, conforme política do provedor |
 | `Igdb__ClientSecret` | secret | novo segredo IGDB |
 | `ImgBb__ApiKey` | secret | nova chave ImgBB |
@@ -306,24 +322,24 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 ### Fase B — segurança do backend
 
-- [ ] Hash de senha e migração/reset das contas.
-- [ ] Remover `getPassword` e o fluxo atual de “esqueci a senha”.
-- [ ] DTOs sem senha/CPF/dados privados.
-- [ ] `[Authorize]`, claims validadas e checagem de ownership.
-- [ ] JWT com issuer/audience/lifetime e estratégia única de armazenamento.
-- [ ] Segredos apenas por configuração externa.
-- [ ] Rate limiting nos endpoints de login, busca externa e upload.
+- [x] Hash de senha e migração/reset das contas.
+- [x] Remover `getPassword` e o fluxo atual de “esqueci a senha”.
+- [x] DTOs sem senha/CPF/dados privados.
+- [x] `[Authorize]`, claims validadas e checagem de ownership.
+- [x] JWT com issuer/audience/lifetime e estratégia única de armazenamento.
+- [x] Segredos apenas por configuração externa.
+- [x] Rate limiting nos endpoints de login, busca externa e upload.
 
 ### Fase C — build e infraestrutura
 
-- [ ] `.gitignore` raiz e limpeza do índice.
-- [ ] Corrigir `vite.config.ts` para builds sem certificado.
+- [x] `.gitignore` raiz e limpeza do índice.
+- [x] Corrigir `vite.config.ts` para builds sem certificado.
 - [ ] Tornar a URL da API configurável.
 - [ ] CORS por configuração.
 - [ ] Remover acoplamento SPA do backend.
 - [ ] Adicionar health check, bind de `PORT`, Dockerfile e `.dockerignore`.
 - [ ] Adicionar `render.yaml` e `netlify.toml`.
-- [ ] Atualizar dependências vulneráveis.
+- [x] Atualizar dependências vulneráveis do backend e as dependências de produção aplicáveis do frontend.
 
 ### Fase D — qualidade e publicação
 
@@ -339,7 +355,7 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 ## 10. Checklist de aceite
 
 - [ ] Nenhum segredo aparece em `git grep`, build output, imagem Docker ou bundle do Vite.
-- [ ] `npm ci && npm run build` passa em ambiente limpo.
+- [x] `npm ci && npm run build` passa em ambiente limpo.
 - [ ] `npm run lint` passa sem erro.
 - [ ] `dotnet restore`, `dotnet build` e `dotnet test` passam.
 - [ ] `dotnet list package --vulnerable --include-transitive` não retorna vulnerabilidades conhecidas.
@@ -355,11 +371,11 @@ O Render encerra TLS no load balancer e encaminha HTTP ao container. O middlewar
 
 ## 11. Evidências da auditoria local
 
-- Backend: build isolado concluído com 0 erros e 121 warnings.
-- Frontend: TypeScript compilou; build Vite falhou na criação do certificado HTTPS.
+- Backend: build isolado concluído com 0 erros e 79 warnings legados.
+- Frontend: TypeScript e build Vite de produção concluídos com sucesso.
 - Lint: 79 erros e 42 warnings.
-- NuGet: 3 vulnerabilidades transitivas conhecidas.
-- Git: 2.354 arquivos rastreados; 2.224 deles são `node_modules`, `.vs`, `bin` ou `obj`.
+- NuGet: nenhuma vulnerabilidade conhecida após a atualização dos pacotes.
+- Git: 131 arquivos rastreados e nenhum `node_modules`, `.vs`, `bin` ou `obj` no índice.
 - Segredos: removidos da árvore atual; as versões antigas permanecem no histórico até a limpeza planejada.
 - Alterações locais preexistentes do usuário foram preservadas.
 
