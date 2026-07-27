@@ -526,4 +526,16 @@ Preparado em 27/07/2026:
 - a criação dos recursos externos depende dos painéis autenticados do proprietário e permanece pendente;
 - o auto-deploy só poderá ser ativado depois que o smoke test público passar.
 
-O histórico remoto ainda contém credenciais antigas, já rotacionadas e inativas. A reescrita continua recomendada para o portfólio, mas exige autorização explícita porque altera os 109 commits e requer force-push.
+## 18. Saneamento definitivo do histórico Git
+
+Executado em 27/07/2026 após autorização explícita do proprietário:
+
+- um bundle completo e verificado foi salvo localmente fora do repositório;
+- `git filter-repo` reescreveu os 110 commits;
+- seis valores exclusivamente históricos de MongoDB, JWT, IGDB e ImgBB foram substituídos;
+- cópias antigas em `bin/` e `obj/` foram removidas de todos os commits;
+- uma nova varredura encontrou zero credenciais exclusivamente históricas;
+- a árvore do código atual permaneceu byte a byte idêntica antes deste registro;
+- a nova `main` foi publicada com force-push protegido pelo SHA remoto anterior.
+
+Clones criados antes deste saneamento não devem fazer merge com a nova história. O procedimento seguro é clonar o repositório novamente.
