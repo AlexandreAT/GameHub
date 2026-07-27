@@ -18,6 +18,37 @@ interface RegisterFormData {
   nickname: string;
 }
 
+const getRegisterErrorMessage = (error: unknown) => {
+  if (!isAxiosError(error)) {
+    return 'Não foi possível concluir o cadastro. Tente novamente.';
+  }
+
+  if (!error.response) {
+    return 'Não foi possível conectar à API. Verifique se o backend está online.';
+  }
+
+  const responseData: unknown = error.response.data;
+  const contentType = String(error.response.headers['content-type'] ?? '');
+  if (
+    contentType.includes('text/html') ||
+    (typeof responseData === 'string' && responseData.trimStart().startsWith('<!DOCTYPE html'))
+  ) {
+    return 'A API do GameHub não está configurada ou não foi encontrada. Verifique a URL do backend.';
+  }
+
+  if (typeof responseData === 'string' && responseData.trim()) {
+    return responseData;
+  }
+
+  if (responseData && typeof responseData === 'object') {
+    const apiError = responseData as { message?: unknown; title?: unknown };
+    if (typeof apiError.message === 'string') return apiError.message;
+    if (typeof apiError.title === 'string') return apiError.title;
+  }
+
+  return `Não foi possível concluir o cadastro (HTTP ${error.response.status}).`;
+};
+
 const Cadastro = () => {
 
   const [formTouched, setFormTouched] = useState(false);
@@ -66,13 +97,7 @@ const Cadastro = () => {
       return { data: response.data, error: null };
     } catch (error: unknown) {
       console.error('Error posting data:', error);
-      if (isAxiosError(error) && error.response) {
-        return { data: null, error: error.response.data };
-      } else if (isAxiosError(error) && error.request) {
-        return { data: null, error: { message: 'No response received from the server.' } };
-      } else {
-        return { data: null, error: { message: 'Error making the request.' } };
-      }
+      return { data: null, error: getRegisterErrorMessage(error) };
     }
   };
 
@@ -277,21 +302,21 @@ const Cadastro = () => {
             {formSubmitted && (<p className='errorMessage'>{formError.nickname}</p>)}
           </div>
           <div className={classes.fieldsSideBySide}>
+            <div className={classes.inputEmail}>
+              <label htmlFor="email">Email <span className={classes.required}>*</span> <span className={classes.iconBtn} onClick={() => setShowAlertEmail(!showAlertEmail)}><TbAlertSquareRounded className={classes.icon}/></span></label>
+              {showAlertEmail && (
+                <div className={classes.divAlert}>
+                  <span>Como este é um site feito apenas para praticar/estudar programação, esse campo não precisa ser preenchido com uma informação real.</span>
+                </div>
+              )}
+              <input type="text" name='email' placeholder='Digite o seu email...' onChange={handleEmailChange} value={email} onBlur={validateForm} />
+              {formSubmitted && (<p className='errorMessage'>{formError.email}</p>)}
+            </div>
             <div>
               <label htmlFor="phone">Número de telefone</label>
               <input type="tel" name='phone' placeholder='Digite o seu telefone...' onChange={handlePhoneChange} value={insertMaskInPhone(phone)} onBlur={validateForm} />
               {formSubmitted && (<p className='errorMessage'>{formError.phone}</p>)}
             </div>
-          </div>
-          <div className={classes.inputEmail}>
-            <label htmlFor="email">Email <span className={classes.required}>*</span> <span className={classes.iconBtn} onClick={() => setShowAlertEmail(!showAlertEmail)}><TbAlertSquareRounded className={classes.icon}/></span></label>
-            {showAlertEmail && (
-              <div className={classes.divAlert}>
-                <span>Como este é um site feito apenas para praticar/estudar programação, esse campo não precisa ser preenchido com uma informação real.</span>
-              </div>
-            )}
-            <input type="text" name='email' placeholder='Digite o seu email...' onChange={handleEmailChange} value={email} onBlur={validateForm} />
-            {formSubmitted && (<p className='errorMessage'>{formError.email}</p>)}
           </div>
           <div className={classes.fieldsSideBySide}>
             <div>

@@ -75,7 +75,7 @@ const Login = () => {
                     </div>
                     <div className={classes.bottomDiv}>
                         <div>
-                            <Link to="/forgotPassword" className='link'>Esqueceu a senha?</Link>
+                            {/* <Link to="/forgotPassword" className='link'>Esqueceu a senha?</Link> */}
                         </div>
                     </div>
                     <button type='submit' className='btn' >Entrar</button>
