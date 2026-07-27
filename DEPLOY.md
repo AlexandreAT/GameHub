@@ -541,3 +541,5 @@ Executado em 27/07/2026 após autorização explícita do proprietário:
 A `main`, as tags e as referências de pull requests não apontam mais para a história antiga. Uma visualização direta em cache de um SHA antigo ainda responde no GitHub; a solicitação ao GitHub Support para coleta dos objetos órfãos e remoção desse cache permanece como ação externa. Todas as credenciais encontradas já estão rotacionadas e inativas.
 
 Clones criados antes deste saneamento não devem fazer merge com a nova história. O procedimento seguro é clonar o repositório novamente.
+
+Durante a primeira publicação no Netlify, o ambiente Linux revelou uma diferença de capitalização em um CSS e dependências opcionais ausentes no lockfile gerado no Windows. O nome foi normalizado, o lockfile passou a ser multiplataforma e todo build agora valida a capitalização exata dos imports. `npm ci && npm run build` foi aprovado em Node 24 sobre Linux antes da nova publicação.
